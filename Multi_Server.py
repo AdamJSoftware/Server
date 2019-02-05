@@ -8,8 +8,8 @@ import types
 import os
 import sys
 import csv
-import uuid
 import FileDirectory
+import uuid
 sel = selectors.DefaultSelector()
 pyautogui.FAILSAFE = False
 
@@ -74,6 +74,8 @@ def accept_wrapper(sock):
 def service_connection(key, mask):
     global sock
     global sock1
+    global dictList
+    global Position
     global IP
     global connected
     global In_Messaging
@@ -270,7 +272,6 @@ def service_connection(key, mask):
                                     row = [one, Computer_Name, comma]
                                     wr.writerow(row)
 
-
     else:
         print("declined" + str(sock))
 
@@ -284,22 +285,23 @@ def service_connection(key, mask):
             recv_data2 = sock.recv(1024).decode()
             got = False
             if recv_data2 != "--quit--":
-                dictList = []
-                [dictList.extend([k, v]) for k, v in dict.items()]
-                Position = dictList.index(sock) - 1
-                if str(recv_data2) == "--SENDING_FILE--":
-                    print(recv_data2)
-                    print('recieving file...')
-                    sock3 = str(sock).rsplit("raddr=('", 1)[1]
-                    sock3 = str(sock3).rsplit("',", 1)[0]
-                    ip_to_send = sock3
-                    print(ip_to_send)
-                    with open("IP.txt", 'w', newline='') as resultFile:
-                        resultFile.write(ip_to_send)
-                        press('enter')
+                if recv_data2.__contains("--TEST--"):
+                    dictList = []
+                    [dictList.extend([k, v]) for k, v in dict.items()]
+                    Position = dictList.index(sock) - 1
+                    if str(recv_data2) == "--SENDING_FILE--":
+                        print(recv_data2)
+                        print('recieving file...')
+                        sock3 = str(sock).rsplit("raddr=('", 1)[1]
+                        sock3 = str(sock3).rsplit("',", 1)[0]
+                        ip_to_send = sock3
+                        print(ip_to_send)
+                        with open("IP.txt", 'w', newline='') as resultFile:
+                            resultFile.write(ip_to_send)
+                            press('enter')
 
-                    os.system('Get.py')
-                    recv_data2 = sock.recv(1024).decode()
+                        os.system('Get.py')
+                        recv_data2 = sock.recv(1024).decode()
 
                 elif str(recv_data2) == "--RM--":
                     print('Device requested remote connection... Entering remote status')
@@ -634,11 +636,12 @@ class Check2(Thread):
                 if len(dict) != 0:
                     try:
                         soc = list(dict.values())[i]
-                        message = "test"
+                        message = "--TEST--"
                     except:
                         print('index error. Resetting check')
                         i = 0
                     try:
+
                         soc.send(message.encode("utf-8"))
                     except:
                         #new_client = False
