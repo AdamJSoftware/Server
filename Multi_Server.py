@@ -70,7 +70,6 @@ def accept_wrapper(sock):
             return
 
 
-
 def service_connection(key, mask):
     global sock
     global sock1
@@ -377,6 +376,7 @@ def rm_func():
             pass
     return
 
+
 def view_func():
     global dict
     Q = input("Would you like to send or get?")
@@ -396,6 +396,24 @@ def view_func():
     file = FileDirectory.main()
 
 
+def get_ip_addresses_func():
+    addrList = socket.getaddrinfo(socket.gethostname(), None)
+
+    ipList = []
+    for item in addrList:
+        print
+        "Item:", item
+        ipList.append(item[4][0])
+
+    num = len(ipList)
+    i = 0
+    while i != num:
+        if str(ipList[i]).__contains__("::"):
+            ipList.remove(ipList[i])
+            num = num-1
+        print(ipList[i])
+        i +=1
+    return ipList
 
 
 def enter_func():
@@ -417,6 +435,7 @@ def back_func():
     press('enter')
     In_Messaging = False
     go_back = False
+
 
 def message_func(Q):
     global In_Messaging
@@ -516,7 +535,6 @@ class Starter(Thread):
         sel.register(lsock,selectors.EVENT_READ, data=None)
         self.running = True
 
-
     def run(self):
         global enter
         global break_all
@@ -539,17 +557,12 @@ class Starter(Thread):
                     service_connection(key, mask)
 
 
-    def stop(self):
-        self.running = False
-
-
 class Send(Thread):
     global In_Messaging
 
     def __init__(self):
         Thread.__init__(self)
         global In_Messaging
-
 
     def run(self):
         global In_Messaging
@@ -613,6 +626,7 @@ class Check(Thread):
             if break_all == True:
                 print('breaking Check')
                 return
+
 
 class Check2(Thread):
     def __init__(self):
@@ -678,28 +692,9 @@ except:
     print('creating IP database...')
 
 
-def getIpAddresses():
-    addrList = socket.getaddrinfo(socket.gethostname(), None)
-
-    ipList = []
-    for item in addrList:
-        print
-        "Item:", item
-        ipList.append(item[4][0])
-
-    num = len(ipList)
-    i = 0
-    while i != num:
-        if str(ipList[i]).__contains__("::"):
-            ipList.remove(ipList[i])
-            num = num-1
-        print(ipList[i])
-        i +=1
-    return ipList
-
 
 a = Starter()
-getIpAddresses()
+get_ip_addresses_func()
 b = Send()
 c = Check()
 d = Check2()
