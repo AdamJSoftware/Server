@@ -46,6 +46,180 @@ sel = selectors.DefaultSelector()
 pyautogui.FAILSAFE = False
 
 
+def view_func():
+    global dict
+    Q = input("Would you like to send or get?")
+    if Q == "get":
+        Q = input('On which computer would you like to view:\n')
+        ls_func()
+        print('Server')
+    elif Q =="send":
+        Q = input('On which computer would you like to view:\n')
+        ls_func()
+        print('Server')
+    else:
+        print('exiting program please try again with a proper input')
+        return
+
+
+    file = FileDirectory.main()
+
+
+def get_ip_addresses_func():
+    addrList = socket.getaddrinfo(socket.gethostname(), None)
+
+    ipList = []
+    for item in addrList:
+        print
+        "Item:", item
+        ipList.append(item[4][0])
+
+    num = len(ipList)
+    i = 0
+    while i != num:
+        if str(ipList[i]).__contains__("::"):
+            ipList.remove(ipList[i])
+            num = num-1
+        print(ipList[i])
+        i +=1
+    return ipList
+
+
+def enter_func():
+    press('enter')
+
+
+def back_func():
+    global back_message
+    global back
+    global In_Messaging
+    print("Returning to main screen. Please hold")
+    time.sleep(1)
+    press('enter')
+    time.sleep(1)
+    back_message = "/back"
+    back = True
+    press('enter')
+    In_Messaging = False
+    go_back = False
+
+
+def message_func(Q):
+    global In_Messaging
+    global back_message
+    global back
+    back = False
+    back_message = ""
+    length = len(dict)
+    if length == 1:
+        try:
+            print('sending message to only connected client')
+            for x in dict.values():
+                while back_message != "/back":
+                    if back == False:
+                        In_Messaging = True
+                        message = input(" -> ")
+                        back_message = message
+                        message = message.encode("utf-8")
+                        sock1 = x
+                        sock1.send(message)
+                    else:
+                        back_message = "/back"
+                In_Messaging = False
+        except:
+            pass
+    else:
+        try:
+            Q = Q.split('/m ', 1)[1]
+            if Q in str(dict):
+                back_message = ""
+                while back_message != "/back":
+                    if back == False:
+                        In_Messaging = True
+                        message = input("Sending message to -> " + Q + " -> ")
+                        back_message = message
+                        message = message.encode("utf-8")
+                        sock1 = dict[Q]
+                        sock1.send(message)
+                    else:
+                        back_message = "/back"
+                In_Messaging = False
+            else:
+                print("Computer not found. Please reference the computer list:")
+                ls_func()
+        except:
+            print("Here is the list of computers:")
+            ls_func()
+
+
+def help_func():
+    print("/m - 'DEVICE NAME' --> Sends message to device, \n"
+          "/m - all --> Sends message to all devices, \n"
+          "/power 'DEVICE NAME' --> Turns on device, \n"
+          "/shutdown 'DEVICE NAME' --> Shutsdown device, \n"
+          "/ls --> Shows connected devices, \n"
+          "/back --> Exists messaging menu, \n")
+
+
+def ls_func():
+    global dict
+    for x in dict:
+        print(x)
+
+
+def send_func(Q, rm):
+    global IP
+    global In_Messaging
+    global soc
+    length = len(dict)
+    if length == 1:
+        try:
+            if rm is True:
+                print('sending file to only connected client')
+
+            for x in dict.values():
+                message = "--SENDING_FILE--"
+                message = message.encode("utf-8")
+                sock1 = x
+                sock1.send(message)
+                print(" Please select file...")
+                os.system('File_Sender.py')
+        except:
+            pass
+    else:
+        try:
+            Q = Q.split('/send ', 1)[1]
+            print(Q)
+            if Q in str(dict):
+                message = "--SENDING_FILE--"
+                message = message.encode("utf-8")
+                sock1 = dict[Q]
+                sock1.send(message)
+                print(" Please select file to send to -> " + Q)
+                os.system('File_Sender.py')
+            else:
+                print("Computer not found. Please reference the computer list:")
+                ls_func()
+        except:
+            print("Here is the list of computers:")
+            ls_func()
+
+
+def rm_func():
+    rm = True
+    message = ""
+    length = len(dict)
+    while message != "/back":
+        message = input(" -> ")
+        if message.__contains__("/send"):
+            send_func(message, rm)
+        if message.__contains__("/get"):
+            pass
+        if message.__contains__("/view"):
+            pass
+    return
+
+
 def accept_wrapper(sock):
     global break_all
     global conn
@@ -317,176 +491,6 @@ def service_connection(key, mask):
         pass
 
 
-def send_func(Q):
-    global IP
-    global In_Messaging
-    length = len(dict)
-    if length == 1:
-        try:
-            print('sending file to only connected client')
-            for x in dict.values():
-                message = "--SENDING_FILE--"
-                message = message.encode("utf-8")
-                sock1 = x
-                sock1.send(message)
-                print(" Please select file...")
-                os.system('File_Sender.py')
-        except:
-            pass
-    else:
-        try:
-            Q = Q.split('/send ', 1)[1]
-            print(Q)
-            if Q in str(dict):
-                message = "--SENDING_FILE--"
-                message = message.encode("utf-8")
-                sock1 = dict[Q]
-                sock1.send(message)
-                print(" Please select file to send to -> " + Q)
-                os.system('File_Sender.py')
-            else:
-                print("Computer not found. Please reference the computer list:")
-                ls_func()
-        except:
-            print("Here is the list of computers:")
-            ls_func()
-
-
-def rm_func():
-    message = ""
-    while message != "/back":
-        message = input(" -> ")
-        if message == "/send":
-            pass
-        if message == "/get":
-            pass
-        if message == "/view":
-            pass
-    return
-
-
-def view_func():
-    global dict
-    Q = input("Would you like to send or get?")
-    if Q == "get":
-        Q = input('On which computer would you like to view:\n')
-        ls_func()
-        print('Server')
-    elif Q =="send":
-        Q = input('On which computer would you like to view:\n')
-        ls_func()
-        print('Server')
-    else:
-        print('exiting program please try again with a proper input')
-        return
-
-
-    file = FileDirectory.main()
-
-
-def get_ip_addresses_func():
-    addrList = socket.getaddrinfo(socket.gethostname(), None)
-
-    ipList = []
-    for item in addrList:
-        print
-        "Item:", item
-        ipList.append(item[4][0])
-
-    num = len(ipList)
-    i = 0
-    while i != num:
-        if str(ipList[i]).__contains__("::"):
-            ipList.remove(ipList[i])
-            num = num-1
-        print(ipList[i])
-        i +=1
-    return ipList
-
-
-def enter_func():
-    press('enter')
-
-
-def back_func():
-    global back_message
-    global back
-    global In_Messaging
-    print("Returning to main screen. Please hold")
-    time.sleep(1)
-    press('enter')
-    time.sleep(1)
-    back_message = "/back"
-    back = True
-    press('enter')
-    In_Messaging = False
-    go_back = False
-
-
-def message_func(Q):
-    global In_Messaging
-    global back_message
-    global back
-    back = False
-    back_message = ""
-    length = len(dict)
-    if length == 1:
-        try:
-            print('sending message to only connected client')
-            for x in dict.values():
-                while back_message != "/back":
-                    if back == False:
-                        In_Messaging = True
-                        message = input(" -> ")
-                        back_message = message
-                        message = message.encode("utf-8")
-                        sock1 = x
-                        sock1.send(message)
-                    else:
-                        back_message = "/back"
-                In_Messaging = False
-        except:
-            pass
-    else:
-        try:
-            Q = Q.split('/m ', 1)[1]
-            if Q in str(dict):
-                back_message = ""
-                while back_message != "/back":
-                    if back == False:
-                        In_Messaging = True
-                        message = input("Sending message to -> " + Q + " -> ")
-                        back_message = message
-                        message = message.encode("utf-8")
-                        sock1 = dict[Q]
-                        sock1.send(message)
-                    else:
-                        back_message = "/back"
-                In_Messaging = False
-            else:
-                print("Computer not found. Please reference the computer list:")
-                ls_func()
-        except:
-            print("Here is the list of computers:")
-            ls_func()
-
-
-def ls_func():
-    global dict
-    for x in dict:
-        print(x)
-
-
-
-def help_func():
-    print("/m - 'DEVICE NAME' --> Sends message to device, \n"
-          "/m - all --> Sends message to all devices, \n"
-          "/power 'DEVICE NAME' --> Turns on device, \n"
-          "/shutdown 'DEVICE NAME' --> Shutsdown device, \n"
-          "/ls --> Shows connected devices, \n"
-          "/back --> Exists messaging menu, \n")
-
-
 class Starter(Thread):
     global soc
     global data
@@ -552,6 +556,7 @@ class Send(Thread):
 
     def run(self):
         global In_Messaging
+        rm = False
         while True:
             In_Messaging = False
             Q = input(' -> ')
@@ -561,7 +566,7 @@ class Send(Thread):
             if Q == "/ls":
                 ls_func()
             if Q.__contains__('/send'):
-                send_func(Q)
+                send_func(Q, rm)
             if Q == "/help":
                 help_func()
             if Q.__contains__('/m'):
