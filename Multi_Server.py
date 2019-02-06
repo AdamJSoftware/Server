@@ -346,8 +346,7 @@ def service_connection(key, mask):
                                 dict[one] = sock
                                 print(dict)
                                 new_client = False
-                                with open(""
-                                          "Profiles.csv", 'a', newline='') as resultFile:
+                                with open("Profiles.csv", 'a', newline='') as resultFile:
                                     wr = csv.writer(resultFile, delimiter=',', lineterminator='\r')
                                     comma = ''
                                     row = [one, Computer_Name, comma]
