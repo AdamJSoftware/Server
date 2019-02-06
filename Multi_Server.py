@@ -10,8 +10,6 @@ import sys
 import csv
 import FileDirectory
 import uuid
-sel = selectors.DefaultSelector()
-pyautogui.FAILSAFE = False
 
 
 global connected
@@ -34,25 +32,18 @@ global break_all
 
 
 started = False
-
 break_all = False
-
 back = False
 message = False
-
 show_ls = True
-
-
 go_back = False
-
 dict = {}
-
 results = []
-
 sock1 = None
-
 connected = False
-enter = False
+
+sel = selectors.DefaultSelector()
+pyautogui.FAILSAFE = False
 
 
 def accept_wrapper(sock):
@@ -175,7 +166,7 @@ def service_connection(key, mask):
                             if detected == False:
                                 print('New computer detected. Please wait for system to configure')
                                 time.sleep(1)
-                                enter = True
+                                enter_func()
                                 one = input("What is the name of this computer: ")
                                 del dict[random]
                                 dict[one] = sock
@@ -278,37 +269,34 @@ def service_connection(key, mask):
     if connected == False:
         connected = True
 
+
     try:
         got = True
         if mask & selectors.EVENT_READ:
             recv_data2 = sock.recv(1024).decode()
             got = False
             if recv_data2 != "--quit--":
-                if recv_data2.__contains("--TEST--"):
-                    dictList = []
-                    [dictList.extend([k, v]) for k, v in dict.items()]
-                    Position = dictList.index(sock) - 1
-                    if str(recv_data2) == "--SENDING_FILE--":
-                        print(recv_data2)
-                        print('recieving file...')
-                        sock3 = str(sock).rsplit("raddr=('", 1)[1]
-                        sock3 = str(sock3).rsplit("',", 1)[0]
-                        ip_to_send = sock3
-                        print(ip_to_send)
-                        with open("IP.txt", 'w', newline='') as resultFile:
-                            resultFile.write(ip_to_send)
-                            press('enter')
-
-                        os.system('Get.py')
-                        recv_data2 = sock.recv(1024).decode()
-
+                if str(recv_data2) == "--SENDING_FILE--":
+                    print(recv_data2)
+                    print('recieving file...')
+                    sock3 = str(sock).rsplit("raddr=('", 1)[1]
+                    sock3 = str(sock3).rsplit("',", 1)[0]
+                    ip_to_send = sock3
+                    print(ip_to_send)
+                    with open("IP.txt", 'w', newline='') as resultFile:
+                        resultFile.write(ip_to_send)
+                        press('enter')
+                    os.system('Get.py')
+                    recv_data2 = sock.recv(1024).decode()
                 elif str(recv_data2) == "--RM--":
                     print('Device requested remote connection... Entering remote status')
                     rm_func()
-
                 else:
+                    dictList = []
+                    [dictList.extend([k, v]) for k, v in dict.items()]
+                    Position = dictList.index(sock) - 1
                     print('\n' + "Recieved message from -> " + dictList[Position] + " -> " + recv_data2)
-                    enter = True
+                    enter_func()
                     recv_data2 = sock.recv(1024).decode()
 
             else:
@@ -417,9 +405,7 @@ def get_ip_addresses_func():
 
 
 def enter_func():
-    global enter
     press('enter')
-    enter = False
 
 
 def back_func():
@@ -489,7 +475,7 @@ def ls_func():
     global dict
     for x in dict:
         print(x)
-    #enter_func()
+
 
 
 def help_func():
@@ -543,7 +529,7 @@ class Starter(Thread):
                 print('breaking main')
                 press('enter')
                 return
-            events = sel.select(timeout=None)
+            events = sel.select()
             for key, mask in events:
                 if key.data is None:
                     if break_all == True:
@@ -617,15 +603,8 @@ class Check(Thread):
         global dict
         global break_all
         while True:
-            if enter == True:
-                enter_func()
-            if go_back == True:
+            if go_back is True:
                 back_func()
-            if message == True:
-                message_func()
-            if break_all == True:
-                print('breaking Check')
-                return
 
 
 class Check2(Thread):
