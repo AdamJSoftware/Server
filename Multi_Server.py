@@ -78,7 +78,6 @@ def get_ip_addresses_func():
 
     ipList = []
     for item in addrList:
-        print("Item:", item)
         ipList.append(item[4][0])
 
     num = len(ipList)
@@ -231,6 +230,7 @@ def accept_wrapper(sock):
     global break_all
     global conn
     if not str(sock).__contains__('[closed]'):
+        print('SOCK DOES NOT CONTAIN STRING')
         conn, addr = sock.accept()  # Should be ready to read
         print('accepted connection from', addr)
         conn.setblocking(False)
@@ -349,29 +349,32 @@ def service_connection(key, mask):
                                                     enter_func()
                                                 i = length
                                             except:
-                                                print('Error connecting. Device may need to restart')
+                                                print('Error connecting. Device may need to restart (006)')
                                         else:
                                             print('Closed socket... Removing from system')
                                             detected = True
                                             enter_func()
 
                                 if detected == False:
-                                    print('New computer detected. Please wait for system to configure')
-                                    enter_func()
-                                    time.sleep(1)
-                                    one = input("What is the name of this computer: ")
-                                    print("Naming this computer " + one)
-                                    del dict[random]
-                                    dict[one] = sock
-                                    print(dict)
-                                    new_client = False
-                                    comma = ","
-                                    with open("Profiles.txt", 'a', newline='') as resultFile:
-                                        resultFile.write(one + comma + Computer_Name + comma)
-                                    if In_Messaging == True:
-                                        back_func()
-                                    else:
+                                    try:
+                                        print('New computer detected. Please wait for system to configure')
                                         enter_func()
+                                        time.sleep(1)
+                                        one = input("What is the name of this computer: ")
+                                        print("Naming this computer " + one)
+                                        del dict[random]
+                                        dict[one] = sock
+                                        print(dict)
+                                        new_client = False
+                                        comma = ","
+                                        with open("Profiles.txt", 'a', newline='') as resultFile:
+                                            resultFile.write(one + comma + Computer_Name + comma)
+                                        if In_Messaging == True:
+                                            back_func()
+                                        else:
+                                            enter_func()
+                                    except:
+                                        print("Error adding new computer. Check delete (005)")
                         else:
                             with open('Profiles.txt', 'r') as f:
                                 print("Please wait for system to configure new computer...")
@@ -404,17 +407,20 @@ def service_connection(key, mask):
                                     i += 1
                                     print("Computer profile list: ")
                                     print('\t' + Name + " - " + PC_Name)
-                                    if Computer_Name == PC_Name:
-                                        print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
-                                        detected = True
-                                        del dict[random]
-                                        dict[Name] = sock
-                                        ls_func()
-                                        print(dict)
-                                        new_client = False
-                                        i = length
-                                        if started == True:
-                                            enter_func()
+                                    try:
+                                        if Computer_Name == PC_Name:
+                                            print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
+                                            detected = True
+                                            del dict[random]
+                                            dict[Name] = sock
+                                            ls_func()
+                                            print(dict)
+                                            new_client = False
+                                            i = length
+                                            if started == True:
+                                                enter_func()
+                                    except:
+                                        print('Error while adding computer to current database. Program may need to restart (004)')
 
                                     try:
                                         if Computer_Name == "failed":
@@ -440,23 +446,26 @@ def service_connection(key, mask):
                                                         enter_func()
                                                     i = length
                                                 except:
-                                                    print('Error connecting. Device may need to restart')
+                                                    print('Error connecting. Device may need to restart (003)')
                                             else:
                                                 print('Closed socket... Removing from system')
                                                 detected = True
                                                 enter_func()
                                     except:
-                                        print("UNEXPECTED ERROR: This could probably be ignored")
+                                        print("UNEXPECTED ERROR: This could probably be ignored (002)")
 
                                 if detected == False:
-                                    one = input("What is the name of this computer: ")
-                                    del dict[random]
-                                    dict[one] = sock
-                                    new_client = False
-                                    print("Adding " + one + " to computer profiles")
-                                    comma = ","
-                                    with open("Profiles.txt", 'a', newline='') as resultFile:
-                                        resultFile.write(one + comma + Computer_Name + comma)
+                                    try:
+                                        one = input("What is the name of this computer: ")
+                                        del dict[random]
+                                        dict[one] = sock
+                                        new_client = False
+                                        print("Adding " + one + " to computer profiles")
+                                        comma = ","
+                                        with open("Profiles.txt", 'a', newline='') as resultFile:
+                                            resultFile.write(one + comma + Computer_Name + comma)
+                                    except:
+                                        print("Error while adding computer to profile list (001)")
                     else:
                         print("declined" + str(sock))
             if connected == False:
@@ -503,12 +512,13 @@ class Starter(Thread):
         global break_all
         while self.running:
             events = sel.select()
-
-
-
             for key, mask in events:
                 if key.data is None:
-                    accept_wrapper(key.fileobj)
+                    if not str(key.fileobj).__contains__("[closed]"):
+                        accept_wrapper(key.fileobj)
+                        print("FILEOBJECT" + str(key.fileobj))
+                    else:
+                        print('rejected closed socket')
                 else:
                     service_connection(key, mask)
 
@@ -724,21 +734,21 @@ except:
     fh = open('IP.txt',"w+")
     print('creating IP database...')
 
+if __name__ == '__main__':
+    a = Starter()
+    get_ip_addresses_func()
+    b = Send()
+    c = Recieve()
+    d = Check2()
+    a.start()
 
+    while connected == False:
+        time.sleep(.1)
 
-a = Starter()
-get_ip_addresses_func()
-b = Send()
-c = Recieve()
-d = Check2()
-a.start()
+    if connected == True:
+        print("Send started")
+        b.start()
+        started = True
+        c.start()
+        d.start()
 
-while connected == False:
-    time.sleep(.1)
-
-if connected == True:
-    print("Send started")
-    b.start()
-    started = True
-    c.start()
-    d.start()
