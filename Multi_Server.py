@@ -78,8 +78,7 @@ def get_ip_addresses_func():
 
     ipList = []
     for item in addrList:
-        print
-        "Item:", item
+        print("Item:", item)
         ipList.append(item[4][0])
 
     num = len(ipList)
@@ -382,7 +381,16 @@ def service_connection(key, mask):
                                     test_computername = str(Computer_Name).split("||")[1]
                                     Computer_Name = test_computername
                                 except:
-                                    Computer_Name = "failed"
+                                    try:
+                                        got = False
+                                        waiting_on_server = True
+                                        print('waiting to recieve computer name')
+                                        time.sleep(2)
+                                        Computer_Name = recv_computername
+                                        waiting_on_server = False
+                                        got = True
+                                    except:
+                                        Computer_Name = "failed"
                                 results = f.read().split(',')
                                 print(results)
                                 length = len(results)
