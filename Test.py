@@ -1,12 +1,4 @@
-import requests
-
-def internet_on():
-    try:
-        requests.get('http://216.58.192.142')
-        print('ay')
-        return True
-    except:
-        print('nah')
-        return False
-
-internet_on()
+with open('Profiles.txt', 'r') as f:
+    print("Please wait for system to configure new computer...")
+    results = f.read().split(',')
+    print(results)
