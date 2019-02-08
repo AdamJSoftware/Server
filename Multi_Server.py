@@ -18,6 +18,7 @@ global done
 global test_computername
 global connected
 global started
+global key
 global replacing_dict
 global dict
 global IP
@@ -37,7 +38,7 @@ global key
 global break_all
 
 replacing_dict = False
-
+waiting_on_server = False
 started = False
 break_all = False
 back = False
@@ -109,7 +110,6 @@ def back_func():
     In_Messaging = False
     go_back = False
 
-
 def message_func(Q):
     global In_Messaging
     global back_message
@@ -177,12 +177,14 @@ def send_func(Q, rm):
     global IP
     global In_Messaging
     global soc
+    rm = rm
     length = len(dict)
     if length == 1:
         try:
             if rm is True:
-                print('sending file to only connected client')
-
+                message = 'sending file to only connected client'
+                print(message)
+                soc.sendall(message.encode(1024))
             for x in dict.values():
                 message = "--SENDING_FILE--"
                 message = message.encode("utf-8")
@@ -379,21 +381,16 @@ def service_connection(key, mask):
                             with open('Profiles.txt', 'r') as f:
                                 print("Please wait for system to configure new computer...")
                                 try:
-                                    time.sleep(1)
-                                    Computer_Name = sock.recv(1024).decode()
-                                    test_computername = str(Computer_Name).split("||")[1]
-                                    Computer_Name = test_computername
+                                    got = False
+                                    waiting_on_server = True
+                                    print('waiting to recieve computer name')
+                                    c.start()
+                                    time.sleep(4)
+                                    Computer_Name = recv_computername
+                                    waiting_on_server = False
+                                    got = True
                                 except:
-                                    try:
-                                        got = False
-                                        waiting_on_server = True
-                                        print('waiting to recieve computer name')
-                                        time.sleep(2)
-                                        Computer_Name = recv_computername
-                                        waiting_on_server = False
-                                        got = True
-                                    except:
-                                        Computer_Name = "failed"
+                                    Computer_Name = "failed"
                                 results = f.read().split(',')
                                 print(results)
                                 length = len(results)
@@ -479,12 +476,14 @@ class Starter(Thread):
     global new_data
     global enter
     global break_all
+    global key
 
     def __init__(self):
         global soc
         global new_data
         global enter
         global break_all
+        global key
         Thread.__init__(self)
         print("Starting server")
         self.running = True
@@ -510,6 +509,7 @@ class Starter(Thread):
     def run(self):
         global enter
         global break_all
+        global key
         while self.running:
             events = sel.select()
             for key, mask in events:
@@ -566,8 +566,10 @@ class Recieve(Thread):
     global go_back
     global got
     global recv_computername
+    global sock
     global waiting_on_server
     global break_all
+    global key
     global dict
 
     def __init__(self):
@@ -575,18 +577,24 @@ class Recieve(Thread):
         global waiting_on_server
         global back
         global message
+        global sock
         global break_all
         global dict
         global got
         global recv_computername
+        global key
         Thread.__init__(self)
-        print("Check thread started")
+        print("Receive thread initiallized")
 
     def run(self):
+        print('Recieve thread started')
+        time.sleep(2)
         global recv_computername
+        global key
         global enter
         global back
         global message
+        global sock
         global got
         global go_back
         global dict
@@ -594,12 +602,12 @@ class Recieve(Thread):
         global waiting_on_server
         while True:
             try:
-                if waiting_on_server is False:
-                    recv_data = sock.recv(1024).decode()
-                    if str(recv_data).__contains__("--PCNAME--||"):
-                        test_computername = str(recv_data).split("||")[1]
-                        print("recieved computer name -> " + test_computername)
-                        recv_computername = str(test_computername)
+                recv_data = sock.recv(1024).decode()
+                if str(recv_data).__contains__("--PCNAME--||"):
+                    test_computername = str(recv_data).split("||")[1]
+                    print("received computer name -> " + test_computername)
+                    recv_computername = str(test_computername)
+                else:
                     if recv_data != "--quit--":
                         if str(recv_data) == "--SENDING_FILE--":
                             print(recv_data)
@@ -607,12 +615,13 @@ class Recieve(Thread):
                             sock3 = str(sock).rsplit("raddr=('", 1)[1]
                             sock3 = str(sock3).rsplit("',", 1)[0]
                             ip_to_send = sock3
+
                             print(ip_to_send)
                             with open("IP.txt", 'w', newline='') as resultFile:
                                 resultFile.write(ip_to_send)
                                 press('enter')
                             os.system('Get.py')
-                            recv_data = sock.recv(1024).decode()
+                            # recv_data = sock.recv(1024).decode()
                         elif str(recv_data) == "--RM--":
                             print('Device requested remote connection... Entering remote status')
                             rm_func()
@@ -622,33 +631,34 @@ class Recieve(Thread):
                             Position = dictList.index(sock) - 1
                             print('\n' + "Recieved message from -> " + dictList[Position] + " -> " + recv_data)
                             enter_func()
-                            recv_data = sock.recv(1024).decode()
+                            # recv_data = sock.recv(1024).decode()
+            except:
+                pass
 
+                '''print(dict)
+                    print('closing connection to', data.addr)
+                    sel.unregister(sock)
+                    sock.close()
+                    for x, y in dict.items():
+                        if y == sock:
+                            del dict[x]
+                            break
+                    print(dict)
+                    if In_Messaging == True:
+                        back_func()
                     else:
-                        print(dict)
-                        print('closing connection to', data.addr)
-                        sel.unregister(sock)
-                        sock.close()
-                        for x, y in dict.items():
-                            if y == sock:
-                                del dict[x]
-                                break
-                        print(dict)
-                        if In_Messaging == True:
-                            back_func()
-                        else:
-                            enter_func()
-                else:
+                        enter_func()
+                        '''
+
+                '''else:
                     if got is False:
                         recv_data = sock.recv(1024).decode()
                         if str(recv_data).__contains__("--PCNAME--||"):
                             test_computername = str(recv_data).split("||")[1]
-                            print("recieved computer name -> " + test_computername)
+                            print("recieved computer name -> hey" + test_computername)
                             recv_computername = str(test_computername)
-                    time.sleep(.1)
-
-            except:
-                pass
+                        time.sleep(.1)
+                        '''
 
 
 
@@ -747,8 +757,7 @@ if __name__ == '__main__':
 
     if connected == True:
         print("Send started")
-        b.start()
         started = True
-        c.start()
+        b.start()
         d.start()
 
