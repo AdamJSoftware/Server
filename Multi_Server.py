@@ -232,15 +232,13 @@ def accept_wrapper(sock):
     global break_all
     global conn
     global accepted
-    if not str(sock).__contains__('[closed]'):
-        print('SOCK DOES NOT CONTAIN STRING')
-        conn, addr = sock.accept()  # Should be ready to read
-        print('accepted connection from', addr)
-        conn.setblocking(False)
-        data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
-        events = selectors.EVENT_READ | selectors.EVENT_WRITE
-        sel.register(conn, events, data=data)
-        accepted = True
+    conn, addr = sock.accept()  # Should be ready to read
+    print('accepted connection from', addr)
+    conn.setblocking(False)
+    data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
+    events = selectors.EVENT_READ | selectors.EVENT_WRITE
+    sel.register(conn, events, data=data)
+    accepted = True
 
 
 def service_connection(key, mask):
@@ -267,214 +265,201 @@ def service_connection(key, mask):
     sock = key.fileobj
     done = True
     if accepted is True:
-        if not str(sock).__contains__('[closed]'):
-            if not str(sock).__contains__('[closed]'):
-                if sock not in dict.values():
-                    if not str(sock).__contains__('[closed]'):
-                        if replacing_dict is False:
-                            done = False
-                            new_client = True
-                            random = str(uuid.uuid4())
-                            random = random[:4]
-                            random = 'temporary' + str(random)
-                            dict[str(random)] = sock
-                            print(dict)
-                            if len(dict) > 1:
-                                with open('Profiles.txt', 'r') as f:
-                                    print("Please wait for system to configure new computer...")
-                                    if break_all == True:
-                                        return
+        if sock not in dict.values():
+            if replacing_dict is False:
+                done = False
+                new_client = True
+                random = str(uuid.uuid4())
+                random = random[:4]
+                random = 'temporary' + str(random)
+                dict[str(random)] = sock
+                print(dict)
+                if len(dict) > 1:
+                    with open('Profiles.txt', 'r') as f:
+                        print("Please wait for system to configure new computer...")
+                        if break_all == True:
+                            return
+                        try:
+                            got = False
+                            waiting_on_server = True
+                            print('waiting to recieve computer name')
+                            time.sleep(2)
+                            Computer_Name = recv_computername
+                            waiting_on_server = False
+                            got = True
+                        except:
+                            Computer_Name = "failed"
+                        results = f.read().split(',')
+                        print(results)
+                        length = len(results)
+                        length = length - 1
+                        i = 0
+                        detected = False
+                        while i != length:
+                            Name = results[i]
+                            i += 1
+                            PC_Name = results[i]
+                            i += 1
+                            print("Computer profile list: ")
+                            print('\t' + Name + " - " + PC_Name)
+                            if Computer_Name == PC_Name:
+                                try:
+
+                                    print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
+                                    detected = True
+                                    print(dict)
+                                    del dict[random]
+                                    if Name in dict:
+                                        print(
+                                            "Computer with same hostname found. Creating temporary name for client...")
+                                        random = str(uuid.uuid4())
+                                        random = random[:4]
+                                        Name = Name + str(random)
+                                    dict[Name] = sock
+                                    ls_func()
+                                    print(dict)
+                                    new_client = False
+                                    if In_Messaging == True:
+                                        back_func()
+                                    else:
+                                        enter_func()
+                                    i = length
+                                except:
+                                    print('an unknown error occured')
+
+                            if Computer_Name == "failed":
+                                print('could not get hostname. Assigning random value for computer')
+                                detected = True
+                                print(dict)
+                                try:
+                                    del dict[random]
+                                    random = str(uuid.uuid4())
+                                    random = random[:4]
+                                    Name = "COMPUTER" + str(random)
+                                    show_ls = True
+                                    if show_ls == True:
+                                        dict[Name] = sock
+                                        show_ls = False
+                                        ls_func()
+                                    print(dict)
+                                    new_client = False
+                                    if In_Messaging == True:
+                                        back_func()
+                                    else:
+                                        enter_func()
+                                    i = length
+                                except:
+                                    print('Error connecting. Device may need to restart (006)')
+
+                        if detected == False:
+                            try:
+                                print('New computer detected. Please wait for system to configure')
+                                enter_func()
+                                time.sleep(1)
+                                one = input("What is the name of this computer: ")
+                                print("Naming this computer " + one)
+                                del dict[random]
+                                dict[one] = sock
+                                print(dict)
+                                new_client = False
+                                comma = ","
+                                with open("Profiles.txt", 'a', newline='') as resultFile:
+                                    resultFile.write(one + comma + Computer_Name + comma)
+                                if In_Messaging == True:
+                                    back_func()
+                                else:
+                                    enter_func()
+                            except:
+                                print("Error adding new computer. Check delete (005)")
+                else:
+                    with open('Profiles.txt', 'r') as f:
+                        print("Please wait for system to configure new computer...")
+                        try:
+                            got = False
+                            waiting_on_server = True
+                            print('waiting to recieve computer name')
+                            try:
+                                c.start()
+                            except:
+                                pass
+                            time.sleep(4)
+                            Computer_Name = recv_computername
+                            waiting_on_server = False
+                            got = True
+                        except:
+                            Computer_Name = "failed"
+                        results = f.read().split(',')
+                        print(results)
+                        length = len(results)
+                        length = length - 1
+                        i = 0
+                        detected = False
+                        while i != length:
+                            Name = results[i]
+                            i += 1
+                            PC_Name = results[i]
+                            i += 1
+                            print("Computer profile list: ")
+                            print('\t' + Name + " - " + PC_Name)
+                            try:
+                                if Computer_Name == PC_Name:
+                                    print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
+                                    detected = True
+                                    del dict[random]
+                                    dict[Name] = sock
+                                    ls_func()
+                                    print(dict)
+                                    new_client = False
+                                    i = length
+                                    if started == True:
+                                        enter_func()
+                            except:
+                                print('Error while adding computer to current database. Program may need to restart (004)')
+
+                            try:
+                                if Computer_Name == "failed":
+                                    print('could not get hostname. Assigning random value for computer')
+                                    detected = True
+                                    print(dict)
                                     try:
-                                        got = False
-                                        waiting_on_server = True
-                                        print('waiting to recieve computer name')
-                                        time.sleep(2)
-                                        Computer_Name = recv_computername
-                                        waiting_on_server = False
-                                        got = True
-                                    except:
-                                        Computer_Name = "failed"
-                                    results = f.read().split(',')
-                                    print(results)
-                                    length = len(results)
-                                    length = length - 1
-                                    i = 0
-                                    detected = False
-                                    while i != length:
-                                        Name = results[i]
-                                        i += 1
-                                        PC_Name = results[i]
-                                        i += 1
-                                        print("Computer profile list: ")
-                                        print('\t' + Name + " - " + PC_Name)
-                                        if Computer_Name == PC_Name:
-                                            try:
-
-                                                print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
-                                                detected = True
-                                                print(dict)
-                                                del dict[random]
-                                                if Name in dict:
-                                                    print(
-                                                        "Computer with same hostname found. Creating temporary name for client...")
-                                                    random = str(uuid.uuid4())
-                                                    random = random[:4]
-                                                    Name = Name + str(random)
-                                                dict[Name] = sock
-                                                ls_func()
-                                                print(dict)
-                                                new_client = False
-                                                if In_Messaging == True:
-                                                    back_func()
-                                                else:
-                                                    enter_func()
-                                                i = length
-                                            except:
-                                                print('an unknown error occured')
-
-                                        if Computer_Name == "failed":
-                                            if not str(sock).__contains__('[closed]'):
-                                                print('could not get hostname. Assigning random value for computer')
-                                                detected = True
-                                                print(dict)
-                                                try:
-                                                    del dict[random]
-                                                    random = str(uuid.uuid4())
-                                                    random = random[:4]
-                                                    Name = "COMPUTER" + str(random)
-                                                    show_ls = True
-                                                    if show_ls == True:
-                                                        dict[Name] = sock
-                                                        show_ls = False
-                                                        ls_func()
-                                                    print(dict)
-                                                    new_client = False
-                                                    if In_Messaging == True:
-                                                        back_func()
-                                                    else:
-                                                        enter_func()
-                                                    i = length
-                                                except:
-                                                    print('Error connecting. Device may need to restart (006)')
-                                            else:
-                                                print('Closed socket... Removing from system')
-                                                detected = True
-                                                enter_func()
-
-                                    if detected == False:
-                                        try:
-                                            print('New computer detected. Please wait for system to configure')
+                                        del dict[random]
+                                        random = str(uuid.uuid4())
+                                        random = random[:4]
+                                        Name = "COMPUTER" + str(random)
+                                        show_ls = True
+                                        if show_ls == True:
+                                            dict[Name] = sock
+                                            show_ls = False
+                                            ls_func()
+                                        print(dict)
+                                        new_client = False
+                                        if In_Messaging == True:
+                                            back_func()
+                                        else:
                                             enter_func()
-                                            time.sleep(1)
-                                            one = input("What is the name of this computer: ")
-                                            print("Naming this computer " + one)
-                                            del dict[random]
-                                            dict[one] = sock
-                                            print(dict)
-                                            new_client = False
-                                            comma = ","
-                                            with open("Profiles.txt", 'a', newline='') as resultFile:
-                                                resultFile.write(one + comma + Computer_Name + comma)
-                                            if In_Messaging == True:
-                                                back_func()
-                                            else:
-                                                enter_func()
-                                        except:
-                                            print("Error adding new computer. Check delete (005)")
-                            else:
-                                with open('Profiles.txt', 'r') as f:
-                                    print("Please wait for system to configure new computer...")
-                                    try:
-                                        got = False
-                                        waiting_on_server = True
-                                        print('waiting to recieve computer name')
-                                        try:
-                                            c.start()
-                                        except:
-                                            pass
-                                        time.sleep(4)
-                                        Computer_Name = recv_computername
-                                        waiting_on_server = False
-                                        got = True
+                                        i = length
+
                                     except:
-                                        Computer_Name = "failed"
-                                    results = f.read().split(',')
-                                    print(results)
-                                    length = len(results)
-                                    length = length - 1
-                                    i = 0
-                                    detected = False
-                                    while i != length:
-                                        Name = results[i]
-                                        i += 1
-                                        PC_Name = results[i]
-                                        i += 1
-                                        print("Computer profile list: ")
-                                        print('\t' + Name + " - " + PC_Name)
-                                        try:
-                                            if Computer_Name == PC_Name:
-                                                print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
-                                                detected = True
-                                                del dict[random]
-                                                dict[Name] = sock
-                                                ls_func()
-                                                print(dict)
-                                                new_client = False
-                                                i = length
-                                                if started == True:
-                                                    enter_func()
-                                        except:
-                                            print(
-                                                'Error while adding computer to current database. Program may need to restart (004)')
+                                        print('Error connecting. Device may need to restart (003)')
+                            except:
+                                print("UNEXPECTED ERROR: This could probably be ignored (002)")
 
-                                        try:
-                                            if Computer_Name == "failed":
-                                                if not str(sock).__contains__('[closed]'):
-                                                    print('could not get hostname. Assigning random value for computer')
-                                                    detected = True
-                                                    print(dict)
-                                                    try:
-                                                        del dict[random]
-                                                        random = str(uuid.uuid4())
-                                                        random = random[:4]
-                                                        Name = "COMPUTER" + str(random)
-                                                        show_ls = True
-                                                        if show_ls == True:
-                                                            dict[Name] = sock
-                                                            show_ls = False
-                                                            ls_func()
-                                                        print(dict)
-                                                        new_client = False
-                                                        if In_Messaging == True:
-                                                            back_func()
-                                                        else:
-                                                            enter_func()
-                                                        i = length
-                                                    except:
-                                                        print('Error connecting. Device may need to restart (003)')
-                                                else:
-                                                    print('Closed socket... Removing from system')
-                                                    detected = True
-                                                    enter_func()
-                                        except:
-                                            print("UNEXPECTED ERROR: This could probably be ignored (002)")
-
-                                    if detected == False:
-                                        try:
-                                            one = input("What is the name of this computer: ")
-                                            del dict[random]
-                                            dict[one] = sock
-                                            new_client = False
-                                            print("Adding " + one + " to computer profiles")
-                                            comma = ","
-                                            with open("Profiles.txt", 'a', newline='') as resultFile:
-                                                resultFile.write(one + comma + Computer_Name + comma)
-                                        except:
-                                            print("Error while adding computer to profile list (001)")
-                        else:
-                            print("declined" + str(sock))
-                if connected == False:
-                    connected = True
+                        if detected == False:
+                            try:
+                                one = input("What is the name of this computer: ")
+                                del dict[random]
+                                dict[one] = sock
+                                new_client = False
+                                print("Adding " + one + " to computer profiles")
+                                comma = ","
+                                with open("Profiles.txt", 'a', newline='') as resultFile:
+                                    resultFile.write(one + comma + Computer_Name + comma)
+                            except:
+                                print("Error while adding computer to profile list (001)")
+            else:
+                print("declined" + str(sock))
+        if connected == False:
+            connected = True
         done = True
         accepted = False
 
@@ -523,14 +508,9 @@ class Starter(Thread):
             events = sel.select()
             for key, mask in events:
                 if key.data is None:
-                    if not str(key.fileobj).__contains__("[closed]"):
-                        accept_wrapper(key.fileobj)
-                        print("FILEOBJECT" + str(key.fileobj))
-                    else:
-                        print('rejected closed socket')
+                    accept_wrapper(key.fileobj)
                 else:
-                    if not str(key.fileobj).__contains__("[closed]"):
-                        service_connection(key, mask)
+                     service_connection(key, mask)
 
 
 class Send(Thread):
@@ -562,8 +542,6 @@ class Send(Thread):
                  i = 0
                  while i < len(dict):
                     check = list(dict.values())[i]
-                    if str(check).__contains__('[closed]'):
-                        print('problem found')
             if break_all == True:
                 print('breaking Send')
                 return
@@ -644,31 +622,6 @@ class Recieve(Thread):
                             # recv_data = sock.recv(1024).decode()
             except:
                 pass
-
-                '''print(dict)
-                    print('closing connection to', data.addr)
-                    sel.unregister(sock)
-                    sock.close()
-                    for x, y in dict.items():
-                        if y == sock:
-                            del dict[x]
-                            break
-                    print(dict)
-                    if In_Messaging == True:
-                        back_func()
-                    else:
-                        enter_func()
-                        '''
-
-                '''else:
-                    if got is False:
-                        recv_data = sock.recv(1024).decode()
-                        if str(recv_data).__contains__("--PCNAME--||"):
-                            test_computername = str(recv_data).split("||")[1]
-                            print("recieved computer name -> hey" + test_computername)
-                            recv_computername = str(test_computername)
-                        time.sleep(.1)
-                        '''
 
 
 
