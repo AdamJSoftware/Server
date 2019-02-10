@@ -1,15 +1,15 @@
-import socket
-from threading import Thread
-import time
-import pyautogui
-from pyautogui import press, typewrite, hotkey
-import selectors
-import types
 import os
+import socket
 import sys
-import csv
-import FileDirectory
+import time
+import types
 import uuid
+from threading import Thread
+
+import FileDirectory
+import pyautogui
+from pyautogui import press
+import selectors
 
 global accepted
 global recv_computername
@@ -28,6 +28,7 @@ global conn
 global sock1
 global sock2
 global got
+global sock
 global In_Messaging
 global enter
 global back_message
@@ -62,14 +63,13 @@ def view_func():
         Q = input('On which computer would you like to view:\n')
         ls_func()
         print('Server')
-    elif Q =="send":
+    elif Q == "send":
         Q = input('On which computer would you like to view:\n')
         ls_func()
         print('Server')
     else:
         print('exiting program please try again with a proper input')
         return
-
 
     file = FileDirectory.main()
 
@@ -86,9 +86,9 @@ def get_ip_addresses_func():
     while i != num:
         if str(ipList[i]).__contains__("::"):
             ipList.remove(ipList[i])
-            num = num-1
+            num = num - 1
         print(ipList[i])
-        i +=1
+        i += 1
     return ipList
 
 
@@ -109,6 +109,7 @@ def back_func():
     press('enter')
     In_Messaging = False
     go_back = False
+
 
 def message_func(Q):
     global In_Messaging
@@ -243,6 +244,7 @@ def accept_wrapper(sock):
 
 def service_connection(key, mask):
     global sock
+    global sock
     global recv_computername
     global selectors
     global sock1
@@ -264,10 +266,9 @@ def service_connection(key, mask):
     global accepted
     sock = key.fileobj
     done = True
-    if accepted is True:
-        if sock not in dict.values():
+    if sock not in dict.values():
+        if accepted is True:
             if replacing_dict is False:
-                done = False
                 new_client = True
                 random = str(uuid.uuid4())
                 random = random[:4]
@@ -277,34 +278,38 @@ def service_connection(key, mask):
                 if len(dict) > 1:
                     with open('Profiles.txt', 'r') as f:
                         print("Please wait for system to configure new computer...")
-                        if break_all == True:
-                            return
                         try:
                             got = False
                             waiting_on_server = True
                             print('waiting to recieve computer name')
-                            time.sleep(2)
+                            while done is True:
+                                time.sleep(.1)
                             Computer_Name = recv_computername
+                            print("received computer name -> " + Computer_Name)
                             waiting_on_server = False
                             got = True
                         except:
                             Computer_Name = "failed"
                         results = f.read().split(',')
-                        print(results)
                         length = len(results)
                         length = length - 1
                         i = 0
                         detected = False
+                        print("Computer profile list: ")
                         while i != length:
                             Name = results[i]
                             i += 1
                             PC_Name = results[i]
                             i += 1
-                            print("Computer profile list: ")
                             print('\t' + Name + " - " + PC_Name)
+                        i = 0
+                        while i != length:
+                            Name = results[i]
+                            i += 1
+                            PC_Name = results[i]
+                            i += 1
                             if Computer_Name == PC_Name:
                                 try:
-
                                     print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
                                     detected = True
                                     print(dict)
@@ -349,7 +354,8 @@ def service_connection(key, mask):
                                         enter_func()
                                     i = length
                                 except:
-                                    print('Error connecting. Device may need to restart (006)')
+                                    print(
+                                        'Error connecting. Device may need to restart (006)')
 
                         if detected == False:
                             try:
@@ -364,7 +370,8 @@ def service_connection(key, mask):
                                 new_client = False
                                 comma = ","
                                 with open("Profiles.txt", 'a', newline='') as resultFile:
-                                    resultFile.write(one + comma + Computer_Name + comma)
+                                    resultFile.write(
+                                        one + comma + Computer_Name + comma)
                                 if In_Messaging == True:
                                     back_func()
                                 else:
@@ -382,25 +389,33 @@ def service_connection(key, mask):
                                 c.start()
                             except:
                                 pass
-                            time.sleep(4)
+                            while done is True:
+                                time.sleep(.1)
                             Computer_Name = recv_computername
+                            print("received computer name -> " + Computer_Name)
                             waiting_on_server = False
                             got = True
                         except:
                             Computer_Name = "failed"
                         results = f.read().split(',')
-                        print(results)
                         length = len(results)
                         length = length - 1
                         i = 0
                         detected = False
+                        print("Computer profile list: ")
                         while i != length:
                             Name = results[i]
                             i += 1
                             PC_Name = results[i]
                             i += 1
-                            print("Computer profile list: ")
                             print('\t' + Name + " - " + PC_Name)
+                        i = 0
+                        while i != length:
+                            Name = results[i]
+                            i += 1
+                            PC_Name = results[i]
+                            i += 1
+
                             try:
                                 if Computer_Name == PC_Name:
                                     print('detected -> ' + Name + " -> Hostname -> " + PC_Name)
@@ -414,7 +429,8 @@ def service_connection(key, mask):
                                     if started == True:
                                         enter_func()
                             except:
-                                print('Error while adding computer to current database. Program may need to restart (004)')
+                                print(
+                                    'Error while adding computer to current database. Program may need to restart (004)')
 
                             try:
                                 if Computer_Name == "failed":
@@ -453,15 +469,17 @@ def service_connection(key, mask):
                                 print("Adding " + one + " to computer profiles")
                                 comma = ","
                                 with open("Profiles.txt", 'a', newline='') as resultFile:
-                                    resultFile.write(one + comma + Computer_Name + comma)
+                                    resultFile.write(
+                                        one + comma + Computer_Name + comma)
                             except:
-                                print("Error while adding computer to profile list (001)")
-            else:
-                print("declined" + str(sock))
+                                print(
+                                    "Error while adding computer to profile list (001)")
         if connected == False:
             connected = True
         done = True
         accepted = False
+        got = False
+
 
 
 class Starter(Thread):
@@ -497,7 +515,7 @@ class Starter(Thread):
         lsock.listen(5)
         print("Socket created")
         lsock.setblocking(False)
-        sel.register(lsock,selectors.EVENT_READ, data=None)
+        sel.register(lsock, selectors.EVENT_READ, data=None)
         self.running = True
 
     def run(self):
@@ -510,7 +528,7 @@ class Starter(Thread):
                 if key.data is None:
                     accept_wrapper(key.fileobj)
                 else:
-                     service_connection(key, mask)
+                    service_connection(key, mask)
 
 
 class Send(Thread):
@@ -538,9 +556,9 @@ class Send(Thread):
             if Q.__contains__('/m'):
                 message_func(Q)
             if Q == 'test':
-                 i = len(dict)
-                 i = 0
-                 while i < len(dict):
+                i = len(dict)
+                i = 0
+                while i < len(dict):
                     check = list(dict.values())[i]
             if break_all == True:
                 print('breaking Send')
@@ -548,17 +566,18 @@ class Send(Thread):
 
 
 class Recieve(Thread):
+    global sock
     global enter
     global back
     global message
     global go_back
     global got
     global recv_computername
-    global sock
     global waiting_on_server
     global break_all
     global key
     global dict
+    global done
 
     def __init__(self):
         global enter
@@ -571,12 +590,12 @@ class Recieve(Thread):
         global got
         global recv_computername
         global key
+        global done
         Thread.__init__(self)
         print("Receive thread initiallized")
 
     def run(self):
         print('Recieve thread started')
-        time.sleep(2)
         global recv_computername
         global key
         global enter
@@ -588,41 +607,57 @@ class Recieve(Thread):
         global dict
         global break_all
         global waiting_on_server
+        global done
+        success = False
         while True:
-            try:
-                recv_data = sock.recv(1024).decode()
-                if str(recv_data).__contains__("--PCNAME--||"):
-                    test_computername = str(recv_data).split("||")[1]
-                    print("received computer name -> " + test_computername)
-                    recv_computername = str(test_computername)
-                else:
-                    if recv_data != "--quit--":
-                        if str(recv_data) == "--SENDING_FILE--":
-                            print(recv_data)
-                            print('recieving file...')
-                            sock3 = str(sock).rsplit("raddr=('", 1)[1]
-                            sock3 = str(sock3).rsplit("',", 1)[0]
-                            ip_to_send = sock3
+            if got is False:
+                try:
+                    my_dict = {}
+                    my_dict = dict
+                    for x in my_dict.values():
+                        #time.sleep(1)
+                        if success is False:
+                            try:
+                                sock = x
+                                recv_data = sock.recv(1024).decode()
+                                success = True
+                                used_sock = sock
+                                if str(recv_data).__contains__("--PCNAME--||"):
+                                    if done is True:
+                                        recv_computername = str(recv_data).split("||")[1]
+                                        done = False
+                                else:
+                                    if recv_data != "--quit--":
+                                        if str(recv_data) == "--SENDING_FILE--":
+                                            print(recv_data)
+                                            print('recieving file...')
+                                            sock3 = str(sock).rsplit("raddr=('", 1)[1]
+                                            sock3 = str(sock3).rsplit("',", 1)[0]
+                                            ip_to_send = sock3
 
-                            print(ip_to_send)
-                            with open("IP.txt", 'w', newline='') as resultFile:
-                                resultFile.write(ip_to_send)
-                                press('enter')
-                            os.system('Get.py')
-                            # recv_data = sock.recv(1024).decode()
-                        elif str(recv_data) == "--RM--":
-                            print('Device requested remote connection... Entering remote status')
-                            rm_func()
-                        else:
-                            dictList = []
-                            [dictList.extend([k, v]) for k, v in dict.items()]
-                            Position = dictList.index(sock) - 1
-                            print('\n' + "Recieved message from -> " + dictList[Position] + " -> " + recv_data)
-                            enter_func()
-                            # recv_data = sock.recv(1024).decode()
-            except:
-                pass
-
+                                            print(ip_to_send)
+                                            with open("IP.txt", 'w', newline='') as resultFile:
+                                                resultFile.write(ip_to_send)
+                                                press('enter')
+                                            os.system('Get.py')
+                                            # recv_data = sock.recv(1024).decode()
+                                        elif str(recv_data) == "--RM--":
+                                            print(
+                                                'Device requested remote connection... Entering remote status')
+                                            rm_func()
+                                        else:
+                                            dictList = []
+                                            [dictList.extend([k, v]) for k, v in my_dict.items()]
+                                            Position = dictList.index(x) - 1
+                                            print('\n' + "Recieved message from -> " + dictList[
+                                                Position] + " -> " + recv_data)
+                                            enter_func()
+                                            # recv_data = sock.recv(1024).decode()
+                                success = False
+                            except:
+                                pass
+                except:
+                    pass
 
 
 class Check2(Thread):
@@ -632,6 +667,7 @@ class Check2(Thread):
         global back
         global message
         global dict
+
         global new_client
         global break_all
         global replacing_dict
@@ -674,9 +710,10 @@ class Check2(Thread):
 
                         soc.send(message.encode("utf-8"))
                     except:
-                        #new_client = False
+                        # new_client = False
                         print(dict)
-                        print('closing connection to ' + str(list(dict.keys())[i]))
+                        print('closing connection to ' +
+                              str(list(dict.keys())[i]))
                         key = list(dict.keys())[i]
                         sock = list(dict.values())[i]
                         del dict[key]
@@ -704,11 +741,12 @@ except:
 try:
     fh = open('IP.txt', 'r')
 except:
-    fh = open('IP.txt',"w+")
+    fh = open('IP.txt', "w+")
     print('creating IP database...')
 
 if __name__ == '__main__':
     a = Starter()
+    # Runs the starting class which creates the class and also connects clients to the server
     get_ip_addresses_func()
     b = Send()
     c = Recieve()
