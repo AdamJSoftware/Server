@@ -11,6 +11,9 @@ import pyautogui
 from pyautogui import press
 import selectors
 
+global rm_first
+global rm_message
+global rm_sock
 global accepted
 global recv_computername
 global waiting_on_server
@@ -51,9 +54,13 @@ sock1 = None
 connected = False
 In_Messaging = False
 rm = False
+rm_first = "--RM_MESSAGE--"
 
 sel = selectors.DefaultSelector()
 pyautogui.FAILSAFE = False
+
+def rm_send():
+    pass
 
 
 def view_func():
@@ -102,7 +109,6 @@ def PC_and_IP():
     global dict
     i = 1
     for x in dict:
-
         raddr = str(dict).split("raddr=")[i]
         raddr = raddr.split(">")[0]
         print("\t" + x + " -> IP  -> " + raddr)
@@ -126,6 +132,9 @@ def back_func():
 
 
 def message_func(Q):
+    global rm_message
+    global rm
+    global rm_sock
     global In_Messaging
     global back_message
     global back
@@ -134,19 +143,27 @@ def message_func(Q):
     length = len(dict)
     if length == 1:
         try:
-            print('sending message to only connected client')
+            only_client = 'sending message to only connected client'
+            if rm is True:
+                print(only_client)
+                rm_sock.sendall(only_client.encode("utf-9"))
+            else:
+                print(only_client)
             for x in dict.values():
-                while back_message != "/back":
-                    if back == False:
-                        In_Messaging = True
-                        message = input(" -> ")
-                        back_message = message
-                        message = message.encode("utf-8")
-                        sock1 = x
-                        sock1.send(message)
-                    else:
-                        back_message = "/back"
-                In_Messaging = False
+                if rm is True:
+                    message = rm_message
+                else:
+                    while back_message != "/back":
+                        if back == False:
+                            In_Messaging = True
+                            message = input(" -> ")
+                            back_message = message
+                            message = message.encode("utf-8")
+                            sock1 = x
+                            sock1.send(message)
+                        else:
+                            back_message = "/back"
+                    In_Messaging = False
         except:
             pass
     else:
@@ -166,8 +183,11 @@ def message_func(Q):
                         back_message = "/back"
                 In_Messaging = False
             else:
-                print("Computer not found. Please reference the computer list:")
-                ls_func()
+                if rm is True:
+                    print("Computer not found. Please reference the computer list:")
+                    rm_sock.sendall("Computer not found. Please reference the computer list:")
+                    ls_func()
+
         except:
             print("Here is the list of computers:")
             ls_func()
@@ -184,23 +204,39 @@ def help_func():
 
 def ls_func():
     global dict
-    print("Computers currently connected:")
-    for x in dict:
-        print("\t" + x)
+    global rm
+    global rm_sock
+    global rm_first
+    CCC = "Computer currently connected:"
+    if rm is True:
+        print('RMM')
+        print(CCC)
+        message = rm_first + CCC
+        rm_sock.send(message.encode("utf-8"))
+        for x in dict:
+            print("\t" + x)
+            rm_sock.sendall((rm_first + "\t" + x).encode("utf-8"))
+    else:
+        print("Computers currently connected:")
+        for x in dict:
+            print("\t" + x)
 
 
-def send_func(Q, rm):
+def send_func(Q):
     global IP
     global In_Messaging
     global soc
-    rm = rm
+    global rm
+    global rm_sock
     length = len(dict)
     if length == 1:
         try:
+            message = 'sending file to only connected client'
             if rm is True:
-                message = 'sending file to only connected client'
                 print(message)
-                rm_sock.sendall(message.encode(1024))
+                rm_sock.sendall(message.encode("utf-8"))
+            else:
+                print(message)
             for x in dict.values():
                 message = "--SENDING_FILE--"
                 message = message.encode("utf-8")
@@ -231,6 +267,7 @@ def send_func(Q, rm):
 
 def rm_func(sock):
     global rm_sock
+    global rm
     rm_sock = sock
     rm = True
     message = ""
@@ -250,8 +287,14 @@ def rm_func(sock):
 def accept_wrapper(sock):
     global conn
     global accepted
+    global rm
+    global rm_sock
     conn, addr = sock.accept()  # Should be ready to read
-    print('Accepted connection from', addr)
+    if rm is True:
+        print('Accepted connection from', addr)
+        rm_sock.sendall(('Accepted connection from' + str(addr)).encode("utf-8"))
+    else:
+        print('Accepted connection from', addr)
     conn.setblocking(False)
     data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
@@ -452,35 +495,45 @@ class Starter(Thread):
 
 class Send(Thread):
     global In_Messaging
+    global rm_sock
+    global rm
 
     def __init__(self):
         Thread.__init__(self)
         global In_Messaging
+        global rm
+        global rm_sock
         print("SYSTEM: Send initialized")
 
     def run(self):
         print("SYSTEM: Send started")
         global In_Messaging
+        global rm
+        global rm_sock
         rm = False
         while True:
-            In_Messaging = False
-            Q = input(' -> ')
-            self.Q = Q
-            if Q == "":
-                pass
-            if Q == "/ls":
-                ls_func()
-            if Q.__contains__('/send'):
-                send_func(Q, rm)
-            if Q == "/help":
-                help_func()
-            if Q.__contains__('/m'):
-                message_func(Q)
-            if Q == 'test':
-                i = len(dict)
-                i = 0
-                while i < len(dict):
-                    check = list(dict.values())[i]
+            if rm is True:
+                Q = input(' -> test ')
+                rm_sock.send(Q.encode("utf-8"))
+            else:
+                In_Messaging = False
+                Q = input(' -> ')
+                self.Q = Q
+                if Q == "":
+                    pass
+                if Q == "/ls":
+                    ls_func()
+                if Q.__contains__('/send'):
+                    send_func(Q)
+                if Q == "/help":
+                    help_func()
+                if Q.__contains__('/m'):
+                    message_func(Q)
+                if Q == 'test':
+                    i = len(dict)
+                    i = 0
+                    while i < len(dict):
+                        check = list(dict.values())[i]
 
 
 class Receive(Thread):
@@ -495,8 +548,11 @@ class Receive(Thread):
     global key
     global dict
     global done
+    global rm
 
     def __init__(self):
+        global rm_sock
+        global rm
         global enter
         global waiting_on_server
         global back
@@ -511,6 +567,8 @@ class Receive(Thread):
         print("SYSTEM: Receive initialized")
 
     def run(self):
+        global rm
+        global rm_sock
         print('SYSTEM: Receive started')
         global recv_computername
         global key
@@ -531,23 +589,32 @@ class Receive(Thread):
                     for x in my_dict.values():
                         if success is False:
                             try:
-                                #print('working')
+                                # print('working')
                                 sock = x
                                 recv_data = sock.recv(1024).decode()
                                 success = True
                                 used_sock = sock
-                                if str(recv_data).__contains__("--PCNAME--||"):
-                                    if done is True:
-                                        recv_computername = str(recv_data).split("||")[1]
-                                        done = False
+                                if rm is True:
+                                    if str(recv_data).__contains__("--PCNAME--||"):
+                                        if done is True:
+                                            recv_computername = str(recv_data).split("||")[1]
+                                            done = False
+                                    else:
+                                        if str(recv_data) == "/send":
+                                            ls_func()
+                                        elif str(recv_data).__contains__("/send "):
+                                            message = recv_data.split("/send ")[1]
+                                            send_func(message)
+
                                 else:
-                                    if recv_data != "--quit--":
+                                    if str(recv_data).__contains__("--PCNAME--||"):
+                                        if done is True:
+                                            recv_computername = str(recv_data).split("||")[1]
+                                            done = False
+                                    else:
                                         if str(recv_data) == "--SENDING_FILE--":
                                             print(recv_data)
                                             print('recieving file...')
-                                            if rm is True:
-                                                message = 'receiving file...'
-                                                rm_sock.sendall(message.encode(1024))
                                             sock3 = str(sock).rsplit("raddr=('", 1)[1]
                                             sock3 = str(sock3).rsplit("',", 1)[0]
                                             ip_to_send = sock3
@@ -563,19 +630,21 @@ class Receive(Thread):
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
                                             Position = dictList.index(x) - 1
-                                            print(dictList[Position] + ' requested remote connection... Entering remote status')
+                                            print(dictList[
+                                                      Position] + ' requested remote connection... Entering remote status')
                                             rm_func(sock)
                                         else:
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
                                             Position = dictList.index(sock) - 1
-                                            message = ('\n' + "Recieved message from -> " + dictList[Position] + " -> " + recv_data)
+                                            message = ('\n' + "Recieved message from -> " + dictList[
+                                                Position] + " -> " + recv_data)
                                             print(message)
                                             if rm is True:
                                                 rm_sock.sendall(message.encode(1024))
                                             enter_func()
                                             # recv_data = sock.recv(1024).decode()
-                                success = False
+                                    success = False
                             except:
                                 pass
                 except:
