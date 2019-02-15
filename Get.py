@@ -1,3 +1,4 @@
+print('started get.py')
 import pyautogui
 from pyautogui import press
 pyautogui.FAILSAFE = False

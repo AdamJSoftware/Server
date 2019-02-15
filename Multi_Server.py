@@ -222,6 +222,42 @@ def ls_func():
             print("\t" + x)
 
 
+def send_to_func(Q, sock):
+    global IP
+    global In_Messaging
+    global soc
+    global rm
+    global rm_sock
+    length = len(dict)
+    if length == 1:
+        try:
+            message = 'SYSTEM: CANNOT PERFORM ACTION DUE TO THERE ONLY BEING ONE CLIENT'
+            print(message)
+            for x in dict.values():
+                sock1 = x
+                sock1.send(message.encode("utf-8"))
+        except:
+            pass
+    else:
+        try:
+            if Q.__contains__('/send '):
+                Q = Q.split('/send ', 1)[1]
+            if Q in str(dict):
+                message = "--SENDING_FILE_TO--" + str(sock)
+                message = message.encode("utf-8")
+                sock1 = dict[Q]
+                sock1.send(message)
+                message = "--CLIENT_ID--" + str(sock1)
+                sock.send(message.encode("utf-8"))
+                print("Done sending")
+            else:
+                print("Computer not found. Please reference the computer list:")
+                ls_func()
+        except:
+            print("Here is the list of computers:")
+            ls_func()
+
+
 def send_func(Q):
     global IP
     global In_Messaging
@@ -248,7 +284,8 @@ def send_func(Q):
             pass
     else:
         try:
-            Q = Q.split('/send ', 1)[1]
+            if Q.__contains__('/send '):
+                Q = Q.split('/send ', 1)[1]
             print(Q)
             if Q in str(dict):
                 message = "--SENDING_FILE--"
@@ -604,8 +641,8 @@ class Receive(Thread):
                                             ls_func()
                                         elif str(recv_data).__contains__("/send "):
                                             message = recv_data.split("/send ")[1]
+                                            print('initiating connection with '+ message)
                                             send_func(message)
-
                                 else:
                                     if str(recv_data).__contains__("--PCNAME--||"):
                                         if done is True:
@@ -613,12 +650,10 @@ class Receive(Thread):
                                             done = False
                                     else:
                                         if str(recv_data) == "--SENDING_FILE--":
-                                            print(recv_data)
                                             print('recieving file...')
                                             sock3 = str(sock).rsplit("raddr=('", 1)[1]
                                             sock3 = str(sock3).rsplit("',", 1)[0]
                                             ip_to_send = sock3
-
                                             print(ip_to_send)
                                             with open("IP.txt", 'w', newline='') as resultFile:
                                                 resultFile.write(ip_to_send)
@@ -630,15 +665,19 @@ class Receive(Thread):
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
                                             Position = dictList.index(x) - 1
-                                            print(dictList[
-                                                      Position] + ' requested remote connection... Entering remote status')
+                                            print(dictList[Position] + ' requested remote connection... Entering remote status')
                                             rm_func(sock)
+                                        elif str(recv_data).__contains__("--GET--"):
+                                            print('get initiated')
+                                        elif str(recv_data).__contains__("--SEND_TO--"):
+                                            message = recv_data.split("--SEND_TO--")[1]
+                                            print('sending file to ' + message)
+                                            send_to_func(message, x)
                                         else:
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
                                             Position = dictList.index(sock) - 1
-                                            message = ('\n' + "Recieved message from -> " + dictList[
-                                                Position] + " -> " + recv_data)
+                                            message = ('\n' + "Recieved message from -> " + dictList[Position] + " -> " + recv_data)
                                             print(message)
                                             if rm is True:
                                                 rm_sock.sendall(message.encode(1024))
@@ -654,6 +693,7 @@ class Receive(Thread):
 class Check(Thread):
     def __init__(self):
         global done
+
         global enter
         global back
         global message
