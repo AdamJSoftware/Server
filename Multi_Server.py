@@ -4,14 +4,19 @@ import sys
 import time
 import types
 import uuid
+import subprocess
 from threading import Thread
+
+FNULL = open(os.devnull, 'w')
 
 import FileDirectory
 import pyautogui
 from pyautogui import press
 import selectors
 
+global found
 global rm_first
+global MAC
 global rm_message
 global rm_sock
 global accepted
@@ -40,6 +45,7 @@ global message
 global go_back
 global key
 
+found = False
 replacing_dict = False
 waiting_on_server = False
 started = False
@@ -61,6 +67,54 @@ pyautogui.FAILSAFE = False
 
 def rm_send():
     pass
+
+
+def wake_func(message):
+    global found
+    WOL_first = "$Mac = "
+    WOL_second = '''\n$MacByteArray = $Mac -split "[:-]" | ForEach-Object { [Byte] "0x$_"}
+[Byte[]] $MagicPacket = (,0xFF * 6) + ($MacByteArray  * 16)
+$UdpClient = New-Object System.Net.Sockets.UdpClient
+$UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
+$UdpClient.Send($MagicPacket,$MagicPacket.Length)
+$UdpClient.Close()'''
+    with open("Profiles.txt", "r") as f:
+        results = f.read().split(',')
+        length = len(results)
+        length = length - 1
+        i = 0
+        j = 0
+        print("Computer profile list: ")
+        while i != length:
+            Name = results[i]
+            i += 1
+            PC_Name = results[i]
+            i += 2
+            print('\t' + Name + " - " + PC_Name)
+        i = 0
+        found = False
+        while i != length:
+            Name = results[i]
+            i += 2
+            MAC = results[i]
+            i += 1
+            if message == Name:
+                print('Waking up -> ' + Name + " -> MAC -> " + MAC)
+                write2 = WOL_first + '"' + MAC + '"' + WOL_second
+                f = open("MAC.ps1", "w+")
+                f.write(write2)
+                f.close()
+                subprocess.call(["agent.bat"], stdout=sys.stdout)
+                i = length
+                found = True
+
+        if found is not True:
+            print("COULD NOT FIND " + message)
+        press('enter')
+        return found
+
+
+
 
 
 def view_func():
@@ -360,6 +414,7 @@ def service_connection(key, mask):
     global got
     global done
     global accepted
+    global MAC
     sock = key.fileobj
     done = True
     if sock not in dict.values():
@@ -398,14 +453,14 @@ def service_connection(key, mask):
                         Name = results[i]
                         i += 1
                         PC_Name = results[i]
-                        i += 1
+                        i += 2
                         print('\t' + Name + " - " + PC_Name)
                     i = 0
                     while i != length:
                         Name = results[i]
                         i += 1
                         PC_Name = results[i]
-                        i += 1
+                        i += 2
                         try:
                             if Computer_Name == PC_Name:
                                 print('Detected -> ' + Name + " -> Hostname -> " + PC_Name)
@@ -469,7 +524,7 @@ def service_connection(key, mask):
                             print("Adding " + one + " to computer profiles")
                             comma = ","
                             with open("Profiles.txt", 'a', newline='') as resultFile:
-                                resultFile.write(one + comma + Computer_Name + comma)
+                                resultFile.write(one + comma + Computer_Name + comma + MAC + comma)
                             if In_Messaging == True:
                                 back_func()
                             else:
@@ -575,6 +630,7 @@ class Send(Thread):
 
 class Receive(Thread):
     global sock
+    global MAC
     global enter
     global back
     global message
@@ -588,6 +644,7 @@ class Receive(Thread):
     global rm
 
     def __init__(self):
+        global MAC
         global rm_sock
         global rm
         global enter
@@ -604,6 +661,7 @@ class Receive(Thread):
         print("SYSTEM: Receive initialized")
 
     def run(self):
+        global MAC
         global rm
         global rm_sock
         print('SYSTEM: Receive started')
@@ -626,7 +684,6 @@ class Receive(Thread):
                     for x in my_dict.values():
                         if success is False:
                             try:
-                                # print('working')
                                 sock = x
                                 recv_data = sock.recv(1024).decode()
                                 success = True
@@ -634,7 +691,7 @@ class Receive(Thread):
                                 if rm is True:
                                     if str(recv_data).__contains__("--PCNAME--||"):
                                         if done is True:
-                                            recv_computername = str(recv_data).split("||")[1]
+                                            useless, recv_computername, MAC = str(recv_data).split("||")
                                             done = False
                                     else:
                                         if str(recv_data) == "/send":
@@ -646,7 +703,7 @@ class Receive(Thread):
                                 else:
                                     if str(recv_data).__contains__("--PCNAME--||"):
                                         if done is True:
-                                            recv_computername = str(recv_data).split("||")[1]
+                                            useless, recv_computername, MAC = str(recv_data).split("||")
                                             done = False
                                     else:
                                         if str(recv_data) == "--SENDING_FILE--":
@@ -673,6 +730,16 @@ class Receive(Thread):
                                             message = recv_data.split("--SEND_TO--")[1]
                                             print('sending file to ' + message)
                                             send_to_func(message, x)
+                                        elif str(recv_data).__contains__("--WAKE--"):
+                                            message = recv_data.split("--WAKE--")[1]
+                                            print('Waking up -> ' + message)
+                                            found = wake_func(message)
+                                            if found is False:
+                                                message = 'COULD NOT FIND ' + message
+                                                sock.sendall(message.encode("utf-8"))
+                                            else:
+                                                message = 'FINISHED WAKING ' + message
+                                                sock.sendall(message.encode("utf-8"))
                                         else:
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
