@@ -78,7 +78,7 @@ $UdpClient = New-Object System.Net.Sockets.UdpClient
 $UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
 $UdpClient.Send($MagicPacket,$MagicPacket.Length)
 $UdpClient.Close()'''
-    with open("Profiles.txt", "r") as f:
+    with open("Resources/Profiles.txt", "r") as f:
         results = f.read().split(',')
         length = len(results)
         length = length - 1
@@ -101,10 +101,10 @@ $UdpClient.Close()'''
             if message == Name:
                 print('Waking up -> ' + Name + " -> MAC -> " + MAC)
                 write2 = WOL_first + '"' + MAC + '"' + WOL_second
-                f = open("MAC.ps1", "w+")
+                f = open("Resources/MAC.ps1", "w+")
                 f.write(write2)
                 f.close()
-                subprocess.call(["agent.bat"], stdout=sys.stdout)
+                subprocess.call(["Resources/MAC.bat"], stdout=sys.stdout)
                 i = length
                 found = True
 
@@ -200,7 +200,7 @@ def message_func(Q):
             only_client = 'sending message to only connected client'
             if rm is True:
                 print(only_client)
-                rm_sock.sendall(only_client.encode("utf-9"))
+                rm_sock.sendall(only_client.encode("utf-8"))
             else:
                 print(only_client)
             for x in dict.values():
@@ -333,7 +333,7 @@ def send_func(Q):
                 sock1 = x
                 sock1.send(message)
                 print(" Please select file...")
-                os.system('File_Sender.py')
+                os.system('Resources/File_Sender.py')
         except:
             pass
     else:
@@ -347,7 +347,7 @@ def send_func(Q):
                 sock1 = dict[Q]
                 sock1.send(message)
                 print(" Please select file to send to -> " + Q)
-                os.system('File_Sender.py')
+                os.system('Resources/File_Sender.py')
             else:
                 print("Computer not found. Please reference the computer list:")
                 ls_func()
@@ -425,7 +425,7 @@ def service_connection(key, mask):
                 random = random[:4]
                 random = 'temporary' + str(random)
                 dict[str(random)] = sock
-                with open('Profiles.txt', 'r') as f:
+                with open('Resources/Profiles.txt', 'r') as f:
                     print("Please wait for system to configure new computer...")
                     try:
                         got = False
@@ -523,7 +523,7 @@ def service_connection(key, mask):
                             new_client = False
                             print("Adding " + one + " to computer profiles")
                             comma = ","
-                            with open("Profiles.txt", 'a', newline='') as resultFile:
+                            with open("Resources/Profiles.txt", 'a', newline='') as resultFile:
                                 resultFile.write(one + comma + Computer_Name + comma + MAC + comma)
                             if In_Messaging == True:
                                 back_func()
@@ -712,10 +712,10 @@ class Receive(Thread):
                                             sock3 = str(sock3).rsplit("',", 1)[0]
                                             ip_to_send = sock3
                                             print(ip_to_send)
-                                            with open("IP.txt", 'w', newline='') as resultFile:
+                                            with open("Resources/IP.txt", 'w', newline='') as resultFile:
                                                 resultFile.write(ip_to_send)
                                                 press('enter')
-                                            os.system('Get.py')
+                                            os.system('Resources/Get.py')
                                             # recv_data = sock.recv(1024).decode()
                                         elif str(recv_data) == "--RM--":
                                             print('remote')
@@ -830,15 +830,15 @@ class Check(Thread):
 
 
 try:
-    fh = open('Profiles.txt', 'r')
+    fh = open('Resources/Profiles.txt', 'r')
 except:
-    fh = open('Profiles.txt', "w+")
+    fh = open('Resources/Profiles.txt', "w+")
     print('creating profile database...')
 
 try:
-    fh = open('IP.txt', 'r')
+    fh = open('Resources/IP.txt', 'r')
 except:
-    fh = open('IP.txt', "w+")
+    fh = open('Resources/IP.txt', "w+")
     print('creating IP database...')
 
 if __name__ == '__main__':
