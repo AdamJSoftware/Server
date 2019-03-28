@@ -114,7 +114,7 @@ def main(PC):
     pathy = BackupSyncEngine.get_file(allMissingFiles, PC)
 
     if len(allMissingFiles) == 0:
-        return False
+        return False, "nothing"
     else:
         return True, pathy
 

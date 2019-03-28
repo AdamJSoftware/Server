@@ -11,8 +11,8 @@ def get_file(allMissingFiles, PC):
 
 
 def add_folder(MissingFolders, PC):
-    try:
-        for folder in MissingFolders:
+    for folder in MissingFolders:
+        try:
             os.mkdir(cwd + "\\Resources\\Backups\\" + PC + "\\" + folder)
-    except:
-        print("an unknown error occured while creating the folder")
+        except:
+            print("an unknown error occured while creating the folder")
