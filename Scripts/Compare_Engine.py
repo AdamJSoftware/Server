@@ -117,7 +117,3 @@ def main(PC):
         return False, "nothing"
     else:
         return True, pathy
-
-
-if __name__ == '__main__':
-    main()
