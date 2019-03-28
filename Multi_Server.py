@@ -5,14 +5,20 @@ import time
 import types
 import uuid
 import subprocess
+import selectors
 from threading import Thread
+import pyautogui
+from pyautogui import press
 
 FNULL = open(os.devnull, 'w')
 
-import FileDirectory
-import pyautogui
-from pyautogui import press
-import selectors
+from Scripts import FileDirectory
+from Scripts import BackupEngine
+from Scripts import Compare_Engine
+from Scripts import FileDirectory
+from Scripts import Get
+from Scripts import File_Sender
+
 
 global found
 global rm_first
@@ -64,6 +70,11 @@ rm_first = "--RM_MESSAGE--"
 
 sel = selectors.DefaultSelector()
 pyautogui.FAILSAFE = False
+
+
+def write_backup_files(PC):
+    Get.write_backup_file(PC)
+
 
 def rm_send():
     pass
@@ -153,6 +164,52 @@ def get_ip_addresses_func():
         print("\t" + ipList[i])
         i += 1
     return ipList
+
+
+def backup_func(Q):
+    length = len(dict)
+    if length == 1:
+        try:
+            for x in dict.values():
+                message = "||BACKUP||"
+                message = message.encode("utf-8")
+                sock1 = x
+                time.sleep(2)
+                sock1.send(message)
+                print('finished sending')
+        except:
+            pass
+    else:
+        try:
+            Q = Q.split('/backup ', 1)[1]
+            if Q in str(dict):
+                    message = "||BACKUP||"
+                    message = message.encode("utf-8")
+                    sock1 = dict[Q]
+                    sock1.send(message)
+            else:
+                print("Unable to find the computer. Please try again")
+        except:
+            print("Here is the list of computers:")
+            ls_func()
+    sock3 = str(sock1).rsplit("raddr=('", 1)[1]
+    sock3 = str(sock3).rsplit("',", 1)[0]
+    ip_to_send = sock3
+    print(ip_to_send)
+    with open("IP.txt", 'w', newline='') as resultFile:
+        resultFile.write(ip_to_send)
+        press('enter')
+    name = Get.backup()
+    BackupEngine.main(name)
+    getter, path = Compare_Engine.main(name)
+    if getter:
+        message = "--GETFILES--"
+        message = message.encode("utf-8")
+        sock1.sendall(message)
+        File_Sender.getFiles(path)
+    else:
+        pass
+
 
 
 def enter_func():
@@ -333,7 +390,7 @@ def send_func(Q):
                 sock1 = x
                 sock1.send(message)
                 print(" Please select file...")
-                os.system('Resources/File_Sender.py')
+                File_Sender.main()
         except:
             pass
     else:
@@ -347,7 +404,7 @@ def send_func(Q):
                 sock1 = dict[Q]
                 sock1.send(message)
                 print(" Please select file to send to -> " + Q)
-                os.system('Resources/File_Sender.py')
+                File_Sender.main()
             else:
                 print("Computer not found. Please reference the computer list:")
                 ls_func()
@@ -621,6 +678,8 @@ class Send(Thread):
                     help_func()
                 if Q.__contains__('/m'):
                     message_func(Q)
+                if Q == "/backup":
+                    backup_func(Q)
                 if Q == 'test':
                     i = len(dict)
                     i = 0
@@ -715,7 +774,7 @@ class Receive(Thread):
                                             with open("Resources/IP.txt", 'w', newline='') as resultFile:
                                                 resultFile.write(ip_to_send)
                                                 press('enter')
-                                            os.system('Resources/Get.py')
+                                            Get.main()
                                             # recv_data = sock.recv(1024).decode()
                                         elif str(recv_data) == "--RM--":
                                             print('remote')
@@ -740,6 +799,10 @@ class Receive(Thread):
                                             else:
                                                 message = 'FINISHED WAKING ' + message
                                                 sock.sendall(message.encode("utf-8"))
+                                        elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
+                                            print("GOT BACKUP FILE")
+                                            message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
+                                            write_backup_files(message)
                                         else:
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
@@ -833,13 +896,19 @@ try:
     fh = open('Resources/Profiles.txt', 'r')
 except:
     fh = open('Resources/Profiles.txt', "w+")
-    print('creating profile database...')
+    print('SYSTEM: Creating profile database...')
 
 try:
     fh = open('Resources/IP.txt', 'r')
 except:
     fh = open('Resources/IP.txt', "w+")
-    print('creating IP database...')
+    print('SYSTEM: Creating IP database...')
+
+try:
+    fh = open('Resources/Backup.txt', 'r')
+except:
+    fh = open('Resources/Backup.txt', "w+")
+    print('SYSTEM: Creating Backup database...')
 
 if __name__ == '__main__':
     a = Starter()
