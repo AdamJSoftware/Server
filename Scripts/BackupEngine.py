@@ -1,5 +1,4 @@
 import os
-import sys
 
 cd = os.getcwd()
 
@@ -65,7 +64,7 @@ def folder_func(path):
     return list
 
 
-def folderorfile(file, filesAndSize, files):
+def folder_or_file(file, filesAndSize, files):
     path = os.path.normpath(str(file))
     filesAndSize.append(file)
     if os.path.isdir(path):
@@ -96,27 +95,19 @@ def files_to_scan_func(i, PC):
             filesToExculde.append(file)
             print("ADDED FILE TO EXCLUDE")
         if len(filesToExculde) == 0:
-            folderorfile(file, filesAndSize, files)
+            folder_or_file(file, filesAndSize, files)
         else:
             for i in filesToExculde:
                 if i in file:
                     pass
                 else:
-                    folderorfile(file, filesAndSize, files)
+                    folder_or_file(file, filesAndSize, files)
 
-    # with open("Resources\Backups\\" + PC + "\Backup_SEND.txt", "w", encoding="utf-8") as f:
-    #     for file in filesAndSize:
-    #         f.write(str(file) + "\n")
+    with open("Resources\Backups\\" + PC + "\\Backup_SEND.txt", "w", encoding="utf-8") as f:
+        for file in filesAndSize:
+            f.write(str(file) + "\n")
 
-    with open("Resources\Backups\\" + PC + "\Backup2.txt", "w", encoding="utf-8") as f:
+    with open("Resources\\Backups\\" + PC + "\\Backup2.txt", "w", encoding="utf-8") as f:
         b2 = backup2(filesAndSize, og)
         for file in b2:
             f.write(str(file) + "\n")
-
-
-if __name__ == '__main__':
-    try:
-        main()
-    except:
-        e = sys.exc_info()
-        print(f'Error {e}')

@@ -2,6 +2,7 @@ import os
 import socket
 import sys
 import time
+import time
 import types
 import uuid
 import subprocess
@@ -20,9 +21,10 @@ from Scripts import Get
 from Scripts import File_Sender
 
 
+global do_not_read
 global found
+global received_computer_name
 global rm_first
-global MAC
 global rm_message
 global rm_sock
 global accepted
@@ -43,37 +45,38 @@ global sock1
 global sock2
 global got
 global sock
-global In_Messaging
+global in_messaging
 global enter
 global back_message
 global back
 global message
 global go_back
-global key
+global MAC
 
-found = False
-replacing_dict = False
-waiting_on_server = False
-started = False
-back = False
-message = False
-got = False
-show_ls = True
-go_back = False
-dict = {}
-results = []
-sock1 = None
+
+
 connected = False
-In_Messaging = False
+got = False
+dict = {}
+replacing_dict = False
+show_ls = True
+results = []
 rm = False
-rm_first = "--RM_MESSAGE--"
 
 sel = selectors.DefaultSelector()
 pyautogui.FAILSAFE = False
 
 
-def write_backup_files(PC):
-    Get.write_backup_file(PC)
+def error_log(error):
+    with open("Resources\\ErrorLog.txt", 'a') as file:
+        file.write(time.ctime()+"\n")
+        file.write(str(error)+"\n"+"\n")
+
+
+def write_backup_files(pc, sock1):
+    s = get_ip_from_sock(sock1)
+    print(s)
+    Get.write_backup_file(pc, s)
 
 
 def rm_send():
@@ -125,9 +128,6 @@ $UdpClient.Close()'''
         return found
 
 
-
-
-
 def view_func():
     global dict
     Q = input("Would you like to send or get?")
@@ -166,6 +166,12 @@ def get_ip_addresses_func():
     return ipList
 
 
+def get_ip_from_sock(sock):
+    sock = str(sock).rsplit("raddr=('", 1)[1]
+    sock = str(sock).rsplit("',", 1)[0]
+    return sock
+
+
 def backup_func(Q):
     length = len(dict)
     if length == 1:
@@ -174,7 +180,7 @@ def backup_func(Q):
                 message = "||BACKUP||"
                 message = message.encode("utf-8")
                 sock1 = x
-                time.sleep(2)
+                time.sleep(0.5)
                 sock1.send(message)
                 print('finished sending')
         except:
@@ -192,14 +198,9 @@ def backup_func(Q):
         except:
             print("Here is the list of computers:")
             ls_func()
-    sock3 = str(sock1).rsplit("raddr=('", 1)[1]
-    sock3 = str(sock3).rsplit("',", 1)[0]
-    ip_to_send = sock3
-    print(ip_to_send)
-    with open("IP.txt", 'w', newline='') as resultFile:
-        resultFile.write(ip_to_send)
-        press('enter')
-    name = Get.backup()
+    s = get_ip_from_sock(sock1)
+    print(s)
+    name = Get.backup(s)
     BackupEngine.main(name)
     getter, path = Compare_Engine.main(name)
     if getter:
@@ -211,12 +212,11 @@ def backup_func(Q):
         pass
 
 
-
 def enter_func():
     press('enter')
 
 
-def PC_and_IP():
+def pc_and_ip():
     global dict
     i = 1
     for x in dict:
@@ -226,11 +226,10 @@ def PC_and_IP():
         i += 1
 
 
-
 def back_func():
     global back_message
     global back
-    global In_Messaging
+    global in_messaging
     print("Returning to main screen. Please hold")
     time.sleep(1)
     press('enter')
@@ -238,7 +237,7 @@ def back_func():
     back_message = "/back"
     back = True
     press('enter')
-    In_Messaging = False
+    in_messaging = False
     go_back = False
 
 
@@ -246,7 +245,7 @@ def message_func(Q):
     global rm_message
     global rm
     global rm_sock
-    global In_Messaging
+    global in_messaging
     global back_message
     global back
     back = False
@@ -266,7 +265,7 @@ def message_func(Q):
                 else:
                     while back_message != "/back":
                         if back == False:
-                            In_Messaging = True
+                            in_messaging = True
                             message = input(" -> ")
                             back_message = message
                             message = message.encode("utf-8")
@@ -274,7 +273,7 @@ def message_func(Q):
                             sock1.send(message)
                         else:
                             back_message = "/back"
-                    In_Messaging = False
+                    in_messaging = False
         except:
             pass
     else:
@@ -284,7 +283,7 @@ def message_func(Q):
                 back_message = ""
                 while back_message != "/back":
                     if back == False:
-                        In_Messaging = True
+                        in_messaging = True
                         message = input("Sending message to -> " + Q + " -> ")
                         back_message = message
                         message = message.encode("utf-8")
@@ -292,7 +291,7 @@ def message_func(Q):
                         sock1.send(message)
                     else:
                         back_message = "/back"
-                In_Messaging = False
+                in_messaging = False
             else:
                 if rm is True:
                     print("Computer not found. Please reference the computer list:")
@@ -335,7 +334,7 @@ def ls_func():
 
 def send_to_func(Q, sock):
     global IP
-    global In_Messaging
+    global in_messaging
     global soc
     global rm
     global rm_sock
@@ -371,7 +370,7 @@ def send_to_func(Q, sock):
 
 def send_func(Q):
     global IP
-    global In_Messaging
+    global in_messaging
     global soc
     global rm
     global rm_sock
@@ -432,7 +431,9 @@ def rm_func(sock):
     return
 '''
 
+
 def accept_wrapper(sock):
+    global do_not_read
     global conn
     global accepted
     global rm
@@ -449,7 +450,6 @@ def accept_wrapper(sock):
     sel.register(conn, events, data=data)
     accepted = True
 
-
 def service_connection(key, mask):
     global sock
     global sock
@@ -461,7 +461,7 @@ def service_connection(key, mask):
     global replacing_dict
     global IP
     global connected
-    global In_Messaging
+    global in_messaging
     global new_client
     global enter
     global back
@@ -530,17 +530,16 @@ def service_connection(key, mask):
                                     Name = Name + str(random)
                                 dict[Name] = sock
                                 print('Computers currently connected:')
-                                PC_and_IP()
+                                pc_and_ip()
                                 new_client = False
-                                if In_Messaging == True:
+                                if in_messaging == True:
                                     back_func()
                                 else:
                                     enter_func()
                                 i = length
-                                if started is True:
-                                    enter_func()
-                        except:
-                            print('an unknown error occured')
+                                enter_func()
+                        except Exception as e:
+                            print("SYSTEM ERROR: " + str(e))
                         try:
                             if Computer_Name == "failed":
                                 print('could not get hostname. Assigning random value for computer')
@@ -558,15 +557,15 @@ def service_connection(key, mask):
                                         ls_func()
                                     print(dict)
                                     new_client = False
-                                    if In_Messaging == True:
+                                    if in_messaging == True:
                                         back_func()
                                     else:
                                         enter_func()
                                     i = length
-                                except:
-                                    print('Error connecting. Device may need to restart (006)')
-                        except:
-                            pass
+                                except Exception as e:
+                                    print("SYSTEM ERROR: " + str(e))
+                        except Exception as e:
+                            print("SYSTEM ERROR" + str(e))
 
                     if detected == False:
                         try:
@@ -582,7 +581,7 @@ def service_connection(key, mask):
                             comma = ","
                             with open("Resources/Profiles.txt", 'a', newline='') as resultFile:
                                 resultFile.write(one + comma + Computer_Name + comma + MAC + comma)
-                            if In_Messaging == True:
+                            if in_messaging == True:
                                 back_func()
                             else:
                                 enter_func()
@@ -593,7 +592,6 @@ def service_connection(key, mask):
         done = True
         accepted = False
         got = False
-
 
 
 class Starter(Thread):
@@ -643,20 +641,20 @@ class Starter(Thread):
 
 
 class Send(Thread):
-    global In_Messaging
+    global in_messaging
     global rm_sock
     global rm
 
     def __init__(self):
         Thread.__init__(self)
-        global In_Messaging
+        global in_messaging
         global rm
         global rm_sock
         print("SYSTEM: Send initialized")
 
     def run(self):
         print("SYSTEM: Send started")
-        global In_Messaging
+        global in_messaging
         global rm
         global rm_sock
         rm = False
@@ -665,7 +663,7 @@ class Send(Thread):
                 Q = input(' -> test ')
                 rm_sock.send(Q.encode("utf-8"))
             else:
-                In_Messaging = False
+                in_messaging = False
                 Q = input(' -> ')
                 self.Q = Q
                 if Q == "":
@@ -757,7 +755,7 @@ class Receive(Thread):
                                             ls_func()
                                         elif str(recv_data).__contains__("/send "):
                                             message = recv_data.split("/send ")[1]
-                                            print('initiating connection with '+ message)
+                                            print('initiating connection with ' + message)
                                             send_func(message)
                                 else:
                                     if str(recv_data).__contains__("--PCNAME--||"):
@@ -767,28 +765,24 @@ class Receive(Thread):
                                     else:
                                         if str(recv_data) == "--SENDING_FILE--":
                                             print('recieving file...')
-                                            sock3 = str(sock).rsplit("raddr=('", 1)[1]
-                                            sock3 = str(sock3).rsplit("',", 1)[0]
-                                            ip_to_send = sock3
-                                            print(ip_to_send)
-                                            with open("Resources/IP.txt", 'w', newline='') as resultFile:
-                                                resultFile.write(ip_to_send)
-                                                press('enter')
-                                            Get.main()
+                                            i = GetThread(x)
+                                            i.start()
                                             # recv_data = sock.recv(1024).decode()
                                         elif str(recv_data) == "--RM--":
                                             print('remote')
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
                                             Position = dictList.index(x) - 1
-                                            print(dictList[Position] + ' requested remote connection... Entering remote status')
+                                            print(dictList[
+                                                      Position] + ' requested remote connection... Entering remote status')
                                             rm_func(sock)
                                         elif str(recv_data).__contains__("--GET--"):
                                             print('get initiated')
                                         elif str(recv_data).__contains__("--SEND_TO--"):
                                             message = recv_data.split("--SEND_TO--")[1]
                                             print('sending file to ' + message)
-                                            send_to_func(message, x)
+                                            i = SendToThread(message, x)
+                                            i.start()
                                         elif str(recv_data).__contains__("--WAKE--"):
                                             message = recv_data.split("--WAKE--")[1]
                                             print('Waking up -> ' + message)
@@ -802,22 +796,29 @@ class Receive(Thread):
                                         elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
                                             print("GOT BACKUP FILE")
                                             message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
-                                            write_backup_files(message)
+                                            i = OtherBackupThread(message, sock)
+                                            i.start()
+                                        elif str(recv_data).__contains__("--BACKUP--"):
+                                            print("BACKING UP")
+                                            message = recv_data.split("--BACKUP--")[1]
+                                            i = BackupThread(message)
+                                            i.start()
                                         else:
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
                                             Position = dictList.index(sock) - 1
-                                            message = ('\n' + "Recieved message from -> " + dictList[Position] + " -> " + recv_data)
+                                            message = ('\n' + "Recieved message from -> " + dictList[
+                                                Position] + " -> " + recv_data)
                                             print(message)
                                             if rm is True:
                                                 rm_sock.sendall(message.encode(1024))
                                             enter_func()
                                             # recv_data = sock.recv(1024).decode()
                                     success = False
-                            except:
+                            except Exception as e:
                                 pass
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
 
 
 class Check(Thread):
@@ -842,7 +843,7 @@ class Check(Thread):
         print("SYSTEM: Check started")
         while True:
             i = 0
-            if done is True:
+            if dict != "":
                 for x in dict:
                     if str(x).__contains__("\n"):
                         replacing_dict = False
@@ -885,45 +886,109 @@ class Check(Thread):
                                 i = 0
                         except:
                             print('unable to close sock' + str(sock))
-                        if In_Messaging == True:
+                        if in_messaging is True:
                             back_func()
                         else:
                             enter_func()
                     i += 1
 
 
-try:
-    fh = open('Resources/Profiles.txt', 'r')
-except:
-    fh = open('Resources/Profiles.txt', "w+")
-    print('SYSTEM: Creating profile database...')
+class BackupThread(Thread):
+    def __init__(self, backup_pc):
+        Thread.__init__(self)
+        self.backup_pc = backup_pc
 
-try:
-    fh = open('Resources/IP.txt', 'r')
-except:
-    fh = open('Resources/IP.txt', "w+")
-    print('SYSTEM: Creating IP database...')
+    def run(self):
+        backup_func(self.backup_pc)
 
-try:
-    fh = open('Resources/Backup.txt', 'r')
-except:
-    fh = open('Resources/Backup.txt', "w+")
-    print('SYSTEM: Creating Backup database...')
+
+class OtherBackupThread(Thread):
+    def __init__(self,  user_input, pc_socket):
+        Thread.__init__(self)
+        self.pc_socket = pc_socket
+        self.user_input = user_input
+
+    def run(self):
+        write_backup_files(self.user_input, self.pc_socket)
+
+
+class SendToThread(Thread):
+    def __init__(self, Q, x):
+        Thread.__init__(self)
+        self.Q = Q
+        self.x = x
+
+    def run(self):
+        send_to_func(self.Q, self.x)
+
+
+class GetThread(Thread):
+    def __init__(self, s):
+        Thread.__init__(self)
+        self.sock = s
+
+    def run(self):
+        Get.main(self.sock)
+
+
+def create_resource_file(file_name, print_text):
+    if os.path.isfile("Resources\\" + file_name):
+        pass
+    else:
+        print("SYSTEM: Creating " + print_text + "...")
+        with open("Resources\\" + file_name, "w+") as file_to_create:
+            pass
+
+
+def globalize_computer_name(RCN, M):
+    global received_computer_name
+    global MAC
+    received_computer_name = RCN
+    MAC = M
+    print(RCN)
+    print(MAC)
+
+
+def get_pc_name(sock):
+    while True:
+        try:
+            recv_data = sock.recv(1024).decode()
+            if str(recv_data).__contains__("--PCNAME--||"):
+                print('GOT')
+                useless, RCN, MAC = str(recv_data).split("||")
+                return RCN, MAC
+        except Exception as e:
+            print('NON')
+            print(e)
+
+
+def start_the_rest_of_the_classes():
+    d.start()
+    c.start()
+    b.start()
+
 
 if __name__ == '__main__':
-    a = Starter()
-    # Runs the starting class which creates the class and also connects clients to the server
-    get_ip_addresses_func()
-    b = Send()
-    c = Receive()
-    d = Check()
-    a.start()
+    try:
+        received_computer_name = ""
+        create_resource_file("ErrorLog.txt", "Error Log")
+        create_resource_file("Profiles.txt", "Profile database")
+        create_resource_file("IP.txt", "IP database")
+        create_resource_file("Backup.txt", "Backup database")
 
-    while connected == False:
-        time.sleep(.1)
+        a = Starter()
+        get_ip_addresses_func()
+        b = Send()
+        c = Receive()
+        d = Check()
+        a.start()
 
-    if connected == True:
-        started = True
-        d.start()
-        b.start()
+        if connected is True:
+            started = True
+
+        start_the_rest_of_the_classes()
+
+    except Exception as e:
+        print(e)
+        error_log(e)
 
