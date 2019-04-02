@@ -115,10 +115,10 @@ $UdpClient.Close()'''
             if message == Name:
                 print('Waking up -> ' + Name + " -> MAC -> " + MAC)
                 write2 = WOL_first + '"' + MAC + '"' + WOL_second
-                f = open("Resources/MAC.ps1", "w+")
+                f = open("Resources\\MAC.ps1", "w+")
                 f.write(write2)
                 f.close()
-                subprocess.call(["Resources/MAC.bat"], stdout=sys.stdout)
+                subprocess.call(["Resources\\MAC.bat"], stdout=sys.stdout)
                 i = length
                 found = True
 

@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32c0b905-ca0d-463d-9429-182fdfedfa61" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Multi_Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Multi_Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/IP.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/IP.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/MAC.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/BackupEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/BackupEngine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/BackupSyncEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/BackupSyncEngine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/File_Sender.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/File_Sender.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Get.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Get.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,8 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Multi_Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="806" column="57" lean-forward="true" selection-start-line="806" selection-start-column="57" selection-end-line="806" selection-end-column="57" />
+            <state relative-caret-position="565">
+              <caret line="120" column="59" selection-start-line="120" selection-start-column="59" selection-end-line="120" selection-end-column="59" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -196,9 +189,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="width" value="977" />
-    <option name="height" value="1038" />
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -453,10 +447,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18692206" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14910433" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -593,8 +587,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Multi_Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="806" column="57" lean-forward="true" selection-start-line="806" selection-start-column="57" selection-end-line="806" selection-end-column="57" />
+        <state relative-caret-position="565">
+          <caret line="120" column="59" selection-start-line="120" selection-start-column="59" selection-end-line="120" selection-end-column="59" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
