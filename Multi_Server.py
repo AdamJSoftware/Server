@@ -298,7 +298,8 @@ def message_func(Q):
                     rm_sock.sendall("Computer not found. Please reference the computer list:")
                     ls_func()
 
-        except:
+        except Exception as e:
+            print(e)
             print("Here is the list of computers:")
             ls_func()
 
@@ -596,48 +597,39 @@ def service_connection(key, mask):
 
 class Starter(Thread):
     global soc
-    global data
-    global new_data
-    global enter
     global key
 
     def __init__(self):
         global soc
-        global new_data
-        global enter
         global key
         Thread.__init__(self)
         print("SYSTEM: Starting server")
-        self.running = True
-        self.new_data = False
 
         host = ''
         port = 8888
 
-        lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
-            lsock.bind((host, port))
-        except:
-            print("Bind failed. Error : " + str(sys.exc_info()))
+            server_sock.bind((host, port))
+        except Exception as e:
+            print("Bind failed. Error : " + str(e))
             sys.exit()
 
-        lsock.listen(5)
+        server_sock.listen(5)
         print("SYSTEM: Socket created")
-        lsock.setblocking(False)
-        sel.register(lsock, selectors.EVENT_READ, data=None)
-        self.running = True
+        server_sock.setblocking(False)
+        sel.register(server_sock, selectors.EVENT_READ, data=None)
 
     def run(self):
         global enter
         global key
-        while self.running:
-            events = sel.select()
-            for key, mask in events:
-                if key.data is None:
-                    accept_wrapper(key.fileobj)
-                else:
-                    service_connection(key, mask)
+        events = sel.select()
+        for key, mask in events:
+            if key.data is None:
+                accept_wrapper(key.fileobj)
+            else:
+                service_connection(key, mask)
 
 
 class Send(Thread):
@@ -806,12 +798,10 @@ class Receive(Thread):
                                         else:
                                             dictList = []
                                             [dictList.extend([k, v]) for k, v in my_dict.items()]
-                                            Position = dictList.index(sock) - 1
-                                            message = ('\n' + "Recieved message from -> " + dictList[
-                                                Position] + " -> " + recv_data)
+                                            Position = dictList.index(x) - 1
+                                            print(x)
+                                            message = ('\n' + "Received message from -> " + dictList[Position] + " -> " + recv_data)
                                             print(message)
-                                            if rm is True:
-                                                rm_sock.sendall(message.encode(1024))
                                             enter_func()
                                             # recv_data = sock.recv(1024).decode()
                                     success = False
@@ -949,22 +939,8 @@ def globalize_computer_name(RCN, M):
     print(MAC)
 
 
-def get_pc_name(sock):
-    while True:
-        try:
-            recv_data = sock.recv(1024).decode()
-            if str(recv_data).__contains__("--PCNAME--||"):
-                print('GOT')
-                useless, RCN, MAC = str(recv_data).split("||")
-                return RCN, MAC
-        except Exception as e:
-            print('NON')
-            print(e)
-
-
 def start_the_rest_of_the_classes():
     d.start()
-    c.start()
     b.start()
 
 

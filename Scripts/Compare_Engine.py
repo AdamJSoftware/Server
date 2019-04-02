@@ -1,119 +1,118 @@
 from Scripts import BackupSyncEngine
 
 
-def main(PC):
-    with open("Resources/Backups/" + PC + "/Received_Backup.txt", "r", encoding="utf-8-sig") as RB:
-        RB = RB.readlines()
-        newRB = []
-        for lines in RB:
+def main(pc):
+    with open("Resources/Backups/" + pc + "/Received_Backup.txt", "r", encoding="utf-8-sig") as received_backup:
+        received_backup = received_backup.readlines()
+        new_received_backup = []
+        for lines in received_backup:
             if lines.__contains__("\n"):
                 newline = lines.replace("\n", "")
-                newRB.append(newline)
+                new_received_backup.append(newline)
             else:
-                newRB.append(lines)
+                new_received_backup.append(lines)
 
-    with open("Resources/Backups/" + PC + "/Backup2.txt", "r", encoding="utf-8-sig") as B:
-        B = B.readlines()
-        newB = []
-        for line in B:
+    with open("Resources/Backups/" + pc + "/Backup2.txt", "r", encoding="utf-8-sig") as local_backup:
+        local_backup = local_backup.readlines()
+        new_local_backup = []
+        for line in local_backup:
             if line.__contains__("\n"):
                 newline = line.replace("\n", "")
-                newB.append(newline)
+                new_local_backup.append(newline)
             else:
-                newB.append(line)
+                new_local_backup.append(line)
 
-    MissingFiles = []
-    ChangedFiles = []
-    MissingFolders = []
+    missing_files = []
+    changed_files = []
+    missing_folders = []
 
-    RB_files = []
-    for index, lines in enumerate(newRB):
+    received_backup_files = []
+    for index, lines in enumerate(new_received_backup):
         if lines.__contains__("["):
-            RB_files.append(newRB[index-1])
-            RB_files.append(lines)
+            received_backup_files.append(new_received_backup[index-1])
+            received_backup_files.append(lines)
 
-    B_files = []
-    for index, line in enumerate(newB):
+    local_backup_files = []
+    for index, line in enumerate(new_local_backup):
         if line.__contains__("["):
-            B_files.append(newB[index-1])
-            B_files.append(line)
+            local_backup_files.append(new_local_backup[index-1])
+            local_backup_files.append(line)
 
-
-    for index, lines in enumerate(RB_files):
+    for index, lines in enumerate(received_backup_files):
         if not lines.__contains__("["):
             i = False
             j = False
-            for index2, line in enumerate(B_files):
+            for index2, line in enumerate(received_backup_files):
                 if line == lines:
                     i = True
-                    if RB_files[index+1] == B_files[index2+1]:
+                    if received_backup_files[index+1] == local_backup_files[index2+1]:
                         pass
                     else:
                         j = True
                 else:
                     pass
-            if i == False:
-
-                MissingFiles.append(lines)
-            if j == True:
-                ChangedFiles.append(lines)
+            if i is False:
+                missing_files.append(lines)
+            if j is True:
+                changed_files.append(lines)
         else:
             pass
 
-    RB_folders = []
-    for index, lines in enumerate(newRB):
+    received_backup_folders = []
+    for index, lines in enumerate(new_received_backup):
         if str(lines).__contains__("["):
             pass
         else:
             try:
-                if newRB[index + 1].__contains__("["):
+                if new_received_backup[index + 1].__contains__("["):
                     pass
                 else:
-                    RB_folders.append(lines)
-            except:
+                    received_backup_folders.append(lines)
+            except Exception as e:
+                print(e)
                 pass
 
-    B_folders = []
-    for index, lines in enumerate(newB):
+    local_backup_folders = []
+    for index, lines in enumerate(new_local_backup):
         if str(lines).__contains__("["):
             pass
         else:
             try:
-                if newB[index + 1].__contains__("["):
+                if new_local_backup[index + 1].__contains__("["):
                     pass
                 else:
-                    B_folders.append(lines)
-            except:
+                    local_backup_folders.append(lines)
+            except Exception as e:
+                print(e)
                 pass
 
-    for index, lines in enumerate(RB_folders):
+    for index, lines in enumerate(received_backup_folders):
         i = False
-        for index2, line in enumerate(B_folders):
+        for index2, line in enumerate(local_backup_folders):
             if line == lines:
                 i = True
             else:
                 pass
-        if i == False:
-            MissingFolders.append(lines)
-
+        if i is False:
+            missing_folders.append(lines)
 
     print("MISSING FILES")
-    for i in MissingFiles:
+    for i in missing_files:
         print("\t"+i)
 
     print("CHANGED FILES")
-    for i in ChangedFiles:
+    for i in changed_files:
         print("\t"+i)
 
     print("MISSING FOLDERS")
-    for i in MissingFolders:
+    for i in missing_folders:
         print("\t"+i)
-    BackupSyncEngine.add_folder(MissingFolders, PC)
+    BackupSyncEngine.add_folder(missing_folders, pc)
 
-    allMissingFiles = MissingFiles + ChangedFiles
-    pathy = BackupSyncEngine.get_file(allMissingFiles, PC)
+    all_missing_files = missing_files + changed_files
+    path = BackupSyncEngine.get_file(all_missing_files, pc)
 
-    if len(allMissingFiles) == 0:
+    if len(all_missing_files) == 0:
         return False, "nothing"
     else:
-        return True, pathy
+        return True, path

@@ -2,112 +2,110 @@ import os
 
 cd = os.getcwd()
 
-PC = "PC1"
 
-def OG(files):
-    OG = files
-    for lines in OG:
+def original_files_func(files):
+    original_files = files
+    for lines in original_files:
         if lines.__contains__("*"):
-            OG.remove(lines)
+            original_files.remove(lines)
 
-    for lines in OG:
+    for lines in original_files:
         try:
             newlines = lines.replace("\n", "")
-            OG.remove(lines)
-            OG.append(newlines)
-        except:
+            original_files.remove(lines)
+            original_files.append(newlines)
+        except Exception as e:
             pass
-    return OG
+            print(e)
+    return original_files
 
 
-def backup2(filesAndSize, og):
-    newlist = []
-    for files in filesAndSize:
-        for remv in og:
-            if str(files).__contains__(remv):
-                newfile = str(files).replace(remv, str(""))
-                firstchar = newfile[:1]
-                if firstchar =='\\':
-                    newfile = newfile[1:]
-                    newlist.append(newfile)
+def backup2(files_and_size, og):
+    new_list = []
+    for files in files_and_size:
+        for remove in og:
+            if str(files).__contains__(remove):
+                new_file = str(files).replace(remove, str(""))
+                first_char = new_file[:1]
+                if first_char == '\\':
+                    new_file = new_file[1:]
+                    new_list.append(new_file)
             else:
-                newlist.append(files)
+                new_list.append(files)
     print("BACKUP2")
 
-    for lines in newlist:
+    for lines in new_list:
         if lines == "\n":
-            newlist.remove(lines)
+            new_list.remove(lines)
             print("REMOVED")
 
-    return newlist
+    return new_list
 
 
 def main(name):
-    PC = name
-    i = True
-    files_to_scan_func(i, PC)
+    pc = name
+    files_to_scan_func(pc)
 
 
-def getsize(filename):
+def get_size(filename):
     try:
         st = os.stat(filename)
         return st.st_size
-    except:
+    except Exception as e:
+        print(e)
         return "AN ERROR OCCURRED. FILE NAME MAY BE TOO LONG"
 
 
 def folder_func(path):
-    list = []
+    folder_list = []
     for name in os.listdir(path):
-        newPath = os.path.join(path, name)
-        list.append(newPath)
-    return list
+        new_path = os.path.join(path, name)
+        folder_list.append(new_path)
+    return folder_list
 
 
-def folder_or_file(file, filesAndSize, files):
+def folder_or_file(file, files_and_size, files):
     path = os.path.normpath(str(file))
-    filesAndSize.append(file)
+    files_and_size.append(file)
     if os.path.isdir(path):
-        toBeAppended = folder_func(path)
-        files.extend(toBeAppended)
+        to_be_appended = folder_func(path)
+        files.extend(to_be_appended)
     else:
-        size = getsize(file)
-        filesAndSize.append([size])
+        size = get_size(file)
+        files_and_size.append([size])
 
 
-def files_to_scan_func(i, PC):
+def files_to_scan_func(pc):
 
-    f = cd+"\\Resources\\Backups\\" + PC
-    og = []
-    og.append(f)
-    filesAndSize = []
-    filesToExculde = []
-    files = []
-    files.append(f)
+    f = cd+"\\Resources\\Backups\\" + pc
+    og = [f]
+    files_and_size = []
+    files_to_exclude = []
+    files = [f]
 
     for file in files:
         try:
             file = file.replace("\n", "")
-        except:
-            pass
+        except Exception as e:
+            print("BACKUP ERROR: " + str(e))
         if file.__contains__("*"):
             file = file.split("*")[1]
-            filesToExculde.append(file)
+            files_to_exclude.append(file)
             print("ADDED FILE TO EXCLUDE")
-        if len(filesToExculde) == 0:
-            folder_or_file(file, filesAndSize, files)
+        if len(files_to_exclude) == 0:
+            folder_or_file(file, files_and_size, files)
         else:
-            for i in filesToExculde:
+            for i in files_to_exclude:
                 if i in file:
                     pass
                 else:
-                    folder_or_file(file, filesAndSize, files)
+                    folder_or_file(file, files_and_size, files)
 
-    with open("Resources\Backups\\" + PC + "\\Backup_SEND.txt", "w", encoding="utf-8") as f:
-        for file in filesAndSize:
+    with open("Resources\\Backups\\" + pc + "\\Backup_SEND.txt", "w", encoding="utf-8") as f:
+        for file in files_and_size:
             f.write(str(file) + "\n")
 
-    with open("Resources\\Backups\\" + PC + "\\Backup2.txt", "w", encoding="utf-8") as f:
-        b2 = backup2(filesAndSize, og)
+    with open("Resources\\Backups\\" + pc + "\\Backup2.txt", "w", encoding="utf-8") as f:
+        b2 = backup2(files_and_size, og)
         for file in b2:
             f.write(str(file) + "\n")
