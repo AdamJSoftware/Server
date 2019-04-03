@@ -67,6 +67,10 @@ def error_log(error):
         file.write(str(error) + "\n" + "\n")
 
 
+def error_print(error_message ,error):
+    print("SYSTEM ERROR - " + error_message + ": " + str(error))
+
+
 def write_backup_files(pc, sock1):
     s = get_ip_from_sock(sock1)
     print(s)
@@ -315,22 +319,9 @@ def help_func():
 
 def ls_func():
     global dict
-    global rm
-    global rm_sock
-    global rm_first
-    CCC = "Computer currently connected:"
-    if rm is True:
-        print('RMM')
-        print(CCC)
-        message = rm_first + CCC
-        rm_sock.send(message.encode("utf-8"))
-        for x in dict:
-            print("\t" + x)
-            rm_sock.sendall((rm_first + "\t" + x).encode("utf-8"))
-    else:
-        print("Computers currently connected:")
-        for x in dict:
-            print("\t" + x)
+    print("Computers currently connected:")
+    for x in dict:
+        print("\t" + x)
 
 
 def send_to_func(Q, sock):
@@ -923,4 +914,3 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
         error_log(e)
-
