@@ -749,8 +749,6 @@ class Receive(Thread):
                                         dictList = []
                                         [dictList.extend([k, v]) for k, v in my_dict.items()]
                                         Position = dictList.index(x) - 1
-
-
                                         message = ('\n' + "Received message from -> " + dictList[
                                             Position] + " -> " + recv_data)
                                         print(message)

@@ -4,18 +4,6 @@
     <list default="true" id="32c0b905-ca0d-463d-9429-182fdfedfa61" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Multi_Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Multi_Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Backup2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Backup2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/GETFILES.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/GETFILES.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Received_Backup.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Received_Backup.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Work/Websites/JP's Awnings/20190322_114223.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Work/Websites/JP's Awnings/Website Testimonials.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Work/Websites/JP's Awnings/desktop.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Work/Websites/JP's Awnings/jp awning mail (1).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Work/Websites/desktop.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Backups/DESKTOP-86JA7C0/Work/desktop.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/ErrorLog.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/ErrorLog.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/File_Sender.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/File_Sender.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Get.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Get.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Multi_Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="875" column="49" lean-forward="true" selection-start-line="875" selection-start-column="49" selection-end-line="875" selection-end-column="49" />
+            <state relative-caret-position="336">
+              <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
             </state>
           </provider>
         </entry>
@@ -466,7 +454,14 @@
       <option name="project" value="LOCAL" />
       <updated>1554314720616</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Reorganizing">
+      <created>1554411371428</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1554411371428</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -625,8 +620,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Multi_Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="875" column="49" lean-forward="true" selection-start-line="875" selection-start-column="49" selection-end-line="875" selection-end-column="49" />
+        <state relative-caret-position="336">
+          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
         </state>
       </provider>
     </entry>
