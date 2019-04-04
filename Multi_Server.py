@@ -1,4 +1,3 @@
-from Scripts import FileDirectory
 from Scripts import BackupEngine
 from Scripts import Compare_Engine
 from Scripts import FileDirectory
@@ -205,7 +204,7 @@ def backup_func(Q):
         message = "--GETFILES--"
         message = message.encode("utf-8")
         sock1.sendall(message)
-        File_Sender.getFiles(path)
+        File_Sender.get_files(path)
     else:
         pass
 
@@ -611,12 +610,17 @@ class Starter(Thread):
 
     def run(self):
         while True:
-            events = sel.select()
-            for key, mask in events:
-                if key.data is None:
-                    accept_wrapper(key.fileobj)
-                else:
-                    service_connection(key, mask)
+            try:
+                events = sel.select()
+                for key, mask in events:
+                    if key.data is None:
+                        accept_wrapper(key.fileobj)
+                    else:
+                        service_connection(key, mask)
+            except Exception as error:
+                error_log(error)
+                error_print("Starter thread, tried registering with no computers connected", error)
+                server_restart()
 
 
 class Send(Thread):
@@ -862,7 +866,7 @@ class SendToThread(Thread):
 class GetThread(Thread):
     def __init__(self, s):
         Thread.__init__(self)
-        self.sock = s
+        self.sock = get_ip_from_sock(s)
 
     def run(self):
         Get.main(self.sock)

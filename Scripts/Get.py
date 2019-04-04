@@ -7,20 +7,33 @@ import time
 pyautogui.FAILSAFE = False
 
 
-def main(IP_TO_SEND):
+def error_log(error):
+    with open("Resources\\ErrorLog.txt", 'a') as file:
+        file.write(time.ctime() + "\n")
+        file.write(str(error) + "\n" + "\n")
+
+
+def error_print(error_message ,error):
+    print("SYSTEM ERROR - " + error_message + ": " + str(error))
+
+
+def main(ip_to_send):
     press('enter')
     print('started get.py')
 
     s = socket.socket()
 
-    host = IP_TO_SEND  # Ip address that the TCPServer  is there
+    print("host", ip_to_send)
+
+    host = ip_to_send  # Ip address that the TCPServer  is there
     port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
 
     try:
         s.connect((host, port))
-        print('started reciever')
-    except:
-        print('Started twice... exiting')
+        print('Connected to server')
+    except Exception as error:
+        error_log(error)
+        error_print("Get.py - error while connecting to server", error)
         press('enter')
         sys.exit()
     name = s.recv(1024)
@@ -37,10 +50,10 @@ def main(IP_TO_SEND):
     s.close()
     print('connection closed')
 
-def backup(IP_TO_SEND):
+def backup(ip_to_send):
     s = socket.socket()
 
-    host = IP_TO_SEND  # Ip address that the TCPServer  is there
+    host = ip_to_send  # Ip address that the TCPServer  is there
     port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
 
     try:
@@ -76,10 +89,11 @@ def backup(IP_TO_SEND):
 
     return name
 
-def write_backup_file(PC, IP_TO_SEND):
+
+def write_backup_file(pc, ip_to_send):
     s = socket.socket()
 
-    host = IP_TO_SEND  # Ip address that the TCPServer  is there
+    host = ip_to_send  # Ip address that the TCPServer  is there
     port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
 
     try:
@@ -93,7 +107,7 @@ def write_backup_file(PC, IP_TO_SEND):
     name = name.decode("utf-8")
     print("NAME " + name)
     time.sleep(1)
-    path = "Resources\\Backups\\" + PC + "\\" + name
+    path = "Resources\\Backups\\" + pc + "\\" + name
     try:
         path = path.split("\n")[0]
     except:

@@ -1,2 +1,15 @@
+Backup2.txt
+[162]
+Backup_SEND.txt
+[829]
+desktop.ini
+[124]
+GETFILES.txt
+[15]
 Received_Backup.txt
-[232]
+[26]
+Test
+Test\desktop.ini
+[124]
+Test\Test.txt
+[0]
