@@ -650,6 +650,8 @@ class Send(Thread):
                 help_func()
             if user_input.__contains__('/m'):
                 message_func(user_input)
+            if user_input == "/cls":
+                os.system('cls')
             if user_input == "/backup":
                 backup_func(user_input)
             if user_input == 'test':
