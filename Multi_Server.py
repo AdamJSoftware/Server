@@ -323,7 +323,7 @@ def ls_func():
         print("\t" + x)
 
 
-def send_to_func(Q, sock):
+def send_to_func(user_input, sending_socket):
     global IP
     global in_messaging
     global soc
@@ -341,20 +341,21 @@ def send_to_func(Q, sock):
             pass
     else:
         try:
-            if Q.__contains__('/send '):
-                Q = Q.split('/send ', 1)[1]
-            if Q in str(dict):
-                message = "--SENDING_FILE_TO--" + str(sock)
-                message = message.encode("utf-8")
-                sock1 = dict[Q]
-                sock1.send(message)
-                message = "--CLIENT_ID--" + str(sock1)
-                sock.send(message.encode("utf-8"))
+            pc_name = user_input.split('/send ', 1)[1]
+            print(pc_name)
+            if pc_name in str(dict):
+                requesting_message = "--SENDING_FILE_TO--" + str(sending_socket)
+                requesting_message = requesting_message.encode("utf-8")
+                requesting_socket = dict[pc_name]
+                requesting_socket.send(requesting_message)
+                sending_message = "--CLIENT_ID--" + str(requesting_socket)
+                sending_socket.send(sending_message.encode("utf-8"))
                 print("Done sending")
             else:
                 print("Computer not found. Please reference the computer list:")
                 ls_func()
-        except:
+        except Exception as error:
+            error_log(error)
             print("Here is the list of computers:")
             ls_func()
 
