@@ -169,41 +169,35 @@ def get_ip_from_sock(sock):
     return sock
 
 
-def backup_func(Q):
+def backup_func(client_sock):
     length = len(dict)
     if length == 1:
         try:
-            for x in dict.values():
-                message = "||BACKUP||"
-                message = message.encode("utf-8")
-                sock1 = x
-                time.sleep(0.5)
-                sock1.send(message)
-                print('finished sending')
-        except:
-            pass
+            message_to_send = "||BACKUP||"
+            message_to_send = message_to_send.encode("utf-8")
+            time.sleep(0.5)
+            client_sock.send(message_to_send)
+            print('finished sending')
+        except Exception as error:
+            error_print("Error at backup_func", error)
+            error_log(error)
     else:
         try:
-            Q = Q.split('/backup ', 1)[1]
-            if Q in str(dict):
-                message = "||BACKUP||"
-                message = message.encode("utf-8")
-                sock1 = dict[Q]
-                sock1.send(message)
-            else:
-                print("Unable to find the computer. Please try again")
-        except:
-            print("Here is the list of computers:")
-            ls_func()
-    s = get_ip_from_sock(sock1)
+            message_to_send = "||BACKUP||"
+            message_to_send = message_to_send.encode("utf-8")
+            client_sock.send(message_to_send)
+        except Exception as error:
+            error_print("Error at backup_func", error)
+            error_log(error)
+    s = get_ip_from_sock(client_sock)
     print(s)
     name = Get.backup(s)
     BackupEngine.main(name)
     getter, path = Compare_Engine.main(name)
     if getter:
-        message = "--GETFILES--"
-        message = message.encode("utf-8")
-        sock1.sendall(message)
+        message_to_send = "--GETFILES--"
+        message_to_send = message_to_send.encode("utf-8")
+        client_sock.sendall(message_to_send)
         File_Sender.get_files(path)
     else:
         pass
@@ -746,14 +740,13 @@ class Receive(Thread):
                                     elif str(recv_data).__contains__("--BACKUP--"):
                                         print("BACKING UP")
                                         message = recv_data.split("--BACKUP--")[1]
-                                        i = BackupThread(message)
+                                        i = BackupThread(sock)
                                         i.start()
                                     else:
-                                        dictList = []
-                                        [dictList.extend([k, v]) for k, v in my_dict.items()]
-                                        Position = dictList.index(x) - 1
-                                        message = ('\n' + "Received message from -> " + dictList[
-                                            Position] + " -> " + recv_data)
+                                        dict_list = []
+                                        [dict_list.extend([k, v]) for k, v in my_dict.items()]
+                                        position = dict_list.index(x) - 1
+                                        message = ('\n' + "Received message from -> " + dict_list[position] + " -> " + recv_data)
                                         print(message)
                                         enter_func()
                                         # recv_data = sock.recv(1024).decode()
@@ -836,12 +829,12 @@ class Check(Thread):
 
 
 class BackupThread(Thread):
-    def __init__(self, backup_pc):
+    def __init__(self, client_sock):
         Thread.__init__(self)
-        self.backup_pc = backup_pc
+        self.client_sock = client_sock
 
     def run(self):
-        backup_func(self.backup_pc)
+        backup_func(self.client_sock)
 
 
 class OtherBackupThread(Thread):
