@@ -238,7 +238,7 @@ def back_func():
     go_back = False
 
 
-def message_func(Q):
+def message_func(user_input):
     global rm_message
     global rm
     global rm_sock
@@ -251,52 +251,40 @@ def message_func(Q):
     if length == 1:
         try:
             only_client = 'sending message to only connected client'
-            if rm is True:
-                print(only_client)
-                rm_sock.sendall(only_client.encode("utf-8"))
-            else:
-                print(only_client)
+            print(only_client)
             for x in dict.values():
-                if rm is True:
-                    message = rm_message
-                else:
-                    while back_message != "/back":
-                        if back is False:
-                            in_messaging = True
-                            message = input(" -> ")
-                            back_message = message
-                            message = message.encode("utf-8")
-                            sock1 = x
-                            sock1.send(message)
-                        else:
-                            back_message = "/back"
-                    in_messaging = False
+                while back_message != "/back":
+                    if back is False:
+                        in_messaging = True
+                        message_to_client = input(" -> ")
+                        back_message = message_to_client
+                        message_to_client = message_to_client.encode("utf-8")
+                        client_socket = x
+                        client_socket.send(message_to_client)
+                    else:
+                        back_message = "/back"
+                in_messaging = False
         except Exception as error:
             error_log(error)
     else:
         try:
-            Q = Q.split('/m ', 1)[1]
-            if Q in str(dict):
+            user_input = user_input.split('/m ', 1)[1]
+            if user_input in str(dict):
                 back_message = ""
                 while back_message != "/back":
-                    if back == False:
+                    if back is False:
                         in_messaging = True
-                        message = input("Sending message to -> " + Q + " -> ")
-                        back_message = message
-                        message = message.encode("utf-8")
-                        sock1 = dict[Q]
-                        sock1.send(message)
+                        message_to_client = input("Sending message to -> " + user_input + " -> ")
+                        back_message = message_to_client
+                        message_to_client = message_to_client.encode("utf-8")
+                        client_socket = dict[user_input]
+                        client_socket.send(message_to_client)
                     else:
                         back_message = "/back"
                 in_messaging = False
-            else:
-                if rm is True:
-                    print("Computer not found. Please reference the computer list:")
-                    rm_sock.sendall("Computer not found. Please reference the computer list:")
-                    ls_func()
 
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            print(error)
             print("Here is the list of computers:")
             ls_func()
 
@@ -320,22 +308,24 @@ def ls_func():
 def send_to_func(user_input, sending_socket):
     global IP
     global in_messaging
-    global soc
     global rm
     global rm_sock
     length = len(dict)
     if length == 1:
         try:
-            message = 'SYSTEM: CANNOT PERFORM ACTION DUE TO THERE ONLY BEING ONE CLIENT'
-            print(message)
+            message_to_client = 'SYSTEM: CANNOT PERFORM ACTION DUE TO THERE ONLY BEING ONE CLIENT'
+            print(message_to_client)
             for x in dict.values():
-                sock1 = x
-                sock1.send(message.encode("utf-8"))
-        except:
+                client_socket = x
+                client_socket.send(message_to_client.encode("utf-8"))
+        except Exception as error:
+            error_print("Error at send_to_func", error)
+            error_log(error)
             pass
     else:
         try:
-            pc_name = user_input.split('/send ', 1)[1]
+            # pc_name = user_input.split('/send ', 1)[1]
+            pc_name = user_input
             print(pc_name)
             if pc_name in str(dict):
                 requesting_message = "--SENDING_FILE_TO--" + str(sending_socket)
@@ -354,7 +344,7 @@ def send_to_func(user_input, sending_socket):
             ls_func()
 
 
-def send_func(Q):
+def send_func(user_input):
     global IP
     global in_messaging
     global soc
@@ -363,69 +353,51 @@ def send_func(Q):
     length = len(dict)
     if length == 1:
         try:
-            message = 'sending file to only connected client'
+            message_to_client = 'sending file to only connected client'
             if rm is True:
-                print(message)
-                rm_sock.sendall(message.encode("utf-8"))
+                print(message_to_client)
+                rm_sock.sendall(message_to_client.encode("utf-8"))
             else:
-                print(message)
+                print(message_to_client)
             for x in dict.values():
-                message = "--SENDING_FILE--"
-                message = message.encode("utf-8")
-                sock1 = x
-                sock1.send(message)
+                message_to_client = "--SENDING_FILE--"
+                message_to_client = message_to_client.encode("utf-8")
+                client_socket = x
+                client_socket.send(message_to_client)
                 print(" Please select file...")
                 File_Sender.main()
-        except:
-            pass
+        except Exception as error:
+            error_print("Error while sending to computer", error)
+            error_log(error)
     else:
         try:
-            if Q.__contains__('/send '):
-                Q = Q.split('/send ', 1)[1]
-            print(Q)
-            if Q in str(dict):
-                message = "--SENDING_FILE--"
-                message = message.encode("utf-8")
-                sock1 = dict[Q]
-                sock1.send(message)
-                print(" Please select file to send to -> " + Q)
+            if user_input.__contains__('/send '):
+                user_input = user_input.split('/send ', 1)[1]
+            print(user_input)
+            if user_input in str(dict):
+                message_to_client = "--SENDING_FILE--"
+                message_to_client = message_to_client.encode("utf-8")
+                client_socket = dict[user_input]
+                client_socket.send(message_to_client)
+                print(" Please select file to send to -> " + user_input)
                 File_Sender.main()
             else:
                 print("Computer not found. Please reference the computer list:")
                 ls_func()
-        except:
+        except Exception as error:
+            error_log(error)
             print("Here is the list of computers:")
             ls_func()
-
-
-def rm_func(sock):
-    global rm_sock
-    global rm
-    rm_sock = sock
-    rm = True
-    message = ""
-    length = len(dict)
-    '''
-    while message != "/back":
-        message = input(" -> ")
-        if message.__contains__("/send"):
-            send_func(message, rm)
-        if message.__contains__("/get"):
-            pass
-        if message.__contains__("/view"):
-            pass
-    return
-'''
 
 
 def accept_wrapper(sock):
     global do_not_read
     global conn
     global accepted
-    conn, addr = sock.accept()  # Should be ready to read
-    print('Accepted connection from', addr)
+    conn, address = sock.accept()  # Should be ready to read
+    print('Accepted connection from', address)
     conn.setblocking(False)
-    data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
+    data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
     sel.register(conn, events, data=data)
     accepted = True
@@ -479,7 +451,9 @@ def service_connection(key, mask):
                         print("Received computer name -> " + client_host_name)
                         waiting_on_server = False
                         got = True
-                    except:
+                    except Exception as error:
+                        error_log(error)
+                        error_print("Error while adding computer", error)
                         client_host_name = "failed"
                     profile_txt = f.read().split(',')
                     length = len(profile_txt)
@@ -715,8 +689,8 @@ class Receive(Thread):
                                         i = GetThread(x)
                                         i.start()
                                         # recv_data = sock.recv(1024).decode()
-                                    elif str(recv_data).__contains__("--GET--"):
-                                        print('get initiated')
+                                    elif str(recv_data).__contains__("--TEST--"):
+                                        pass
                                     elif str(recv_data).__contains__("--SEND_TO--"):
                                         message = recv_data.split("--SEND_TO--")[1]
                                         print('sending file to ' + message)
@@ -740,7 +714,7 @@ class Receive(Thread):
                                     elif str(recv_data).__contains__("--BACKUP--"):
                                         print("BACKING UP")
                                         message = recv_data.split("--BACKUP--")[1]
-                                        i = BackupThread(sock)
+                                        i = BackupThread(x)
                                         i.start()
                                     else:
                                         dict_list = []
@@ -752,7 +726,7 @@ class Receive(Thread):
                                         # recv_data = sock.recv(1024).decode()
                                 success = False
                             except Exception as e:
-                                error_log(e)
+                                pass
                 except Exception as e:
                     print(e)
 
