@@ -1,6 +1,5 @@
 from Scripts import BackupEngine
 from Scripts import Compare_Engine
-from Scripts import FileDirectory
 from Scripts import Get
 from Scripts import File_Sender
 import os
@@ -17,35 +16,24 @@ from pyautogui import press
 
 FNULL = open(os.devnull, 'w')
 
-global do_not_read
 global found
-global rcn
-global rm_first
-global rm_message
-global rm_sock
 global accepted
 global recv_computer_name
 global waiting_on_server
 global done
-global test_computername
 global connected
 global started
-
 global replacing_dict
 global dict
 global IP
-global a
-global b
 global conn
 global sock1
-global sock2
 global got
 global sock
 global in_messaging
 global back_message
 global back
 global message
-global go_back
 global MAC
 
 connected = False
@@ -66,12 +54,12 @@ def error_log(error):
         file.write(str(error) + "\n" + "\n")
 
 
-def error_print(error_message ,error):
+def error_print(error_message, error):
     print("SYSTEM ERROR - " + error_message + ": " + str(error))
 
 
-def write_backup_files(pc, sock1):
-    s = get_ip_from_sock(sock1)
+def write_backup_files(pc, client_socket):
+    s = get_ip_from_sock(client_socket)
     print(s)
     Get.write_backup_file(pc, s)
 
@@ -80,38 +68,37 @@ def rm_send():
     pass
 
 
-def wake_func(message):
+def wake_func(user_input):
     global found
-    WOL_first = "$Mac = "
-    WOL_second = '''\n$MacByteArray = $Mac -split "[:-]" | ForEach-Object { [Byte] "0x$_"}
+    wol_first = "$Mac = "
+    wol_second = '''\n$MacByteArray = $Mac -split "[:-]" | ForEach-Object { [Byte] "0x$_"}
 [Byte[]] $MagicPacket = (,0xFF * 6) + ($MacByteArray  * 16)
 $UdpClient = New-Object System.Net.Sockets.UdpClient
 $UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
 $UdpClient.Send($MagicPacket,$MagicPacket.Length)
 $UdpClient.Close()'''
     with open("Resources/Profiles.txt", "r") as f:
-        results = f.read().split(',')
-        length = len(results)
+        result = f.read().split(',')
+        length = len(result)
         length = length - 1
         i = 0
-        j = 0
         print("Computer profile list: ")
         while i != length:
-            Name = results[i]
+            common_name = result[i]
             i += 1
-            PC_Name = results[i]
+            pc_name = result[i]
             i += 2
-            print('\t' + Name + " - " + PC_Name)
+            print('\t' + common_name + " - " + pc_name)
         i = 0
         found = False
         while i != length:
-            Name = results[i]
+            common_name = result[i]
             i += 2
-            MAC = results[i]
+            mac = result[i]
             i += 1
-            if message == Name:
-                print('Waking up -> ' + Name + " -> MAC -> " + MAC)
-                write2 = WOL_first + '"' + MAC + '"' + WOL_second
+            if user_input == common_name:
+                print('Waking up -> ' + common_name + " -> MAC -> " + mac)
+                write2 = wol_first + '"' + mac + '"' + wol_second
                 f = open("Resources\\MAC.ps1", "w+")
                 f.write(write2)
                 f.close()
@@ -120,27 +107,27 @@ $UdpClient.Close()'''
                 found = True
 
         if found is not True:
-            print("COULD NOT FIND " + message)
+            print("COULD NOT FIND " + user_input)
         press('enter')
         return found
 
 
-def view_func():
-    global dict
-    Q = input("Would you like to send or get?")
-    if Q == "get":
-        Q = input('On which computer would you like to view:\n')
-        ls_func()
-        print('Server')
-    elif Q == "send":
-        Q = input('On which computer would you like to view:\n')
-        ls_func()
-        print('Server')
-    else:
-        print('exiting program please try again with a proper input')
-        return
-
-    file = FileDirectory.main()
+# def view_func():
+#     global dict
+#     user_input = input("Would you like to send or get?")
+#     if user_input == "get":
+#         user_input = input('On which computer would you like to view:\n')
+#         ls_func()
+#         print('Server')
+#     elif user_input == "send":
+#         user_input = input('On which computer would you like to view:\n')
+#         ls_func()
+#         print('Server')
+#     else:
+#         print('exiting program please try again with a proper input')
+#         return
+#     #
+#     # file = FileDirectory.main()
 
 
 def get_ip_addresses_func():
@@ -163,10 +150,10 @@ def get_ip_addresses_func():
     return ip_list
 
 
-def get_ip_from_sock(sock):
-    sock = str(sock).rsplit("raddr=('", 1)[1]
-    sock = str(sock).rsplit("',", 1)[0]
-    return sock
+def get_ip_from_sock(client_socket):
+    client_ip = str(client_socket).rsplit("raddr=('", 1)[1]
+    client_ip = str(client_ip).rsplit("',", 1)[0]
+    return client_ip
 
 
 def backup_func(client_sock):
@@ -217,9 +204,9 @@ def pc_and_ip():
     global dict
     i = 1
     for x in dict:
-        raddr = str(dict).split("raddr=")[i]
-        raddr = raddr.split(">")[0]
-        print("\t" + x + " -> IP  -> " + raddr)
+        r_address = str(dict).split("raddr=")[i]
+        r_address = r_address.split(">")[0]
+        print("\t" + x + " -> IP  -> " + r_address)
         i += 1
 
 
@@ -235,7 +222,6 @@ def back_func():
     back = True
     press('enter')
     in_messaging = False
-    go_back = False
 
 
 def message_func(user_input):
@@ -390,11 +376,10 @@ def send_func(user_input):
             ls_func()
 
 
-def accept_wrapper(sock):
-    global do_not_read
+def accept_wrapper(client_socket):
     global conn
     global accepted
-    conn, address = sock.accept()  # Should be ready to read
+    conn, address = client_socket.accept()  # Should be ready to read
     print('Accepted connection from', address)
     conn.setblocking(False)
     data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
@@ -480,6 +465,7 @@ def service_connection(key, mask):
                                 del dict[random]
                                 if profile_common_name in dict:
                                     print("Computer with same hostname found. Creating temporary name for client...")
+                                    server_restart()
                                     random = str(uuid.uuid4())
                                     random = random[:4]
                                     profile_common_name = profile_common_name + str(random)
@@ -568,8 +554,8 @@ class Starter(Thread):
 
         try:
             server_sock.bind((host, port))
-        except Exception as e:
-            print("Bind failed. Error : " + str(e))
+        except Exception as error:
+            print("Bind failed. Error : " + str(error))
             sys.exit()
 
         server_sock.listen(5)
@@ -622,11 +608,11 @@ class Send(Thread):
                 os.system('cls')
             if user_input == "/backup":
                 backup_func(user_input)
-            if user_input == 'test':
-                i = len(dict)
-                i = 0
-                while i < len(dict):
-                    check = list(dict.values())[i]
+            # if user_input == 'test':
+            #     i = len(dict)
+            #     i = 0
+            #     while i < len(dict):
+            #         check = list(dict.values())[i]
 
 
 class Receive(Thread):
@@ -634,7 +620,6 @@ class Receive(Thread):
     global MAC
     global back
     global message
-    global go_back
     global got
     global recv_computer_name
     global waiting_on_server
@@ -663,7 +648,6 @@ class Receive(Thread):
         global message
         global sock
         global got
-        global go_back
         global dict
         global waiting_on_server
         global done
@@ -688,7 +672,6 @@ class Receive(Thread):
                                         print('Receiving file...')
                                         i = GetThread(x)
                                         i.start()
-                                        # recv_data = sock.recv(1024).decode()
                                     elif str(recv_data).__contains__("--TEST--"):
                                         pass
                                     elif str(recv_data).__contains__("--SEND_TO--"):
@@ -709,7 +692,7 @@ class Receive(Thread):
                                     elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
                                         print("GOT BACKUP FILE")
                                         message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
-                                        i = OtherBackupThread(message, sock)
+                                        i = OtherBackupThread(message, x)
                                         i.start()
                                     elif str(recv_data).__contains__("--BACKUP--"):
                                         print("BACKING UP")
@@ -723,12 +706,11 @@ class Receive(Thread):
                                         message = ('\n' + "Received message from -> " + dict_list[position] + " -> " + recv_data)
                                         print(message)
                                         enter_func()
-                                        # recv_data = sock.recv(1024).decode()
                                 success = False
-                            except Exception as e:
+                            except Exception as error:
                                 pass
-                except Exception as e:
-                    print(e)
+                except Exception as error:
+                    print(error)
 
 
 class Check(Thread):
@@ -757,7 +739,6 @@ class Check(Thread):
                     if str(x).__contains__("\n"):
                         replacing_dict = False
                         print('replacing dict')
-                        oldkey = x
                         old_value = dict[x]
                         del dict[x]
                         new_x = str(x).split("\n")[0]
@@ -773,14 +754,15 @@ class Check(Thread):
                     try:
                         soc = list(dict.values())[i]
                         message = "--TEST--"
-                    except:
+                    except Exception as error:
                         print('index error. Resetting check')
+                        error_print("Error while using index", error)
                         i = 0
                     try:
 
                         soc.send(message.encode("utf-8"))
-                    except:
-                        # new_client = False
+                    except Exception as error:
+                        error_print("", error)
                         print(dict)
                         print('closing connection to ' +
                               str(list(dict.keys())[i]))
@@ -793,8 +775,9 @@ class Check(Thread):
                                 sel.unregister(sock)
                                 sock.close()
                                 i = 0
-                        except:
+                        except Exception as error:
                             print('unable to close sock' + str(sock))
+                            error_print("Error while closing sock", error)
                         if in_messaging is True:
                             back_func()
                         else:
@@ -818,6 +801,8 @@ class OtherBackupThread(Thread):
         self.user_input = user_input
 
     def run(self):
+        print('using this socket')
+        print(self.pc_socket)
         write_backup_files(self.user_input, self.pc_socket)
 
 
@@ -847,15 +832,6 @@ def create_resource_file(file_name, print_text):
         print("SYSTEM: Creating " + print_text + "...")
         with open("Resources\\" + file_name, "w+") as file_to_create:
             pass
-
-
-def globalize_computer_name(RCN, M):
-    global rcn
-    global MAC
-    rcn = RCN
-    MAC = M
-    print(RCN)
-    print(MAC)
 
 
 def start_the_rest_of_the_classes():

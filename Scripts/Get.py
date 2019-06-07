@@ -13,7 +13,7 @@ def error_log(error):
         file.write(str(error) + "\n" + "\n")
 
 
-def error_print(error_message ,error):
+def error_print(error_message, error):
     print("SYSTEM ERROR - " + error_message + ": " + str(error))
 
 
@@ -38,7 +38,7 @@ def main(ip_to_send):
         sys.exit()
     name = s.recv(1024)
     with open(name, 'wb') as f:
-        print('receiving data...')
+        print('Receiving data...')
         while True:
             data = s.recv(1024)
             if not data:
@@ -50,6 +50,7 @@ def main(ip_to_send):
     s.close()
     print('connection closed')
 
+
 def backup(ip_to_send):
     s = socket.socket()
 
@@ -58,11 +59,12 @@ def backup(ip_to_send):
 
     try:
         s.connect((host, port))
-        print('started reciever')
-    except:
-        print('Started twice... exiting')
+        print('started receiver')
+    except Exception as error:
+        print(error)
         press('enter')
         sys.exit()
+
     name = s.recv(1024)
     name = name.decode("utf-8")
     print("NAME " + str(name))
@@ -98,9 +100,9 @@ def write_backup_file(pc, ip_to_send):
 
     try:
         s.connect((host, port))
-        print('started reciever')
-    except:
-        print('Started twice... exiting')
+        print('started Receiver')
+    except Exception as error:
+        print(error)
         press('enter')
         sys.exit()
     name = s.recv(1024)
