@@ -608,6 +608,9 @@ class Send(Thread):
                 os.system('cls')
             if user_input == "/backup":
                 backup_func(user_input)
+            if user_input == "/connect":
+                for x in dict.values():
+                    File_Sender.send_ready(x)
             # if user_input == 'test':
             #     i = len(dict)
             #     i = 0

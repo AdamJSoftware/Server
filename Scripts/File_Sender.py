@@ -10,7 +10,7 @@ def main(client):
     s.listen(5)  # Now wait for client connection.
 
     print('Server listening....')
-    client.send('CONNECT'.encode("utf-8"))
+    send_ready(client)
 
     connection, address = s.accept()  # Establish connection with client.
     print('Got connection from', address)
@@ -44,7 +44,9 @@ def get_files(client, path):
     s.listen(5)  # Now wait for client connection.
 
     print('Server listening....')
-    client.send('CONNECT'.encode("utf-8"))
+    send_ready(client)
+
+
 
     conn, addr = s.accept()  # Establish connection with client.
     print('Got connection from', addr)
@@ -64,6 +66,13 @@ def get_files(client, path):
     except Exception as e:
         print("Could not open file please try again")
         print(e)
+
+
+def send_ready(client):
+    port = 8888
+    message = 'CONNECT'
+    client.send(message.encode("utf-8"))
+    print('message sent')
 
 
 if __name__ == '__main__':
