@@ -185,7 +185,7 @@ def backup_func(client_sock):
         message_to_send = "--GETFILES--"
         message_to_send = message_to_send.encode("utf-8")
         client_sock.sendall(message_to_send)
-        File_Sender.get_files(path)
+        File_Sender.get_files(client_sock, path)
     else:
         pass
 
@@ -351,7 +351,7 @@ def send_func(user_input):
                 client_socket = x
                 client_socket.send(message_to_client)
                 print(" Please select file...")
-                File_Sender.main()
+                File_Sender.main(client_socket)
         except Exception as error:
             error_print("Error while sending to computer", error)
             error_log(error)
@@ -366,7 +366,7 @@ def send_func(user_input):
                 client_socket = dict[user_input]
                 client_socket.send(message_to_client)
                 print(" Please select file to send to -> " + user_input)
-                File_Sender.main()
+                File_Sender.main(client_socket)
             else:
                 print("Computer not found. Please reference the computer list:")
                 ls_func()
@@ -699,6 +699,8 @@ class Receive(Thread):
                                         message = recv_data.split("--BACKUP--")[1]
                                         i = BackupThread(x)
                                         i.start()
+                                    elif str(recv_data).__contains__("CONNECT"):
+                                        Get.can_connect = True
                                     else:
                                         dict_list = []
                                         [dict_list.extend([k, v]) for k, v in my_dict.items()]
@@ -706,6 +708,7 @@ class Receive(Thread):
                                         message = ('\n' + "Received message from -> " + dict_list[position] + " -> " + recv_data)
                                         print(message)
                                         enter_func()
+
                                 success = False
                             except Exception as error:
                                 pass

@@ -1,15 +1,804 @@
 Backup2.txt
-[162]
+[33619]
 Backup_SEND.txt
-[829]
+[73284]
 desktop.ini
 [124]
 GETFILES.txt
-[15]
+[204582]
+Harcerstwo
 Received_Backup.txt
-[26]
-Test
-Test\desktop.ini
+[244134]
+School
+scripts
+test
+Website
+Work
+Harcerstwo\.tmp.drivedownload
+Harcerstwo\Biwak Badz gotow
+Harcerstwo\desktop.ini
 [124]
-Test\Test.txt
-[0]
+Harcerstwo\Harcerstwo 2017-18
+Harcerstwo\Harcerstwo 2018-19
+Harcerstwo\Information Sheets
+Harcerstwo\Logo
+Harcerstwo\Obozowka
+Harcerstwo\Wedros
+Harcerstwo\ZHP Website
+School\.tmp.drivedownload
+School\2017 - 2018
+School\2018 - 2019
+School\desktop.ini
+[124]
+scripts\desktop.ini
+[124]
+scripts\includes
+scripts\javascript
+test\css
+test\desktop.ini
+[124]
+test\includes
+test\javascript
+test\js
+Website\desktop.ini
+[124]
+Website\html5up-forty
+Website\Pictures
+Work\Databending
+Work\desktop.ini
+[124]
+Work\Expenses
+Work\Invoices
+Work\Summer Company
+Work\Tech Wanted
+Work\Websites
+Harcerstwo\Biwak Badz gotow\desktop.ini
+[124]
+Harcerstwo\Biwak Badz gotow\Good photos
+Harcerstwo\Harcerstwo 2017-18\desktop.ini
+[124]
+Harcerstwo\Harcerstwo 2017-18\Projekt
+Harcerstwo\Harcerstwo 2017-18\Tematowosc
+Harcerstwo\Harcerstwo 2018-19\desktop.ini
+[124]
+Harcerstwo\Information Sheets\desktop.ini
+[124]
+Harcerstwo\Information Sheets\PDF
+Harcerstwo\Information Sheets\Word
+Harcerstwo\Logo\desktop.ini
+[124]
+Harcerstwo\Logo\Logo - V1
+Harcerstwo\Logo\Logo - V2
+Harcerstwo\Logo\Logo - V3
+Harcerstwo\Obozowka\desktop.ini
+[124]
+Harcerstwo\Obozowka\Harcerstwo logo
+Harcerstwo\Wedros\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics
+Harcerstwo\ZHP Website\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions
+Harcerstwo\ZHP Website\ZHP - Website
+School\2017 - 2018\Debate
+School\2017 - 2018\desktop.ini
+[124]
+School\2017 - 2018\Grade 10
+School\2017 - 2018\Grade 11
+School\2017 - 2018\Polska Szkola
+School\2018 - 2019\desktop.ini
+[124]
+School\2018 - 2019\Grade 11
+School\2018 - 2019\Polish School
+scripts\includes\db
+scripts\includes\design
+scripts\includes\desktop.ini
+[124]
+scripts\javascript\desktop.ini
+[124]
+test\css\desktop.ini
+[124]
+test\includes\archive
+test\includes\db
+test\includes\design
+test\includes\desktop.ini
+[124]
+test\javascript\desktop.ini
+[124]
+test\js\desktop.ini
+[124]
+Website\html5up-forty\assets
+Website\html5up-forty\desktop.ini
+[124]
+Website\html5up-forty\images
+Website\Pictures\desktop.ini
+[124]
+Work\Databending\desktop.ini
+[124]
+Work\Expenses\desktop.ini
+[124]
+Work\Invoices\desktop.ini
+[124]
+Work\Invoices\JP's Awning Cleaning
+Work\Invoices\Woofstock
+Work\Summer Company\desktop.ini
+[124]
+Work\Tech Wanted\desktop.ini
+[124]
+Work\Websites\DayStar Acrilic
+Work\Websites\Derick's Website
+Work\Websites\desktop.ini
+[124]
+Work\Websites\HotHive
+Work\Websites\JP's Awnings
+Work\Websites\Woofstock
+Harcerstwo\Biwak Badz gotow\Good photos\desktop.ini
+[124]
+Harcerstwo\Harcerstwo 2017-18\Projekt\desktop.ini
+[124]
+Harcerstwo\Harcerstwo 2017-18\Tematowosc\desktop.ini
+[124]
+Harcerstwo\Information Sheets\PDF\desktop.ini
+[124]
+Harcerstwo\Information Sheets\Word\desktop.ini
+[124]
+Harcerstwo\Logo\Logo - V1\desktop.ini
+[124]
+Harcerstwo\Logo\Logo - V2\desktop.ini
+[124]
+Harcerstwo\Logo\Logo - V3\desktop.ini
+[124]
+Harcerstwo\Obozowka\Harcerstwo logo\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics\Programming
+Harcerstwo\ZHP Website\Old Versions\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)
+Harcerstwo\ZHP Website\ZHP - Website\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery
+Harcerstwo\ZHP Website\ZHP - Website\images
+Harcerstwo\ZHP Website\ZHP - Website\layout
+School\2017 - 2018\Debate\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme
+School\2017 - 2018\Grade 10\10 - English
+School\2017 - 2018\Grade 10\10 - French
+School\2017 - 2018\Grade 10\10 - Math
+School\2017 - 2018\Grade 10\10 - PPL20
+School\2017 - 2018\Grade 10\10 - Science
+School\2017 - 2018\Grade 10\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Math
+School\2017 - 2018\Grade 11\11 - Religion
+School\2017 - 2018\Grade 11\desktop.ini
+[124]
+School\2017 - 2018\Polska Szkola\desktop.ini
+[124]
+School\2017 - 2018\Polska Szkola\Praca
+School\2017 - 2018\Polska Szkola\Rewizja
+School\2018 - 2019\Grade 11\11 - Chemistry
+School\2018 - 2019\Grade 11\11 - COOP
+School\2018 - 2019\Grade 11\11 - English
+School\2018 - 2019\Grade 11\11 - Finances
+School\2018 - 2019\Grade 11\11 - French
+School\2018 - 2019\Grade 11\11 - Introduction to Computer Science
+School\2018 - 2019\Grade 11\11 - Physics
+School\2018 - 2019\Grade 11\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\Random word files
+School\2018 - 2019\Polish School\Czeslaw Milosz
+School\2018 - 2019\Polish School\desktop.ini
+[124]
+scripts\includes\db\desktop.ini
+[124]
+scripts\includes\design\desktop.ini
+[124]
+test\includes\archive\desktop.ini
+[124]
+test\includes\db\desktop.ini
+[124]
+test\includes\design\desktop.ini
+[124]
+Website\html5up-forty\assets\css
+Website\html5up-forty\assets\desktop.ini
+[124]
+Website\html5up-forty\assets\fonts
+Website\html5up-forty\assets\js
+Website\html5up-forty\assets\sass
+Website\html5up-forty\images\desktop.ini
+[124]
+Work\Invoices\JP's Awning Cleaning\desktop.ini
+[124]
+Work\Invoices\Woofstock\desktop.ini
+[124]
+Work\Websites\DayStar Acrilic\DCIM
+Work\Websites\DayStar Acrilic\desktop.ini
+[124]
+Work\Websites\Derick's Website\desktop.ini
+[124]
+Work\Websites\HotHive\desktop.ini
+[124]
+Work\Websites\JP's Awnings\2019-02-12
+Work\Websites\JP's Awnings\desktop.ini
+[124]
+Work\Websites\JP's Awnings\New Photos
+Work\Websites\JP's Awnings\OldSite
+Work\Websites\Woofstock\2019 Exhibitors
+Work\Websites\Woofstock\banner
+Work\Websites\Woofstock\Best public event 2019 - Icon
+Work\Websites\Woofstock\Celebrity Dogs
+Work\Websites\Woofstock\Contest Page
+Work\Websites\Woofstock\Crump's Arena
+Work\Websites\Woofstock\Crump's Contest
+Work\Websites\Woofstock\desktop.ini
+[124]
+Work\Websites\Woofstock\Dyson
+Work\Websites\Woofstock\Fashion show
+Work\Websites\Woofstock\Hosts
+Work\Websites\Woofstock\JWalker
+Harcerstwo\Wedros\Robotics\Programming\Basics
+Harcerstwo\Wedros\Robotics\Programming\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics\Programming\IR
+Harcerstwo\Wedros\Robotics\Programming\sketch_mar24a
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\images
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\layout
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\fancybox
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\lib
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\Originals
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\source
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\TN
+Harcerstwo\ZHP Website\ZHP - Website\images\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\layout\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\layout\styles
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Civisme
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - English\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - English\English Presentation
+School\2017 - 2018\Grade 10\10 - English\Media Monday
+School\2017 - 2018\Grade 10\10 - English\To Kill A Mockingbird
+School\2017 - 2018\Grade 10\10 - French\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Grammaire
+School\2017 - 2018\Grade 10\10 - French\Histoire courte
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents
+School\2017 - 2018\Grade 10\10 - French\Tableau comparatif d'oeuvres
+School\2017 - 2018\Grade 10\10 - Math\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Math\Plannification régionale
+School\2017 - 2018\Grade 10\10 - Math\Projet de parrabole
+School\2017 - 2018\Grade 10\10 - PPL20\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - PPL20\Projet - Présentation d'un jeu mineur
+School\2017 - 2018\Grade 10\10 - PPL20\Recherche - Santé et vie saine
+School\2017 - 2018\Grade 10\10 - Science\Biologie
+School\2017 - 2018\Grade 10\10 - Science\Chimie
+School\2017 - 2018\Grade 10\10 - Science\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Exam
+School\2017 - 2018\Grade 10\10 - Science\Étude Indépendante
+School\2017 - 2018\Grade 11\11 - Math\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Notes
+School\2017 - 2018\Grade 11\11 - Religion\Projets
+School\2017 - 2018\Grade 11\11 - Religion\Révision
+School\2017 - 2018\Polska Szkola\Praca\desktop.ini
+[124]
+School\2017 - 2018\Polska Szkola\Rewizja\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Chemistry\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Chemistry\Photos
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir
+School\2018 - 2019\Grade 11\11 - COOP\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Final
+School\2018 - 2019\Grade 11\11 - COOP\MCC
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique
+School\2018 - 2019\Grade 11\11 - COOP\Robotics
+School\2018 - 2019\Grade 11\11 - COOP\Useless
+School\2018 - 2019\Grade 11\11 - English\Animal Farm
+School\2018 - 2019\Grade 11\11 - English\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Macbeth
+School\2018 - 2019\Grade 11\11 - English\Portfolio
+School\2018 - 2019\Grade 11\11 - English\Unit 1 - Poetry
+School\2018 - 2019\Grade 11\11 - Finances\Carl Doucette
+School\2018 - 2019\Grade 11\11 - Finances\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Other stuff
+School\2018 - 2019\Grade 11\11 - Finances\Photos
+School\2018 - 2019\Grade 11\11 - Finances\Unité 1
+School\2018 - 2019\Grade 11\11 - Finances\Unité 2
+School\2018 - 2019\Grade 11\11 - Finances\Unité 3
+School\2018 - 2019\Grade 11\11 - Finances\Unité 4
+School\2018 - 2019\Grade 11\11 - French\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - French\Poison
+School\2018 - 2019\Grade 11\11 - French\Video
+School\2018 - 2019\Grade 11\11 - Introduction to Computer Science\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 0
+School\2018 - 2019\Grade 11\11 - Physics\Unité 1
+School\2018 - 2019\Grade 11\11 - Physics\Unité 2
+School\2018 - 2019\Grade 11\11 - Physics\Unité 3
+School\2018 - 2019\Grade 11\Random word files\desktop.ini
+[124]
+School\2018 - 2019\Polish School\Czeslaw Milosz\desktop.ini
+[124]
+Website\html5up-forty\assets\css\desktop.ini
+[124]
+Website\html5up-forty\assets\fonts\desktop.ini
+[124]
+Website\html5up-forty\assets\js\desktop.ini
+[124]
+Website\html5up-forty\assets\sass\base
+Website\html5up-forty\assets\sass\components
+Website\html5up-forty\assets\sass\desktop.ini
+[124]
+Website\html5up-forty\assets\sass\layout
+Website\html5up-forty\assets\sass\libs
+Work\Websites\DayStar Acrilic\DCIM\100MEDIA
+Work\Websites\DayStar Acrilic\DCIM\desktop.ini
+[124]
+Work\Websites\JP's Awnings\2019-02-12\desktop.ini
+[124]
+Work\Websites\JP's Awnings\New Photos\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\About the Owner_files
+Work\Websites\JP's Awnings\OldSite\Before & After Phots_files
+Work\Websites\JP's Awnings\OldSite\Before_After Photos_files
+Work\Websites\JP's Awnings\OldSite\Commercial_files
+Work\Websites\JP's Awnings\OldSite\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\Gazebo Awnings_files
+Work\Websites\JP's Awnings\OldSite\Home_files
+Work\Websites\JP's Awnings\OldSite\IS YOUR FAMILY SAFE__files
+Work\Websites\Woofstock\2019 Exhibitors\desktop.ini
+[124]
+Work\Websites\Woofstock\2019 Exhibitors\New Icons
+Work\Websites\Woofstock\banner\desktop.ini
+[124]
+Work\Websites\Woofstock\Best public event 2019 - Icon\desktop.ini
+[124]
+Work\Websites\Woofstock\Celebrity Dogs\desktop.ini
+[124]
+Work\Websites\Woofstock\Contest Page\desktop.ini
+[124]
+Work\Websites\Woofstock\Crump's Arena\desktop.ini
+[124]
+Work\Websites\Woofstock\Crump's Contest\desktop.ini
+[124]
+Work\Websites\Woofstock\Dyson\desktop.ini
+[124]
+Work\Websites\Woofstock\Fashion show\desktop.ini
+[124]
+Work\Websites\Woofstock\Hosts\desktop.ini
+[124]
+Work\Websites\Woofstock\JWalker\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics\Programming\Basics\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics\Programming\IR\desktop.ini
+[124]
+Harcerstwo\Wedros\Robotics\Programming\sketch_mar24a\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\images
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\layout
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\fancybox
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\lib
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\Originals
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\source
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\TN
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\images\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\layout\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\layout\styles
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\fancybox\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\fancybox\_notes
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\lib\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\Originals\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\source\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\source\helpers
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\TN\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\layout\styles\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\layout\styles\images
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Les relations interpersonnelles et le travail d’équipe
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Portfolio
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Civisme\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Civisme\Parti Vert
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Civisme\Révision
+School\2017 - 2018\Grade 10\10 - English\English Presentation\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - English\Media Monday\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - English\To Kill A Mockingbird\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Grammaire\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Histoire courte\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\Sleep
+School\2017 - 2018\Grade 10\10 - French\Tableau comparatif d'oeuvres\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Math\Plannification régionale\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Math\Plannification régionale\Images
+School\2017 - 2018\Grade 10\10 - Math\Projet de parrabole\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Math\Projet de parrabole\Images
+School\2017 - 2018\Grade 10\10 - PPL20\Projet - Présentation d'un jeu mineur\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - PPL20\Recherche - Santé et vie saine\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - PPL20\Recherche - Santé et vie saine\Final product
+School\2017 - 2018\Grade 10\10 - PPL20\Recherche - Santé et vie saine\Images
+School\2017 - 2018\Grade 10\10 - Science\Biologie\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Biologie\Projet - Dissection d'une grenouille
+School\2017 - 2018\Grade 10\10 - Science\Biologie\Projet - Système digestif
+School\2017 - 2018\Grade 10\10 - Science\Biologie\Révision
+School\2017 - 2018\Grade 10\10 - Science\Chimie\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Naperon de Nomenclature
+School\2017 - 2018\Grade 10\10 - Science\Exam\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Étude Indépendante\Climat
+School\2017 - 2018\Grade 10\10 - Science\Étude Indépendante\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Étude Indépendante\Physique
+School\2017 - 2018\Grade 11\11 - Religion\Notes\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Projets\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Projets\John Paul II
+School\2017 - 2018\Grade 11\11 - Religion\Projets\Les Étapes et les Phases du Génocide
+School\2017 - 2018\Grade 11\11 - Religion\Projets\Nos religions et les droits humains
+School\2017 - 2018\Grade 11\11 - Religion\Projets\Travail en groupe
+School\2017 - 2018\Grade 11\11 - Religion\Révision\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Chemistry\Photos\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 1
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 2
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 3
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 4
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 5
+School\2018 - 2019\Grade 11\11 - COOP\Final\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Final\Photos
+School\2018 - 2019\Grade 11\11 - COOP\MCC\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Autres
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Certificats
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\CV en anglais
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\CV en français
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Lettre de candidature
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Lettres de référence
+School\2018 - 2019\Grade 11\11 - COOP\Robotics\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Useless\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Animal Farm\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Animal Farm\Essay
+School\2018 - 2019\Grade 11\11 - English\Animal Farm\Review Questions
+School\2018 - 2019\Grade 11\11 - English\Macbeth\Comprehension Check
+School\2018 - 2019\Grade 11\11 - English\Macbeth\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Portfolio\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Unit 1 - Poetry\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Carl Doucette\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Other stuff\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Photos\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Unité 1\Case Study
+School\2018 - 2019\Grade 11\11 - Finances\Unité 1\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Unité 1\Présentation
+School\2018 - 2019\Grade 11\11 - Finances\Unité 2\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Unité 3\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Unité 4\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - French\Poison\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - French\Video\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 0\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 1\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 1\Présentations
+School\2018 - 2019\Grade 11\11 - Physics\Unité 2\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 2\Présentations
+School\2018 - 2019\Grade 11\11 - Physics\Unité 3\desktop.ini
+[124]
+Website\html5up-forty\assets\sass\base\desktop.ini
+[124]
+Website\html5up-forty\assets\sass\components\desktop.ini
+[124]
+Website\html5up-forty\assets\sass\layout\desktop.ini
+[124]
+Website\html5up-forty\assets\sass\libs\desktop.ini
+[124]
+Work\Websites\DayStar Acrilic\DCIM\100MEDIA\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\About the Owner_files\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\Before & After Phots_files\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\Before_After Photos_files\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\Commercial_files\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\Gazebo Awnings_files\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\Home_files\desktop.ini
+[124]
+Work\Websites\JP's Awnings\OldSite\IS YOUR FAMILY SAFE__files\desktop.ini
+[124]
+Work\Websites\Woofstock\2019 Exhibitors\New Icons\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\images
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\layout
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\images\demo
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\images\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\layout\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\layout\styles
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\fancybox\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\fancybox\_notes
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\lib\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\Originals\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\source\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\source\helpers
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\TN\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\layout\styles\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\layout\styles\images
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\fancybox\_notes\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\Gallery\source\helpers\desktop.ini
+[124]
+Harcerstwo\ZHP Website\ZHP - Website\layout\styles\images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\Images
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Les relations interpersonnelles et le travail d’équipe\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Les relations interpersonnelles et le travail d’équipe\Images
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Portfolio\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Civisme\Parti Vert\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Civisme\Révision\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\Sleep\Bed
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\Sleep\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\Sleep\Extra
+School\2017 - 2018\Grade 10\10 - Math\Plannification régionale\Images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Math\Projet de parrabole\Images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - PPL20\Recherche - Santé et vie saine\Final product\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - PPL20\Recherche - Santé et vie saine\Images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Biologie\Projet - Dissection d'une grenouille\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Biologie\Projet - Système digestif\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Biologie\Révision\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Conservation de la Masse
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Naperon de Nomenclature\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Étude Indépendante\Climat\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Étude Indépendante\Physique\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Projets\John Paul II\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Projets\Les Étapes et les Phases du Génocide\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Projets\Nos religions et les droits humains\desktop.ini
+[124]
+School\2017 - 2018\Grade 11\11 - Religion\Projets\Travail en groupe\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 1\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 2\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 3\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 4\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\COOP du soir\Devoir - 5\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Final\Photos\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Autres\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Certificats\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\CV en anglais\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\CV en français\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Lettre de candidature\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - COOP\Portfolio électronique\Lettres de référence\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Animal Farm\Essay\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Animal Farm\Review Questions\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - English\Macbeth\Comprehension Check\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Unité 1\Case Study\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Finances\Unité 1\Présentation\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 1\Présentations\desktop.ini
+[124]
+School\2018 - 2019\Grade 11\11 - Physics\Unité 2\Présentations\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\images\demo
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\images\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\layout\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\layout\styles
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\images\demo\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\layout\styles\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\layout\styles\images
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\lib
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\Originals
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\source
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\TN
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\fancybox\_notes\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\Gallery\source\helpers\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website - Uploaded(Unorganized)\layout\styles\images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\Images\Backgrounds
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\Images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\Images\Secondary images
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Les relations interpersonnelles et le travail d’équipe\Images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\Sleep\Bed\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - French\Le sommeil chez les adolescents\Sleep\Extra\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\Science - Pictures
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\Videos
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Conservation de la Masse\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\images\demo\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\layout\styles\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\layout\styles\images
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\lib
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\Originals
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\source
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\TN
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\layout\styles\images\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\lib\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\Originals\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\source\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\source\helpers
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\TN\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\Images\Backgrounds\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Carrière et Civisme\Carrière\Ingénieur informatique\Images\Secondary images\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\Science - Pictures\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\Science - Pictures\Lab pictures
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\Videos\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\layout\styles\images\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\lib\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\Originals\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\source\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\source\helpers
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\TN\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\pages\Gallery\source\helpers\desktop.ini
+[124]
+School\2017 - 2018\Grade 10\10 - Science\Chimie\Laboratoires\Laboratoire - Classons les réactions chimiques\Science - Pictures\Lab pictures\desktop.ini
+[124]
+Harcerstwo\ZHP Website\Old Versions\ZHP - Website\ZHP\English\pages\Gallery\source\helpers\desktop.ini
+[124]
