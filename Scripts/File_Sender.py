@@ -21,7 +21,7 @@ def main(client):
         exit()
     try:
         print(path)
-        name = str(path).rsplit("\\", 1)[1]
+        name = str(path).rsplit("/", 1)[1]
         name = name.encode("utf-8")
         connection.send(name)
         with open(path, 'rb') as f:
@@ -52,7 +52,7 @@ def get_files(client, path):
     print('Got connection from', addr)
     try:
         print(path)
-        name = str(path).rsplit("\\", 1)[1]
+        name = str(path).rsplit("/", 1)[1]
         name = name.encode("utf-8")
         conn.send(name)
         with open(path, 'rb') as f:

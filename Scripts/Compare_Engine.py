@@ -1,18 +1,19 @@
 from Scripts import BackupSyncEngine
 import time
 
+
 def error_log(error):
-    with open("Resources\\ErrorLog.txt", 'a') as file:
+    with open("Resources/ErrorLog.txt", 'a') as file:
         file.write(time.ctime() + "\n")
         file.write(str(error) + "\n" + "\n")
 
 
-def error_print(error_message ,error):
+def error_print(error_message, error):
     print("SYSTEM ERROR - " + error_message + ": " + str(error))
 
 
 def main(pc):
-    with open("Resources\\Backups\\" + pc + "\\Received_Backup.txt", "r", encoding="utf-8-sig") as received_backup:
+    with open("Resources/Backups/" + pc + "/Received_Backup.txt", "r", encoding="utf-8-sig") as received_backup:
         received_backup = received_backup.readlines()
         new_received_backup = []
         for lines in received_backup:
@@ -22,7 +23,7 @@ def main(pc):
             else:
                 new_received_backup.append(lines)
 
-    with open("Resources\\Backups\\" + pc + "\\Backup2.txt", "r", encoding="utf-8-sig") as local_backup:
+    with open("Resources/Backups/" + pc + "/Backup2.txt", "r", encoding="utf-8-sig") as local_backup:
         local_backup = local_backup.readlines()
         new_local_backup = []
         for line in local_backup:

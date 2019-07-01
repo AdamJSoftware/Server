@@ -2,6 +2,7 @@ import os
 import sys
 global cwd
 cwd = os.getcwd()
+cwd = cwd.replace('\\', '/')
 
 
 def main():
@@ -39,7 +40,7 @@ def selector_func(Q):
         print("Please add space between '/select' and 'file'")
         return
     if Q.isidentifier() or Q.__contains__("."):
-        new_file = str(cwd) + '\\' + Q
+        new_file = str(cwd) + '/' + Q
         if os.path.isfile(new_file) or os.path.isdir(new_file):
             file = new_file
             i = False
@@ -64,7 +65,7 @@ def ls_func():
 def cd_func(Q):
     global cwd
     if Q.__contains__("cd."):
-        cwd = cwd.rsplit('\\',1)[0]
+        cwd = cwd.rsplit('/',1)[0]
         return cwd
     else:
         try:

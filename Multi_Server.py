@@ -49,7 +49,7 @@ pyautogui.FAILSAFE = False
 
 
 def error_log(error):
-    with open("Resources\\ErrorLog.txt", 'a') as file:
+    with open("Resources/ErrorLog.txt", 'a') as file:
         file.write(time.ctime() + "\n")
         file.write(str(error) + "\n" + "\n")
 
@@ -99,10 +99,10 @@ $UdpClient.Close()'''
             if user_input == common_name:
                 print('Waking up -> ' + common_name + " -> MAC -> " + mac)
                 write2 = wol_first + '"' + mac + '"' + wol_second
-                f = open("Resources\\MAC.ps1", "w+")
+                f = open("Resources/MAC.ps1", "w+")
                 f.write(write2)
                 f.close()
-                subprocess.call(["Resources\\MAC.bat"], stdout=sys.stdout)
+                subprocess.call(["Resources/MAC.bat"], stdout=sys.stdout)
                 i = length
                 found = True
 
@@ -521,7 +521,7 @@ def service_connection(key, mask):
                             new_client = False
                             print("Adding " + one + " to computer profiles")
                             comma = ","
-                            with open("Resources\\Profiles.txt", 'a', newline='') as resultFile:
+                            with open("Resources/Profiles.txt", 'a', newline='') as resultFile:
                                 resultFile.write(one + comma + client_host_name + comma + MAC + comma)
                             if in_messaging is True:
                                 back_func()
@@ -832,11 +832,11 @@ class GetThread(Thread):
 
 
 def create_resource_file(file_name, print_text):
-    if os.path.isfile("Resources\\" + file_name):
+    if os.path.isfile("Resources/" + file_name):
         pass
     else:
         print("SYSTEM: Creating " + print_text + "...")
-        with open("Resources\\" + file_name, "w+") as file_to_create:
+        with open("Resources/" + file_name, "w+") as file_to_create:
             pass
 
 

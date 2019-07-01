@@ -1,6 +1,7 @@
 import os
 
 cd = os.getcwd()
+cd = cd.replace('\\', '/')
 
 
 def original_files_func(files):
@@ -21,13 +22,15 @@ def original_files_func(files):
 
 
 def backup2(files_and_size, og):
+    print('OG')
+    print(og)
     new_list = []
     for files in files_and_size:
         for remove in og:
-            if str(files).__contains__(remove):
-                new_file = str(files).replace(remove, str(""))
+            if str(files).replace('\\', '/').__contains__(remove):
+                new_file = str(files).replace('\\', '/').replace(remove, str(""))
                 first_char = new_file[:1]
-                if first_char == '\\':
+                if first_char == '/':
                     new_file = new_file[1:]
                     new_list.append(new_file)
             else:
@@ -77,11 +80,14 @@ def folder_or_file(file, files_and_size, files):
 
 def files_to_scan_func(pc):
 
-    f = cd+"\\Resources\\Backups\\" + pc
+    f = cd+"/Resources/Backups/" + pc  # Set the directory of the computer being backed-up
     og = [f]
-    files_and_size = []
-    files_to_exclude = []
-    files = [f]
+    files_and_size = []  # List of all of the files (folders) as well as it sizes in the server backup directory
+    files_to_exclude = []  # Files to be excluded with * (still being worked on)
+    files = [f]  # All the files
+
+    print('FILES')
+    print(files)
 
     for file in files:
         try:
@@ -93,7 +99,7 @@ def files_to_scan_func(pc):
             files_to_exclude.append(file)
             print("ADDED FILE TO EXCLUDE")
         if len(files_to_exclude) == 0:
-            folder_or_file(file, files_and_size, files)
+            folder_or_file(file, files_and_size, files)  # This is where the magic happens. New folders are appended here which expands the list
         else:
             for i in files_to_exclude:
                 if i in file:
@@ -101,11 +107,11 @@ def files_to_scan_func(pc):
                 else:
                     folder_or_file(file, files_and_size, files)
 
-    with open("Resources\\Backups\\" + pc + "\\Backup_SEND.txt", "w", encoding="utf-8") as f:
+    with open("Resources/Backups/" + pc + "/Backup_SEND.txt", "w", encoding="utf-8") as f:
         for file in files_and_size:
-            f.write(str(file) + "\n")
+            f.write(str(file).replace('\\', '/') + "\n")
 
-    with open("Resources\\Backups\\" + pc + "\\Backup2.txt", "w", encoding="utf-8") as f:
+    with open("Resources/Backups/" + pc + "/Backup2.txt", "w", encoding="utf-8") as f:
         b2 = backup2(files_and_size, og)
         for file in b2:
-            f.write(str(file) + "\n")
+            f.write(str(file).replace('\\', '/') + "\n")

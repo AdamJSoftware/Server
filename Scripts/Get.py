@@ -10,7 +10,7 @@ pyautogui.FAILSAFE = False
 
 
 def error_log(error):
-    with open("Resources\\ErrorLog.txt", 'a') as file:
+    with open("Resources/ErrorLog.txt", 'a') as file:
         file.write(time.ctime() + "\n")
         file.write(str(error) + "\n" + "\n")
 
@@ -86,10 +86,10 @@ def backup(ip_to_send):
     except:
         pass
     try:
-        os.mkdir("Resources\\Backups\\" + name)
+        os.mkdir("Resources/Backups/" + name)
     except:
         pass
-    with open("Resources\\Backups\\" + name + "\\Received_Backup.txt", 'wb') as f:
+    with open("Resources/Backups/" + name + "/Received_Backup.txt", 'wb') as f:
         print('receiving data...')
         while True:
             data = s.recv(1024)
@@ -128,7 +128,7 @@ def write_backup_file(pc, ip_to_send):
     name = name.decode("utf-8")
     print("NAME " + name)
     time.sleep(1)
-    path = "Resources\\Backups\\" + pc + "\\" + name
+    path = "Resources/Backups/" + pc + "/" + name
     try:
         path = path.split("\n")[0]
     except:
