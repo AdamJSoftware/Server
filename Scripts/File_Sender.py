@@ -75,10 +75,19 @@ def get_files(client, path):
     return True
 
 
+def get_ip_from_sock(sock):
+    sock = str(sock).rsplit("raddr=('", 1)[1]
+    sock = str(sock).rsplit("',", 1)[0]
+    return sock
+
+
 def send_ready(client):
-    port = 8888
+    s = socket.socket()
+    port = 12345
+    host = get_ip_from_sock(client)
+    s.connect((host, port))
     message = 'CONNECT'
-    client.send(message.encode("utf-8"))
+    s.send(message.encode("utf-8"))
     print('message sent')
 
 

@@ -61,7 +61,10 @@ def error_print(error_message, error):
 def write_backup_files(pc, client_socket):
     s = get_ip_from_sock(client_socket)
     print(s)
-    Get.write_backup_file(pc, s)
+    try:
+        Get.write_backup_file(pc, s)
+    except:
+        server_restart()
 
 
 def rm_send():
@@ -178,7 +181,10 @@ def backup_func(client_sock):
             error_log(error)
     s = get_ip_from_sock(client_sock)
     print(s)
-    name = Get.backup(s)
+    try:
+        name = Get.backup(s)
+    except:
+        server_restart()
     BackupEngine.main(name)
     getter, path = Compare_Engine.main(name)
     if getter:
@@ -819,6 +825,28 @@ class OtherBackupThread(Thread):
         write_backup_files(self.user_input, self.pc_socket)
 
 
+class ConnectThread(Thread):
+    global dict
+
+    def __init__(self):
+        global dict
+        Thread.__init__(self)
+        port = 12345  # Reserve a port for your service every new transfer wants a new port or you must wait.
+        self.s = socket.socket()  # Create a socket object
+        host = ""  # Get local machine name
+        self.s.bind((host,port))
+        self.s.listen(5)  # Now wait for client connection.
+
+    def run(self):
+        global dict
+        while True:
+            connection, address = self.s.accept()
+            message =self.s.recv(1024).decode()
+            if message == "CONNECT":
+                print('GOT CONNECT')
+                Get.can_connect = True
+
+
 class SendToThread(Thread):
     def __init__(self, Q, x):
         Thread.__init__(self)
@@ -835,7 +863,10 @@ class GetThread(Thread):
         self.sock = get_ip_from_sock(s)
 
     def run(self):
-        Get.main(self.sock)
+        try:
+            Get.main(self.sock)
+        except:
+            server_restart()
 
 
 def create_resource_file(file_name, print_text):
@@ -850,6 +881,7 @@ def create_resource_file(file_name, print_text):
 def start_the_rest_of_the_classes():
     d.start()
     b.start()
+    e.start()
 
 
 if __name__ == '__main__':
@@ -865,6 +897,7 @@ if __name__ == '__main__':
         b = Send()
         c = Receive()
         d = Check()
+        e = ConnectThread()
         a.start()
 
         if connected is True:
