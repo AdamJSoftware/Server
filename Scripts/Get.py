@@ -113,8 +113,12 @@ def write_backup_file(pc, ip_to_send):
     host = ip_to_send
     port = 50000
 
+    print('socket binded')
+
     while can_connect is False:
         time.sleep(.1)
+
+    print('can connect is true')
 
     try:
         s.settimeout(10)

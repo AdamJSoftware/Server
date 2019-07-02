@@ -6,7 +6,10 @@ def main(client):
     port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
     s = socket.socket()  # Create a socket object
     host = ""  # Get local machine name
-    s.bind((host, port))  # Bind to the port
+    try:
+        s.bind((host, port))  # Bind to the port
+    except:
+        return False
     s.listen(5)  # Now wait for client connection.
 
     print('Server listening....')
@@ -34,6 +37,8 @@ def main(client):
         connection.close()
     except:
         print("Could not open file please try again")
+
+    return True
 
 
 def get_files(client, path):
@@ -66,6 +71,8 @@ def get_files(client, path):
     except Exception as e:
         print("Could not open file please try again")
         print(e)
+
+    return True
 
 
 def send_ready(client):

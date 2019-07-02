@@ -185,7 +185,9 @@ def backup_func(client_sock):
         message_to_send = "--GETFILES--"
         message_to_send = message_to_send.encode("utf-8")
         client_sock.sendall(message_to_send)
-        File_Sender.get_files(client_sock, path)
+        value = File_Sender.get_files(client_sock, path)
+        if value is False:
+            server_restart()
     else:
         pass
 
@@ -351,7 +353,9 @@ def send_func(user_input):
                 client_socket = x
                 client_socket.send(message_to_client)
                 print(" Please select file...")
-                File_Sender.main(client_socket)
+                value = File_Sender.main(client_socket)
+                if value is False:
+                    server_restart()
         except Exception as error:
             error_print("Error while sending to computer", error)
             error_log(error)
@@ -366,7 +370,9 @@ def send_func(user_input):
                 client_socket = dict[user_input]
                 client_socket.send(message_to_client)
                 print(" Please select file to send to -> " + user_input)
-                File_Sender.main(client_socket)
+                value = File_Sender.main(client_socket)
+                if value is False:
+                    server_restart()
             else:
                 print("Computer not found. Please reference the computer list:")
                 ls_func()
@@ -703,6 +709,7 @@ class Receive(Thread):
                                         i = BackupThread(x)
                                         i.start()
                                     elif str(recv_data).__contains__("CONNECT"):
+                                        print('GOT CONNECT')
                                         Get.can_connect = True
                                     else:
                                         dict_list = []
