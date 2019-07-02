@@ -835,13 +835,15 @@ class ConnectThread(Thread):
         self.s = socket.socket()  # Create a socket object
         host = ""  # Get local machine name
         self.s.bind((host,port))
-        self.s.listen(5)  # Now wait for client connection.
+          # Now wait for client connection.
 
     def run(self):
         global dict
+        x = self.s
+        self.s.listen(5)
+        connection, address = x.accept()
         while True:
-            connection, address = self.s.accept()
-            message =self.s.recv(1024).decode()
+            message = connection.recv(1024).decode()
             if message == "CONNECT":
                 print('GOT CONNECT')
                 Get.can_connect = True
