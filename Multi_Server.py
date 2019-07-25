@@ -2,6 +2,7 @@ from Scripts import BackupEngine
 from Scripts import Compare_Engine
 from Scripts import Get
 from Scripts import File_Sender
+# Import custom python files (use associated functions)
 import os
 import socket
 import sys
@@ -27,7 +28,6 @@ global replacing_dict
 global dict
 global IP
 global conn
-global sock1
 global got
 global sock
 global in_messaging
@@ -36,16 +36,22 @@ global back
 global message
 global MAC
 
+# creating a list of global variables
+
 connected = False
 got = False
 dict = {}
 replacing_dict = False
 show_ls = True
 results = []
-rm = False
+# setting some of the global variables to false or creating a list out of them
+
+
 
 sel = selectors.DefaultSelector()
+# Used to register and organize different computer sockets
 pyautogui.FAILSAFE = False
+# Allows to run the program in the background.
 
 
 def error_log(error):
@@ -53,9 +59,13 @@ def error_log(error):
         file.write(time.ctime() + "\n")
         file.write(str(error) + "\n" + "\n")
 
+# Any error is written to the error log
+
 
 def error_print(error_message, error):
     print("SYSTEM ERROR - " + error_message + ": " + str(error))
+
+# Any error is displayed to the user
 
 
 def write_backup_files(pc, client_socket):
@@ -66,9 +76,7 @@ def write_backup_files(pc, client_socket):
     except:
         server_restart()
 
-
-def rm_send():
-    pass
+# Function used for the backup program
 
 
 def wake_func(user_input):
@@ -114,6 +122,8 @@ $UdpClient.Close()'''
         press('enter')
         return found
 
+# Allows computers to be booted from the server
+
 
 # def view_func():
 #     global dict
@@ -151,6 +161,8 @@ def get_ip_addresses_func():
         print("\t" + ip_list[i])
         i += 1
     return ip_list
+
+# Function that displays the different IP addresses of the server
 
 
 def get_ip_from_sock(client_socket):
@@ -405,7 +417,6 @@ def service_connection(key, mask):
     global sock
     global recv_computer_name
     global selectors
-    global sock1
     global dictList
     global Position
     global replacing_dict
@@ -568,7 +579,8 @@ class Starter(Thread):
             server_sock.bind((host, port))
         except Exception as error:
             print("Bind failed. Error : " + str(error))
-            sys.exit()
+            time.sleep(10)
+            server_restart()
 
         server_sock.listen(5)
         print("SYSTEM: Socket created")
