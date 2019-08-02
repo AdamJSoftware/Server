@@ -4,7 +4,7 @@ import os
 
 def main():
     while True:
-        os.system('cls')
+        os.system('clear')
         subprocess.call(['python', 'Multi_Server.py'])
 
 
