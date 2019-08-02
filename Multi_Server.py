@@ -245,9 +245,6 @@ def back_func():
 
 
 def message_func(user_input):
-    global rm_message
-    global rm
-    global rm_sock
     global in_messaging
     global back_message
     global back
@@ -312,10 +309,7 @@ def ls_func():
 
 
 def send_to_func(user_input, sending_socket):
-    global IP
     global in_messaging
-    global rm
-    global rm_sock
     length = len(dict)
     if length == 1:
         try:
@@ -351,11 +345,7 @@ def send_to_func(user_input, sending_socket):
 
 
 def send_func(user_input):
-    global IP
     global in_messaging
-    global soc
-    global rm
-    global rm_sock
     length = len(dict)
     if length == 1:
         try:
@@ -412,10 +402,7 @@ def service_connection(key, mask):
     global sock
     global recv_computer_name
     global selectors
-    global dictList
-    global Position
     global replacing_dict
-    global IP
     global connected
     global in_messaging
     global new_client
@@ -558,10 +545,8 @@ def service_connection(key, mask):
 
 
 class Starter(Thread):
-    global soc
 
     def __init__(self):
-        global soc
 
         Thread.__init__(self)
         print("SYSTEM: Starting server")
@@ -686,10 +671,10 @@ class Receive(Thread):
                                 sock = x
                                 recv_data = sock.recv(1024).decode()
                                 success = True
-                                used_sock = sock
+                                # used_sock = sock
                                 if str(recv_data).__contains__("--PCNAME--||"):
                                     if done is True:
-                                        useless, recv_computer_name, MAC = str(recv_data).split("||")
+                                        _, recv_computer_name, MAC = str(recv_data).split("||")
                                         done = False
                                 else:
                                     if str(recv_data) == "--SENDING_FILE--":
@@ -850,7 +835,7 @@ class ConnectThread(Thread):
         global dict
         x = self.s
         self.s.listen(5)
-        connection, address = x.accept()
+        connection, _ = x.accept()
         while True:
             message = connection.recv(1024).decode()
             if message == "CONNECT":
@@ -885,7 +870,7 @@ def create_resource_file(file_name, print_text):
         pass
     else:
         print("SYSTEM: Creating " + print_text + "...")
-        with open("Resources/" + file_name, "w+") as file_to_create:
+        with open("Resources/" + file_name, "w+") as _:
             pass
 
 
