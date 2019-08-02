@@ -360,11 +360,6 @@ def send_func(user_input):
     if length == 1:
         try:
             message_to_client = 'sending file to only connected client'
-            if rm is True:
-                print(message_to_client)
-                rm_sock.sendall(message_to_client.encode("utf-8"))
-            else:
-                print(message_to_client)
             for x in dict.values():
                 message_to_client = "--SENDING_FILE--"
                 message_to_client = message_to_client.encode("utf-8")
@@ -463,6 +458,7 @@ def service_connection(key, mask):
                         error_log(error)
                         error_print("Error while adding computer", error)
                         client_host_name = "failed"
+                        server_restart()
                     profile_txt = f.read().split(',')
                     length = len(profile_txt)
                     length = length - 1
@@ -630,7 +626,7 @@ class Send(Thread):
             if user_input.__contains__('/m'):
                 message_func(user_input)
             if user_input == "/cls":
-                os.system('cls')
+                os.system('clear')
             if user_input == "/backup":
                 backup_func(user_input)
             if user_input == "/connect":

@@ -5,6 +5,7 @@ from Scripts import FileDirectory
 def main(client):
     port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
     s = socket.socket()  # Create a socket object
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     host = ""  # Get local machine name
     try:
         s.bind((host, port))  # Bind to the port
