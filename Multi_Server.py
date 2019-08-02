@@ -726,6 +726,28 @@ class Receive(Thread):
                     print(error)
 
 
+class newCheck(Thread):
+    def __init__(self):
+        Thread.__init__(self):
+    
+    def run(self):
+        host = ''
+        port = 8888
+
+        server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        try:
+            server_sock.bind((host, port))
+        except Exception as error:
+            print("Bind failed. Error : " + str(error))
+            time.sleep(1)
+            server_restart()
+
+        server_sock.listen(5)
+
+
+
 class Check(Thread):
     def __init__(self):
         global done
