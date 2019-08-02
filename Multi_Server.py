@@ -411,6 +411,7 @@ def service_connection(key, mask):
     global dict
     global waiting_on_server
     global got
+    global pc_name
     global done
     global accepted
     global MAC
@@ -438,6 +439,7 @@ def service_connection(key, mask):
                         while done is True:
                             time.sleep(.1)
                         client_host_name = recv_computer_name
+                        client_profile_name = pc_name
                         print("Received computer name -> " + client_host_name)
                         waiting_on_server = False
                         got = True
@@ -485,6 +487,12 @@ def service_connection(key, mask):
                                     enter_func()
                                 i = length
                                 enter_func()
+                                i = 0
+                                for _, _ in enumerate(dict):
+                                    i+=1
+                                check(i)
+                                message="--PORT--%s" % i
+                                sock.send(message.encode("utf-8"))
                         except Exception as error:
                             print("SYSTEM ERROR: " + str(error))
                         try:
@@ -518,21 +526,20 @@ def service_connection(key, mask):
                     if detected is False:
                         try:
                             print('New computer detected. Please wait for system to configure')
-                            enter_func()
-                            time.sleep(1)
-                            one = input("What is the name of this computer: ")
-                            del dict[random]
-                            dict[one] = sock
-                            print(dict)
-                            new_client = False
-                            print("Adding " + one + " to computer profiles")
+                            print("Adding " + client_profile_name + " to computer profiles")
                             comma = ","
                             with open("Resources/Profiles.txt", 'a', newline='') as resultFile:
-                                resultFile.write(one + comma + client_host_name + comma + MAC + comma)
+                                resultFile.write(client_profile_name + comma + client_host_name + comma + MAC + comma)
                             if in_messaging is True:
                                 back_func()
                             else:
                                 enter_func()
+                            i = 0
+                            for _, _ in enumerate(dict):
+                                i+=1
+                            check(i)
+                            message="--PORT--%s" % i
+                            sock.send(message.encode("utf-8"))
                         except Exception as error:
                             print("SYSTEM ERROR - adding PC to Profiles.txt: " + str(error))
                             error_log(error)
@@ -657,6 +664,7 @@ class Receive(Thread):
         global message
         global sock
         global got
+        global pc_name
         global dict
         global waiting_on_server
         global done
@@ -674,7 +682,7 @@ class Receive(Thread):
                                 # used_sock = sock
                                 if str(recv_data).__contains__("--PCNAME--||"):
                                     if done is True:
-                                        _, recv_computer_name, MAC = str(recv_data).split("||")
+                                        _, recv_computer_name, MAC, pc_name = str(recv_data).split("||")
                                         done = False
                                 else:
                                     if str(recv_data) == "--SENDING_FILE--":
@@ -726,25 +734,33 @@ class Receive(Thread):
                     print(error)
 
 
-class newCheck(Thread):
-    def __init__(self):
-        Thread.__init__(self):
+def check(client_number):
+    port = client_number  # Reserve a port for your service every new transfer wants a new port or you must wait.
+    s = socket.socket()  # Create a socket object
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    host = ""  # Get local machine name
+    try:
+        s.bind((host, port))  # Bind to the port
+    except:
+        return False
+    s.listen(5)  # Now wait for client connection.
+
+    print('Server listening....')
+
+    s.accept()
+
+    af = CheckSendThread(s)
+    af.start()
+
+class CheckSendThread(Thread):
+    def __init__(self, s):
+        Thread.__init__(self)
+        self.socket = s
     
     def run(self):
-        host = ''
-        port = 8888
-
-        server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-        try:
-            server_sock.bind((host, port))
-        except Exception as error:
-            print("Bind failed. Error : " + str(error))
-            time.sleep(1)
-            server_restart()
-
-        server_sock.listen(5)
+        while True:
+            time.sleep(5)
+            self.socket.send('--TEST--'.encode("utf-8"))
 
 
 

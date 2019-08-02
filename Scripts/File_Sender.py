@@ -92,5 +92,5 @@ def send_ready(client):
     print('message sent')
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
