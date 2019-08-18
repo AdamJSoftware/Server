@@ -1,4 +1,5 @@
 import socket
+import time
 from Scripts import FileDirectory
 
 
@@ -57,10 +58,11 @@ def get_files(path, port):
     conn, addr = s.accept()  # Establish connection with client.
     print('Got connection from', addr)
     try:
-        print(path)
+        print("PATH: {}".format(path))
         name = str(path).rsplit("/", 1)[1]
         name = name.encode("utf-8")
         conn.send(name)
+        time.sleep(1) #Fix this
         with open(path, 'rb') as f:
             print('Sending...')
             l = f.read(1024)

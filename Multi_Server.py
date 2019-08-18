@@ -256,7 +256,7 @@ class Receive(Thread):
                 elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
                     print("GOT BACKUP FILE")
                     message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
-                    Get.write_backup_file(message, self.sock, self.port)
+                    Get.write_backup_file(message, get_ip_from_sock(self.sock), self.port)
                 elif str(recv_data).__contains__("--BACKUP--"):
                     print("BACKING UP")
                     backup_func(self.sock, self.port)
@@ -284,6 +284,7 @@ def backup_func(client_sock, port):
             server_restart()
         BackupEngine.main(name)
         getter, path = Compare_Engine.main(name)
+        print("PATH: {}".format(path))
         if getter:
             message_to_send = "--GETFILES--"
             message_to_send = message_to_send.encode("utf-8")
