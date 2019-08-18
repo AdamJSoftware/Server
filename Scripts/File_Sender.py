@@ -45,17 +45,14 @@ def main(sock, port):
     return True
 
 
-def get_files(client, path):
-    port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
+def get_files(path, port):
+    print("PORT: {}".format(port))
     s = socket.socket()  # Create a socket object
     host = ""  # Get local machine name
     s.bind((host, port))  # Bind to the port
     s.listen(5)  # Now wait for client connection.
 
     print('Server listening....')
-    send_ready(client)
-
-
 
     conn, addr = s.accept()  # Establish connection with client.
     print('Got connection from', addr)
@@ -85,14 +82,6 @@ def get_ip_from_sock(sock):
     return sock
 
 
-def send_ready(client):
-    s = socket.socket()
-    port = 12345
-    host = get_ip_from_sock(client)
-    s.connect((host, port))
-    message = 'CONNECT'
-    s.send(message.encode("utf-8"))
-    print('message sent')
 
 
 # if __name__ == '__main__':

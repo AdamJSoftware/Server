@@ -1,57 +1,20 @@
-from Scripts import BackupEngine
-from Scripts import Compare_Engine
-from Scripts import Get
-from Scripts import File_Sender
-# Import custom python files (use associated functions)
+from threading import Thread
+import time
+import uuid
 import os
 import socket
-import sys
-import time
-import types
-import uuid
-import subprocess
 import selectors
-from threading import Thread
-import pyautogui
-from pyautogui import press
+import types
+import datetime
+import threading
 
-FNULL = open(os.devnull, 'w')
-
-global found
-global accepted
-global recv_computer_name
-global waiting_on_server
-global done
-global connected
-global started
-global replacing_dict
-global dict
-global IP
-global conn
-global got
-global sock
-global in_messaging
-global back_message
-global back
-global message
-global MAC
-
-# creating a list of global variables
-
-connected = False
-got = False
-dict = {}
-replacing_dict = False
-show_ls = True
-results = []
-# setting some of the global variables to false or creating a list out of them
-
+from Scripts import File_Sender
+from Scripts import Get
+from Scripts import BackupEngine
+from Scripts import Compare_Engine
 
 
 sel = selectors.DefaultSelector()
-# Used to register and organize different computer sockets
-pyautogui.FAILSAFE = False
-# Allows to run the program in the background.
 
 
 def error_log(error):
@@ -68,101 +31,21 @@ def error_print(error_message, error):
 # Any error is displayed to the user
 
 
-def write_backup_files(pc, client_socket):
-    s = get_ip_from_sock(client_socket)
-    print(s)
-    try:
-        Get.write_backup_file(pc, s)
-    except:
-        server_restart()
-
-# Function used for the backup program
-
-
-def wake_func(user_input):
-    global found
-    wol_first = "$Mac = "
-    wol_second = '''\n$MacByteArray = $Mac -split "[:-]" | ForEach-Object { [Byte] "0x$_"}
-[Byte[]] $MagicPacket = (,0xFF * 6) + ($MacByteArray  * 16)
-$UdpClient = New-Object System.Net.Sockets.UdpClient
-$UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
-$UdpClient.Send($MagicPacket,$MagicPacket.Length)
-$UdpClient.Close()'''
-    with open("Resources/Profiles.txt", "r") as f:
-        result = f.read().split(',')
-        length = len(result)
-        length = length - 1
-        i = 0
-        print("Computer profile list: ")
-        while i != length:
-            common_name = result[i]
-            i += 1
-            pc_name = result[i]
-            i += 2
-            print('\t' + common_name + " - " + pc_name)
-        i = 0
-        found = False
-        while i != length:
-            common_name = result[i]
-            i += 2
-            mac = result[i]
-            i += 1
-            if user_input == common_name:
-                print('Waking up -> ' + common_name + " -> MAC -> " + mac)
-                write2 = wol_first + '"' + mac + '"' + wol_second
-                f = open("Resources/MAC.ps1", "w+")
-                f.write(write2)
-                f.close()
-                subprocess.call(["Resources/MAC.bat"], stdout=sys.stdout)
-                i = length
-                found = True
-
-        if found is not True:
-            print("COULD NOT FIND " + user_input)
-        press('enter')
-        return found
-
-# Allows computers to be booted from the server
+class pc_list:
+    client_update = []
+    client_number = []
+    client_name = []
+    client_hostname = []
+    client_ip = []
+    client_sock = []
+    client_mac = []
+    client_port = []
+    client_receiver = []
+    client_checker = []
 
 
-# def view_func():
-#     global dict
-#     user_input = input("Would you like to send or get?")
-#     if user_input == "get":
-#         user_input = input('On which computer would you like to view:\n')
-#         ls_func()
-#         print('Server')
-#     elif user_input == "send":
-#         user_input = input('On which computer would you like to view:\n')
-#         ls_func()
-#         print('Server')
-#     else:
-#         print('exiting program please try again with a proper input')
-#         return
-#     #
-#     # file = FileDirectory.main()
-
-
-def get_ip_addresses_func():
-    address_list = socket.getaddrinfo(socket.gethostname(), None)
-
-    ip_list = []
-    for item in address_list:
-        ip_list.append(item[4][0])
-
-    num = len(ip_list)
-    i = 0
-    print("SYSTEM: Connect to server with these addresses:")
-    print("\t" + socket.gethostname())
-    while i != num:
-        if str(ip_list[i]).__contains__("::"):
-            ip_list.remove(ip_list[i])
-            num = num - 1
-        print("\t" + ip_list[i])
-        i += 1
-    return ip_list
-
-# Function that displays the different IP addresses of the server
+def replace_socket(index, value):
+    pc_list.client_sock[index] = value
 
 
 def get_ip_from_sock(client_socket):
@@ -171,384 +54,42 @@ def get_ip_from_sock(client_socket):
     return client_ip
 
 
-def backup_func(client_sock):
-    length = len(dict)
-    if length == 1:
-        try:
-            message_to_send = "||BACKUP||"
-            message_to_send = message_to_send.encode("utf-8")
-            time.sleep(0.5)
-            client_sock.send(message_to_send)
-            print('finished sending')
-        except Exception as error:
-            error_print("Error at backup_func", error)
-            error_log(error)
-    else:
-        try:
-            message_to_send = "||BACKUP||"
-            message_to_send = message_to_send.encode("utf-8")
-            client_sock.send(message_to_send)
-        except Exception as error:
-            error_print("Error at backup_func", error)
-            error_log(error)
-    s = get_ip_from_sock(client_sock)
-    print(s)
-    try:
-        name = Get.backup(s)
-    except:
-        server_restart()
-    BackupEngine.main(name)
-    getter, path = Compare_Engine.main(name)
-    if getter:
-        message_to_send = "--GETFILES--"
-        message_to_send = message_to_send.encode("utf-8")
-        client_sock.sendall(message_to_send)
-        value = File_Sender.get_files(client_sock, path)
-        if value is False:
-            server_restart()
-    else:
-        pass
+def append_to_pc_list(list_section, value):
+    replaced = False
+    for index, val in enumerate(list_section):
+        if val == '--REPLACE--':
+            replaced = True
+            list_section[index] = value
+    if not replaced:
+        list_section.append(value)
 
 
-def server_restart():
-    print('SYSTEM: Restarting server...')
-    time.sleep(1)
-    os._exit(1)
+def add_client_number():
+    replaced = False
+    for index, val in enumerate(pc_list.client_number):
+        if val == '--REPLACE--':
+            replaced = True
+            pc_list.client_number[index] = index
+    if not replaced:
+        pc_list.client_number.append(int(len(pc_list.client_number)))
 
 
-def enter_func():
-    press('enter')
+def replace_in_pc_list(json_section, old_value, new_value):
+    for index, val in enumerate(json_section):
+        if val == old_value:
+            json_section[index] = new_value
+    return json_section
 
 
-def pc_and_ip():
-    global dict
-    i = 1
-    for x in dict:
-        r_address = str(dict).split("raddr=")[i]
-        r_address = r_address.split(">")[0]
-        print("\t" + x + " -> IP  -> " + r_address)
-        i += 1
-
-
-def back_func():
-    global back_message
-    global back
-    global in_messaging
-    print("Returning to main screen. Please hold")
-    time.sleep(1)
-    press('enter')
-    time.sleep(1)
-    back_message = "/back"
-    back = True
-    press('enter')
-    in_messaging = False
-
-
-def message_func(user_input):
-    global in_messaging
-    global back_message
-    global back
-    back = False
-    back_message = ""
-    length = len(dict)
-    if length == 1:
-        try:
-            only_client = 'sending message to only connected client'
-            print(only_client)
-            for x in dict.values():
-                while back_message != "/back":
-                    if back is False:
-                        in_messaging = True
-                        message_to_client = input(" -> ")
-                        back_message = message_to_client
-                        message_to_client = message_to_client.encode("utf-8")
-                        client_socket = x
-                        client_socket.send(message_to_client)
-                    else:
-                        back_message = "/back"
-                in_messaging = False
-        except Exception as error:
-            error_log(error)
-    else:
-        try:
-            user_input = user_input.split('/m ', 1)[1]
-            if user_input in str(dict):
-                back_message = ""
-                while back_message != "/back":
-                    if back is False:
-                        in_messaging = True
-                        message_to_client = input("Sending message to -> " + user_input + " -> ")
-                        back_message = message_to_client
-                        message_to_client = message_to_client.encode("utf-8")
-                        client_socket = dict[user_input]
-                        client_socket.send(message_to_client)
-                    else:
-                        back_message = "/back"
-                in_messaging = False
-
-        except Exception as error:
-            print(error)
-            print("Here is the list of computers:")
-            ls_func()
-
-
-def help_func():
-    print("/m - 'DEVICE NAME' --> Sends message to device, \n"
-          "/m - all --> Sends message to all devices, \n"
-          "/power 'DEVICE NAME' --> Turns on device, \n"
-          "/shutdown 'DEVICE NAME' --> Shutsdown device, \n"
-          "/ls --> Shows connected devices, \n"
-          "/back --> Exists messaging menu, \n")
-
-
-def ls_func():
-    global dict
-    print("Computers currently connected:")
-    for x in dict:
-        print("\t" + x)
-
-
-def send_to_func(user_input, sending_socket):
-    global in_messaging
-    length = len(dict)
-    if length == 1:
-        try:
-            message_to_client = 'SYSTEM: CANNOT PERFORM ACTION DUE TO THERE ONLY BEING ONE CLIENT'
-            print(message_to_client)
-            for x in dict.values():
-                client_socket = x
-                client_socket.send(message_to_client.encode("utf-8"))
-        except Exception as error:
-            error_print("Error at send_to_func", error)
-            error_log(error)
-            pass
-    else:
-        try:
-            # pc_name = user_input.split('/send ', 1)[1]
-            pc_name = user_input
-            print(pc_name)
-            if pc_name in str(dict):
-                requesting_message = "--SENDING_FILE_TO--" + str(sending_socket)
-                requesting_message = requesting_message.encode("utf-8")
-                requesting_socket = dict[pc_name]
-                requesting_socket.send(requesting_message)
-                sending_message = "--CLIENT_ID--" + str(requesting_socket)
-                sending_socket.send(sending_message.encode("utf-8"))
-                print("Done sending")
-            else:
-                print("Computer not found. Please reference the computer list:")
-                ls_func()
-        except Exception as error:
-            error_log(error)
-            print("Here is the list of computers:")
-            ls_func()
-
-
-def send_func(user_input):
-    global in_messaging
-    length = len(dict)
-    if length == 1:
-        try:
-            message_to_client = 'sending file to only connected client'
-            for x in dict.values():
-                message_to_client = "--SENDING_FILE--"
-                message_to_client = message_to_client.encode("utf-8")
-                client_socket = x
-                client_socket.send(message_to_client)
-                print(" Please select file...")
-                value = File_Sender.main(client_socket)
-                if value is False:
-                    server_restart()
-        except Exception as error:
-            error_print("Error while sending to computer", error)
-            error_log(error)
-    else:
-        try:
-            if user_input.__contains__('/send '):
-                user_input = user_input.split('/send ', 1)[1]
-            print(user_input)
-            if user_input in str(dict):
-                message_to_client = "--SENDING_FILE--"
-                message_to_client = message_to_client.encode("utf-8")
-                client_socket = dict[user_input]
-                client_socket.send(message_to_client)
-                print(" Please select file to send to -> " + user_input)
-                value = File_Sender.main(client_socket)
-                if value is False:
-                    server_restart()
-            else:
-                print("Computer not found. Please reference the computer list:")
-                ls_func()
-        except Exception as error:
-            error_log(error)
-            print("Here is the list of computers:")
-            ls_func()
-
-
-def accept_wrapper(client_socket):
-    global conn
-    global accepted
-    conn, address = client_socket.accept()  # Should be ready to read
-    print('Accepted connection from', address)
-    conn.setblocking(False)
-    data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
-    events = selectors.EVENT_READ | selectors.EVENT_WRITE
-    sel.register(conn, events, data=data)
-    accepted = True
-
-
-def service_connection(key, mask):
-    global sock
-    global sock
-    global recv_computer_name
-    global selectors
-    global replacing_dict
-    global connected
-    global in_messaging
-    global new_client
-    global back
-    global show_ls
-    global dict
-    global waiting_on_server
-    global got
-    global pc_name
-    global done
-    global accepted
-    global MAC
-    sock = key.fileobj
-    done = True
-    if sock not in dict.values():
-        if accepted is True:
-            if replacing_dict is False:
-                new_client = True
-                random = str(uuid.uuid4())
-                random = random[:4]
-                random = 'temporary' + str(random)
-                dict[str(random)] = sock
-                with open('Resources/Profiles.txt', 'r') as f:
-                    print("Please wait for system to configure new computer...")
-                    try:
-                        got = False
-                        waiting_on_server = True
-                        print('Waiting to receive computer name')
-                        try:
-                            c.start()
-                        except Exception as error:
-                            error_log(error)
-                            pass
-                        while done is True:
-                            time.sleep(.1)
-                        client_host_name = recv_computer_name
-                        client_profile_name = pc_name
-                        print("Received computer name -> " + client_host_name)
-                        waiting_on_server = False
-                        got = True
-                    except Exception as error:
-                        error_log(error)
-                        error_print("Error while adding computer", error)
-                        client_host_name = "failed"
-                        server_restart()
-                    profile_txt = f.read().split(',')
-                    length = len(profile_txt)
-                    length = length - 1
-                    i = 0
-                    detected = False
-                    print("Computer profile list: ")
-                    while i != length:
-                        profile_common_name = profile_txt[i]
-                        i += 1
-                        profile_host_name = profile_txt[i]
-                        i += 2
-                        print('\t' + profile_common_name + " - " + profile_host_name)
-                    i = 0
-                    while i != length:
-                        profile_common_name = profile_txt[i]
-                        i += 1
-                        profile_host_name = profile_txt[i]
-                        i += 2
-                        try:
-                            if client_host_name == profile_host_name:
-                                print('Detected -> ' + profile_common_name + " -> Hostname -> " + profile_host_name)
-                                detected = True
-                                del dict[random]
-                                if profile_common_name in dict:
-                                    print("Computer with same hostname found. Creating temporary name for client...")
-                                    server_restart()
-                                    random = str(uuid.uuid4())
-                                    random = random[:4]
-                                    profile_common_name = profile_common_name + str(random)
-                                dict[profile_common_name] = sock
-                                print('Computers currently connected:')
-                                pc_and_ip()
-                                new_client = False
-                                if in_messaging is True:
-                                    back_func()
-                                else:
-                                    enter_func()
-                                i = length
-                                enter_func()
-                                i = 0
-                                for _, _ in enumerate(dict):
-                                    i+=1
-                                check(i)
-                                message="--PORT--%s" % i
-                                sock.send(message.encode("utf-8"))
-                        except Exception as error:
-                            print("SYSTEM ERROR: " + str(error))
-                        try:
-                            if client_host_name == "failed":
-                                print('could not get hostname. Assigning random value for computer')
-                                detected = True
-                                print(dict)
-                                try:
-                                    del dict[random]
-                                    random = str(uuid.uuid4())
-                                    random = random[:4]
-                                    name = "COMPUTER" + str(random)
-                                    show_ls = True
-                                    if show_ls is True:
-                                        dict[name] = sock
-                                        show_ls = False
-                                        ls_func()
-                                    print(dict)
-                                    new_client = False
-                                    if in_messaging is True:
-                                        back_func()
-                                    else:
-                                        enter_func()
-                                    i = length
-                                    server_restart()
-                                except Exception as error:
-                                    print("SYSTEM ERROR: " + str(error))
-                        except Exception as error:
-                            print("SYSTEM ERROR" + str(error))
-
-                    if detected is False:
-                        try:
-                            print('New computer detected. Please wait for system to configure')
-                            print("Adding " + client_profile_name + " to computer profiles")
-                            comma = ","
-                            with open("Resources/Profiles.txt", 'a', newline='') as resultFile:
-                                resultFile.write(client_profile_name + comma + client_host_name + comma + MAC + comma)
-                            if in_messaging is True:
-                                back_func()
-                            else:
-                                enter_func()
-                            i = 0
-                            for _, _ in enumerate(dict):
-                                i+=1
-                            check(i)
-                            message="--PORT--%s" % i
-                            sock.send(message.encode("utf-8"))
-                        except Exception as error:
-                            print("SYSTEM ERROR - adding PC to Profiles.txt: " + str(error))
-                            error_log(error)
-                            print("Error adding new computer. Check delete (005)")
-        if connected is False:
-            connected = True
-        done = True
-        accepted = False
-        got = False
+def add_port_to_list():
+    new_port = (int(len(pc_list.client_port)) + 1) * 3
+    replaced = False
+    for index, val in enumerate(pc_list.client_port):
+        if val == '--REPLACE--':
+            replaced = True
+            pc_list.client_port[index] = (index + 1) * 3
+    if not replaced:
+        pc_list.client_port.append(new_port)
 
 
 class Starter(Thread):
@@ -569,7 +110,7 @@ class Starter(Thread):
         except Exception as error:
             print("Bind failed. Error : " + str(error))
             time.sleep(1)
-            server_restart()
+            # server_restart()
 
         server_sock.listen(5)
         print("SYSTEM: Socket created")
@@ -586,359 +127,405 @@ class Starter(Thread):
                     else:
                         service_connection(key, mask)
             except Exception as error:
-                error_log(error)
-                error_print("Starter thread, tried registering with no computers connected", error)
-                server_restart()
+                print(error)
+                # error_log(error)
+                # error_print("Starter thread, tried registering with no computers connected", error)
+                # server_restart()
 
 
-class Send(Thread):
-    global in_messaging
+def accept_wrapper(client_socket):
+    global conn
+    global accepted
+    conn, address = client_socket.accept()  # Should be ready to read
+    print('Accepted connection from', address)
+    conn.setblocking(False)
+    data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
+    events = selectors.EVENT_READ | selectors.EVENT_WRITE
+    sel.register(conn, events, data=data)
+    accepted = True
+    print('finished accepting')
 
-    def __init__(self):
-        Thread.__init__(self)
-        global in_messaging
-        print("SYSTEM: Send initialized")
 
-    def run(self):
-        print("SYSTEM: Send started")
-        global in_messaging
-        while True:
-            in_messaging = False
-            user_input = input(' -> ')
-            if user_input == "":
-                pass
-            if user_input == "/restart":
-                server_restart()
-            if user_input == "/ls":
-                ls_func()
-            if user_input.__contains__('/send'):
-                send_func(user_input)
-            if user_input == "/help":
-                help_func()
-            if user_input.__contains__('/m'):
-                message_func(user_input)
-            if user_input == "/cls":
-                os.system('clear')
-            if user_input == "/backup":
-                backup_func(user_input)
-            if user_input == "/connect":
-                for x in dict.values():
-                    File_Sender.send_ready(x)
-            # if user_input == 'test':
-            #     i = len(dict)
-            #     i = 0
-            #     while i < len(dict):
-            #         check = list(dict.values())[i]
+def server_restart():
+    print('SYSTEM: Restarting server...')
+    time.sleep(1)
+    os._exit(1)
+
+def get_index_from_list(json_section, value):
+    for index, val in enumerate(json_section):
+        if val == value:
+            return index
+
+
+def remove_client_from_list(client_number):
+    for val in vars(pc_list).items():
+        if not str(val[0]).__contains__('__'):
+            val[1][client_number] = '--REPLACE--'
+
+
+def service_connection(key, mask):
+    global accepted
+    temporary_sock = key.fileobj
+    if temporary_sock not in vars(pc_list).items():
+        if accepted is True:
+            random = str(uuid.uuid4())
+            random = random[:4]
+            random = 'temporary' + str(random)
+            # The three lines above are creating a temporary name for the client
+            print('TEMPORARY: {}'.format(temporary_sock))
+            append_to_pc_list(pc_list.client_sock, temporary_sock)
+            append_to_pc_list(pc_list.client_name, str(random))
+            # pc_list["clientName"] = append_to_pc_list(pc_list["clientName"], str(random))
+            # pc_list["clientSocket"] = append_to_pc_list(pc_list["clientSocket"], sock)
+            append_to_pc_list(pc_list.client_ip, get_ip_from_sock(temporary_sock))
+            append_to_pc_list(pc_list.client_update, 'JUST JOINED')
+            # pc_list["clientIP"] = append_to_pc_list(pc_list["clientIP"], get_ip_from_sock(temporary_sock))
+            add_port_to_list()
+            add_client_number()
+            # Most of the client details are appended to the pc_list
+            print("Please wait for system to configure new computer...")
+            # FIX THIS WAITING THING FOR MORE SECURE CONNECITION
+            time.sleep(1)
+            client_number = get_index_from_list(pc_list.client_ip, get_ip_from_sock(temporary_sock))
+
+            print(pc_list.client_port[client_number])
+            # Note for me, this should be removed in order to avoid another client taking the number
+            # Starting the receive thread for the specific client
+            client_hostname = ""
+            client_name = ""
+            client_MAC = ""
+            print('Waiting to receive computer info')
+
+            while client_hostname == "":
+                try:
+                    recv_data = temporary_sock.recv(1024).decode()
+                    if str(recv_data).__contains__("--PCNAME--||"):
+                        _, client_hostname, client_MAC, client_name = str(recv_data).split("||")
+                except:
+                    pass
+            print('''
+                Hostname: {}
+                MAC: {}
+                Name: {}'''.format(client_hostname, client_MAC, client_name))
+            # temporary_sock.sendall(pc_list["clientPort"][clientNumber].encode("utf-8"))
+
+            # Waiting to receive the rest of the details about the client
+            replace_in_pc_list(pc_list.client_name, pc_list.client_name[client_number], client_name)
+
+            print("NEW CLIENT NAME: {}".format(pc_list.client_name[client_number]))
+
+            print('Finished switching name')
+            # Replacing the temporary name with the actual name
+            append_to_pc_list(pc_list.client_hostname, client_hostname)
+            print('Finished adding hostname')
+            append_to_pc_list(pc_list.client_mac, client_MAC)
+            print('Finished adding MAC')
+            port = pc_list.client_port[client_number]
+            main_port = int(port) - 2
+            append_to_pc_list(pc_list.client_receiver, client_name)
+            append_to_pc_list(pc_list.client_checker, client_name)
+            print('Client Number: {}'.format(client_number))
+            # pc_list["clientStarter"][clientNumber] = DedicatedStarter(main_port, clientNumber, temporary_sock)
+            # print('Starting dedicated starter')
+            # pc_list["clientStarter"][clientNumber].start()
+
+            dedicated_starter(main_port, client_number, temporary_sock)
+
+            sel.unregister(temporary_sock)
+            temporary_sock.close()
+            print('CLOSED CONNECTION WITH SOCK')
 
 
 class Receive(Thread):
-    global sock
-    global MAC
-    global back
-    global message
-    global got
-    global recv_computer_name
-    global waiting_on_server
-    global dict
-    global done
 
-    def __init__(self):
-
-        global MAC
-        global waiting_on_server
-        global back
-        global message
-        global sock
-        global dict
-        global got
-        global recv_computer_name
-        global done
+    def __init__(self, port, sock):
         Thread.__init__(self)
+        self.sock = sock
+        self.port = port
+        self.j = True
+        print("Sock: {}".format(self.sock))
         print("SYSTEM: Receive initialized")
 
     def run(self):
-        global MAC
         print('SYSTEM: Receive started')
-        global recv_computer_name
-        global back
-        global message
-        global sock
-        global got
-        global pc_name
-        global dict
-        global waiting_on_server
-        global done
-        success = False
-        while True:
-            if got is False:
-                try:
-                    my_dict = dict
-                    for x in my_dict.values():
-                        if success is False:
-                            try:
-                                sock = x
-                                recv_data = sock.recv(1024).decode()
-                                success = True
-                                # used_sock = sock
-                                if str(recv_data).__contains__("--PCNAME--||"):
-                                    if done is True:
-                                        _, recv_computer_name, MAC, pc_name = str(recv_data).split("||")
-                                        done = False
-                                else:
-                                    if str(recv_data) == "--SENDING_FILE--":
-                                        print('Receiving file...')
-                                        i = GetThread(x)
-                                        i.start()
-                                    elif str(recv_data).__contains__("--TEST--"):
-                                        pass
-                                    elif str(recv_data).__contains__("--SEND_TO--"):
-                                        message = recv_data.split("--SEND_TO--")[1]
-                                        print('sending file to ' + message)
-                                        i = SendToThread(message, x)
-                                        i.start()
-                                    elif str(recv_data).__contains__("--WAKE--"):
-                                        message = recv_data.split("--WAKE--")[1]
-                                        print('Waking up -> ' + message)
-                                        found = wake_func(message)
-                                        if found is False:
-                                            message = 'COULD NOT FIND ' + message
-                                            sock.sendall(message.encode("utf-8"))
-                                        else:
-                                            message = 'FINISHED WAKING ' + message
-                                            sock.sendall(message.encode("utf-8"))
-                                    elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
-                                        print("GOT BACKUP FILE")
-                                        message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
-                                        i = OtherBackupThread(message, x)
-                                        i.start()
-                                    elif str(recv_data).__contains__("--BACKUP--"):
-                                        print("BACKING UP")
-                                        message = recv_data.split("--BACKUP--")[1]
-                                        i = BackupThread(x)
-                                        i.start()
-                                    elif str(recv_data).__contains__("CONNECT"):
-                                        print('GOT CONNECT')
-                                        Get.can_connect = True
-                                    else:
-                                        dict_list = []
-                                        [dict_list.extend([k, v]) for k, v in my_dict.items()]
-                                        position = dict_list.index(x) - 1
-                                        message = ('\n' + "Received message from -> " + dict_list[position] + " -> " + recv_data)
-                                        print(message)
-                                        enter_func()
+        while self.j:
+            try:
+                recv_data = self.sock.recv(1024).decode()
+                if str(recv_data) == "--SENDING_FILE--":
+                    Get.main(self.port ,get_ip_from_sock(self.sock))
+                elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
+                    print("GOT BACKUP FILE")
+                    message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
+                    Get.write_backup_file(message, self.sock, self.port)
+                elif str(recv_data).__contains__("--BACKUP--"):
+                    print("BACKING UP")
+                    backup_func(self.sock, self.port)
+                else:
+                    print(recv_data)
 
-                                success = False
-                            except Exception as error:
-                                pass
-                except Exception as error:
-                    print(error)
+            except:
+                pass
+
+    def send(self, message):
+        self.sock.sendall(message.encode("utf-8"))
+
+    def kill_thread(self):
+        print('Killing receiver')
+        self.j = False
 
 
-def check(client_number):
-    port = client_number  # Reserve a port for your service every new transfer wants a new port or you must wait.
-    s = socket.socket()  # Create a socket object
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    host = ""  # Get local machine name
+def backup_func(client_sock, port):
     try:
-        s.bind((host, port))  # Bind to the port
-    except:
-        return False
-    s.listen(5)  # Now wait for client connection.
-
-    print('Server listening....')
-
-    s.accept()
-
-    af = CheckSendThread(s)
-    af.start()
-
-class CheckSendThread(Thread):
-    def __init__(self, s):
-        Thread.__init__(self)
-        self.socket = s
-    
-    def run(self):
-        while True:
-            time.sleep(5)
-            self.socket.send('--TEST--'.encode("utf-8"))
-
-
-
-class Check(Thread):
-    def __init__(self):
-        global done
-
-        global back
-        global message
-        global dict
-
-        global new_client
-        global replacing_dict
-        Thread.__init__(self)
-        print("SYSTEM: Check initialized")
-
-    def run(self):
-        global new_client
-        global dict
-        global done
-        global replacing_dict
-        print("SYSTEM: Check started")
-        while True:
-            i = 0
-            if dict != "":
-                for x in dict:
-                    if str(x).__contains__("\n"):
-                        replacing_dict = False
-                        print('replacing dict')
-                        old_value = dict[x]
-                        del dict[x]
-                        new_x = str(x).split("\n")[0]
-                        print(new_x)
-                        if new_x == "":
-                            print('switching')
-                            new_x = str(x).split("\n")[1]
-                        dict[new_x] = old_value
-                        replacing_dict = True
-            while i < len(dict):
-                time.sleep(.5)
-                if len(dict) != 0:
-                    try:
-                        soc = list(dict.values())[i]
-                        message = "--TEST--"
-                    except Exception as error:
-                        print('index error. Resetting check')
-                        error_print("Error while using index", error)
-                        i = 0
-                    try:
-
-                        soc.send(message.encode("utf-8"))
-                    except Exception as error:
-                        error_print("", error)
-                        print(dict)
-                        print('closing connection to ' +
-                              str(list(dict.keys())[i]))
-                        key = list(dict.keys())[i]
-                        sock = list(dict.values())[i]
-                        del dict[key]
-                        print(dict)
-                        try:
-                            if not str(sock).__contains__('[closed]'):
-                                sel.unregister(sock)
-                                sock.close()
-                                i = 0
-                        except Exception as error:
-                            print('unable to close sock' + str(sock))
-                            error_print("Error while closing sock", error)
-                        if in_messaging is True:
-                            back_func()
-                        else:
-                            enter_func()
-                    i += 1
-
-
-class BackupThread(Thread):
-    def __init__(self, client_sock):
-        Thread.__init__(self)
-        self.client_sock = client_sock
-
-    def run(self):
-        backup_func(self.client_sock)
-
-
-class OtherBackupThread(Thread):
-    def __init__(self, user_input, pc_socket):
-        Thread.__init__(self)
-        self.pc_socket = pc_socket
-        self.user_input = user_input
-
-    def run(self):
-        print('using this socket')
-        print(self.pc_socket)
-        write_backup_files(self.user_input, self.pc_socket)
-
-
-class ConnectThread(Thread):
-    global dict
-
-    def __init__(self):
-        global dict
-        Thread.__init__(self)
-        port = 12345  # Reserve a port for your service every new transfer wants a new port or you must wait.
-        self.s = socket.socket()  # Create a socket object
-        host = ""  # Get local machine name
-        self.s.bind((host,port))
-          # Now wait for client connection.
-
-    def run(self):
-        global dict
-        x = self.s
-        self.s.listen(5)
-        connection, _ = x.accept()
-        while True:
-            message = connection.recv(1024).decode()
-            if message == "CONNECT":
-                print('GOT CONNECT')
-                Get.can_connect = True
-
-
-class SendToThread(Thread):
-    def __init__(self, Q, x):
-        Thread.__init__(self)
-        self.Q = Q
-        self.x = x
-
-    def run(self):
-        send_to_func(self.Q, self.x)
-
-
-class GetThread(Thread):
-    def __init__(self, s):
-        Thread.__init__(self)
-        self.sock = get_ip_from_sock(s)
-
-    def run(self):
+        s = get_ip_from_sock(client_sock)
+        print(s)
         try:
-            Get.main(self.sock)
+            name = Get.backup(s, port)
         except:
             server_restart()
-
-
-def create_resource_file(file_name, print_text):
-    if os.path.isfile("Resources/" + file_name):
-        pass
-    else:
-        print("SYSTEM: Creating " + print_text + "...")
-        with open("Resources/" + file_name, "w+") as _:
+        BackupEngine.main(name)
+        getter, path = Compare_Engine.main(name)
+        if getter:
+            message_to_send = "--GETFILES--"
+            message_to_send = message_to_send.encode("utf-8")
+            client_sock.sendall(message_to_send)
+            value = File_Sender.get_files(path, port)
+            if value is False:
+                server_restart()
+        else:
             pass
+    except Exception as e:
+        print(e)
 
 
-def start_the_rest_of_the_classes():
-    d.start()
-    b.start()
-    e.start()
+# def check(client_number):
+#     port = client_number  # Reserve a port for your service every new transfer wants a new port or you must wait.
+#     s = socket.socket()  # Create a socket object
+#     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+#     host = ""  # Get local machine name
+#     try:
+#         s.bind((host, port))  # Bind to the port
+#     except:
+#         return False
+#     s.listen(5)  # Now wait for client connection.
+
+#     print('Server listening....')
+
+#     s.accept()
+
+#     af = CheckSendThread(s)
+#     af.start()
+
+class Checker(Thread):
+    def __init__(self, dedicated_port, client_number, receiver):
+        Thread.__init__(self)
+        print("PORT: {}".format(dedicated_port))
+        self.client_number = client_number
+        self.receiver = receiver
+        port = int(
+            dedicated_port)  # Reserve a port for your service every new transfer wants a new port or you must wait.
+        self.s = socket.socket()  # Create a socket object
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        host = ""  # Get local machine name
+        try:
+            self.s.bind((host, port))  # Bind to the port
+        except:
+            pass
+        self.s.listen(5)  # Now wait for client connection.
+
+        print('Receiver listening....')
+
+        self.connection, address = self.s.accept()
+
+        print('RECEIVER: ACCEPTED CONNECTION')
+
+        checker2 = Checker2(self.connection, self.client_number, self.receiver)
+        checker2.start()
+
+    def run(self):
+        while True:
+            try:
+                time.sleep(1)
+                self.connection.send('--TEST--'.encode("utf-8"))
+                # print('done')
+            except Exception as e:
+                print("CHECKER: {}".format(e))
+                remove_client_from_list(self.client_number)
+                self.receiver.kill_thread()
+                return
 
 
-if __name__ == '__main__':
+class Checker2(Thread):
+    def __init__(self, connection, client_number, receiver):
+        Thread.__init__(self)
+        self.connection = connection
+        self.receiver = receiver
+        # self.connection.settimeout(5.0)
+        self.client_number = client_number
+
+    def run(self):
+        pc_list.client_update[self.client_number] = datetime.datetime.now()
+        while True:
+            try:
+                time.sleep(1)
+                # self.connection.send('--TEST--'.encode("utf-8"))
+                data = self.connection.recv(1024).decode()
+                pc_list.client_update[self.client_number] = datetime.datetime.now()
+                # print(data)
+            except Exception as e:
+                remove_client_from_list(self.client_number)
+                print("CHECKER: {}".format(e))
+                self.receiver.kill_thread()
+                return
+
+
+def dedicated_starter(dedicated_port, client_number, temporary_sock):
+    print("SYSTEM: Starting dedicated server")
+    print("USING PORT: {}".format(dedicated_port))
+    host = ''
+    port = int(dedicated_port)
+
+    server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
     try:
-        received_computer_name = ""
-        create_resource_file("ErrorLog.txt", "Error Log")
-        create_resource_file("Profiles.txt", "Profile database")
-        create_resource_file("IP.txt", "IP database")
-        create_resource_file("Backup.txt", "Backup database")
+        server_sock.bind((host, port))
+    except Exception as error:
+        print("Bind failed. Error : " + str(error))
+        time.sleep(1)
+        # server_restart()
 
-        a = Starter()
-        get_ip_addresses_func()
-        b = Send()
-        c = Receive()
-        d = Check()
-        e = ConnectThread()
-        a.start()
+    server_sock.listen(5)
+    print("SYSTEM: Socket created")
 
-        if connected is True:
-            started = True
+    temporary_sock.sendall(str("--PORT--{}".format(dedicated_port)).encode("utf-8"))
+    print('Finished sending info')
+    # server_sock.setblocking(False)
 
-        start_the_rest_of_the_classes()
+    try:
+        connection, address = server_sock.accept()  # Establish connection with client.
+        print('SERVER_SOCK: {}'.format(server_sock))
+
+        print('Got connection from', address)
+        connection.setblocking(False)
+        sock = connection
+        replace_socket(client_number, sock)
+        print('Finished __init__')
+        # data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
+        # events = selectors.EVENT_READ | selectors.EVENT_WRITE
+        # self.sock = events[0].fileobj
+        # print('replacing socket')
+        # pc_list["clientSocket"] = replace_socket(pc_list["clientSocket"], self.client_number, self.sock)
+        # print('finished replacing socket')
+
+        print('Initiaiting receiver')
+        pc_list.client_receiver[client_number] = Receive(int(dedicated_port) + 2,sock)
+        print('starting receiver')
+        pc_list.client_receiver[client_number].start()
+        print('Initiaiting checker')
+        checker_port = int(dedicated_port) + 1
+        pc_list.client_checker[client_number] = Checker(str(checker_port), client_number,
+                                                        pc_list.client_receiver[client_number])
+        print('starting checker')
+        pc_list.client_checker[client_number].start()
+        print('everything finished succesfully')
+        # checker_port2 = int(self.dedicated_port) + 2
+        # pc_list["clientChecker2"][self.client_number] = Checker2(str(checker_port2))
+        # print('starting checker')
+        # pc_list["clientChecker2"][self.client_number].start()
+        print('everything finished succesfully')
 
     except Exception as e:
         print(e)
-        error_log(e)
+
+
+def send_message():
+    send_list = []
+    for val in pc_list.client_number:
+        if val != '--REPLACE--':
+            send_list.append(val)
+
+    if len(send_list) == 1:
+        while True:
+            user_input = input("Sending to -> {} -> ".format(pc_list.client_name[send_list[0]]))
+            if user_input == "/back":
+                return
+            pc_list.client_receiver[send_list[0]].send(user_input)
+    else:
+        for val in send_list:
+            print(pc_list.client_name[val])
+        user_input = input("Please select computer -> ")
+        client = get_index_from_list(pc_list.client_name, user_input)
+        print("CLIENT NUMBER : {}".format(client))
+        while True:
+            user_input = input("Sending to -> {} -> ".format(pc_list.client_name[client]))
+            if user_input == "/back":
+                return
+            pc_list.client_receiver[client].send(user_input)
+
+
+# class FileSenderThread(Thread):
+#     def __init__(self, port):
+#         Thread.__init__(self)
+#         self.port = port
+
+#     def run(self):
+#         File_Sender.main(self.port)
+
+def send_file():
+    send_list = []
+    for val in pc_list.client_number:
+        if val != '--REPLACE--':
+            send_list.append(val)
+    if len(send_list) == 1:
+        # pc_list.client_receiver[send_list[0]].send('--SENDING_FILE--')
+        print('SOCKET: {}'.format(pc_list.client_sock[send_list[0]]))
+        # file_sender_thread = FileSenderThread(pc_list.client_port[send_list[0]])
+        # file_sender_thread.start()
+        File_Sender.main(pc_list.client_sock[send_list[0]], pc_list.client_port[send_list[0]])
+    else:
+        for val in send_list:
+            print(pc_list.client_name[val])
+        user_input = input("Please select computer -> ")
+        client = get_index_from_list(pc_list.client_name, user_input)
+        print("CLIENT NUMBER : {}".format(client))
+        File_Sender.main(pc_list.client_sock[send_list[client]], pc_list.client_port[send_list[client]])
+
+
+def get_file():
+    pass
+
+
+def main():
+    starter_thread = Starter()
+    starter_thread.start()
+    while True:
+        try:
+            user_input = input(" -> ")
+            if user_input == "/ls -all":
+                for val in vars(pc_list).items():
+                    if not str(val[0]).__contains__('__'):
+                        print(val)
+            elif user_input == "/client status":
+                update_list = []
+                for val in pc_list.client_number:
+                    if val != '--REPLACE--':
+                        update_list.append(val)
+                for val in update_list:
+                    print("{}: {} seconds ago".format(pc_list.client_name[val],
+                                                      (datetime.datetime.now() - pc_list.client_update[val]).seconds))
+            elif user_input == "/m":
+                send_message()
+            elif user_input == "/send":
+                send_file()
+            elif user_input == "/threads":
+                print(threading.active_count())
+
+            # else:
+            #     pc_list["clientReceiver"][0].send(pc_list["clientReceiver"][0], user_input)
+        except Exception as e:
+            print(e)
+
+
+if __name__ == "__main__":
+    main()

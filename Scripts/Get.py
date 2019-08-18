@@ -5,7 +5,6 @@ import socket
 import os
 import time
 global can_connect
-can_connect = False
 pyautogui.FAILSAFE = False
 
 
@@ -25,7 +24,7 @@ def main(port, ip_to_send):
     print('started get.py')
 
     s = socket.socket()
-    print("PORT")
+    print("PORT: {}".format(port))
     print("host", ip_to_send)
 
     host = ip_to_send  # Ip address that the TCPServer  is there
@@ -40,30 +39,27 @@ def main(port, ip_to_send):
         press('enter')
         sys.exit()
     name = s.recv(1024)
-    with open(name, 'wb') as f:
-        print('Receiving data...')
-        while True:
-            data = s.recv(1024)
-            if not data:
-                break
-            f.write(data)
-
+    print('received name {}'.format(name.decode()))
+    try:
+        with open(name, 'wb') as f:
+            print('Receiving data...')
+            while True:
+                data = s.recv(1024)
+                if not data:
+                    break
+                f.write(data)
+    except Exception as e:
+        print(e)
     f.close()
     print('Successfully got the file')
     s.close()
     print('connection closed')
-    can_connect = False
 
 
-def backup(ip_to_send):
-    global can_connect
+
+def backup(host, port):
     s = socket.socket()
 
-    host = ip_to_send  # Ip address that the TCPServer  is there
-    port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
-
-    while can_connect is False:
-        time.sleep(.1)
 
     try:
         s.settimeout(10)
@@ -97,24 +93,16 @@ def backup(ip_to_send):
     print('Successfully got the file')
     s.close()
     print('connection closed')
-    can_connect = False
+
 
     return name
 
 
-def write_backup_file(pc, ip_to_send):
+def write_backup_file(pc, host, port):
     global can_connect
     s = socket.socket()
 
-    host = ip_to_send
-    port = 50000
-
     print('socket binded')
-
-    while can_connect is False:
-        time.sleep(.1)
-
-    print('can connect is true')
 
     try:
         s.settimeout(10)
@@ -145,4 +133,3 @@ def write_backup_file(pc, ip_to_send):
     print('Successfully got the file')
     s.close()
     print('connection closed')
-    can_connect = False
