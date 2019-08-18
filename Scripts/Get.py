@@ -19,20 +19,16 @@ def error_print(error_message, error):
     print("SYSTEM ERROR - " + error_message + ": " + str(error))
 
 
-def main(ip_to_send):
+def main(port, ip_to_send):
     global can_connect
     press('enter')
     print('started get.py')
 
     s = socket.socket()
-
+    print("PORT")
     print("host", ip_to_send)
 
     host = ip_to_send  # Ip address that the TCPServer  is there
-    port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
-
-    while can_connect is False:
-        time.sleep(.1)
 
     try:
         s.settimeout(10)

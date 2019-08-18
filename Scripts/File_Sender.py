@@ -2,19 +2,22 @@ import socket
 from Scripts import FileDirectory
 
 
-def main(client):
-    port = 50000  # Reserve a port for your service every new transfer wants a new port or you must wait.
+def main(sock, port):
+
+    print('USING PORT: {}'.format(port))
+
     s = socket.socket()  # Create a socket object
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     host = ""  # Get local machine name
     try:
         s.bind((host, port))  # Bind to the port
-    except:
+    except Exception as e:
+        print(e)
         return False
     s.listen(5)  # Now wait for client connection.
 
     print('Server listening....')
-    send_ready(client)
+    sock.send('--SENDING_FILE--'.encode("utf-8"))
 
     connection, address = s.accept()  # Establish connection with client.
     print('Got connection from', address)

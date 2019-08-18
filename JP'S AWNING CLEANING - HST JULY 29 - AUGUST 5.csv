@@ -1,0 +1,27 @@
+Invoice #,Date,Type,Client name,Method,PRICE,HST 13%,TOTAL,BANK,JP 25%,HST 15%
+287.0,"Aug 05, 2019",Payment,Margaret Scott,Credit Card,250.00,32.50,282.50,,62.50,42.38
+284.0,"Aug 04, 2019",Payment,Carol Fraser,Bank Transfer,600.00,78.00,678.00,,150.00,101.70
+285.0,"Aug 03, 2019",Payment,Elaine Sinnott,Credit Card,575.00,74.75,649.75,,143.75,97.46
+286.0,"Aug 03, 2019",Payment,Joyce Desjardins,Credit Card,350.00,45.50,395.50,,87.50,59.32
+278.0,"Aug 02, 2019",Payment,Pat Mandoto,Credit Card,650.00,84.50,734.50,,162.50,110.17
+280.0,"Aug 02, 2019",Payment,Sandra Reed,Cash,350.00,45.50,395.50,,87.50,59.32
+281.0,"Aug 02, 2019",Payment,Jeremy Jones,Bank Transfer,486.73,63.27,550.00,,121.68,82.50
+282.0,"Aug 02, 2019",Payment,Bill & Rachelle Morris,Cheque,500.00,65.00,565.00,,125.00,84.75
+252.0,"Aug 02, 2019",Payment,Colin Belanger,Credit Card,475.00,61.75,536.75,,118.75,80.51
+269.0,"Aug 01, 2019",Payment,Art Martens,Credit Card,400.00,52.00,452.00,,100.00,67.80
+273.0,"Aug 01, 2019",Payment,Kim Beausoleil,Credit Card,275.00,35.75,310.75,,68.75,46.61
+272.0,"Aug 01, 2019",Payment,Kim Beausoleil,Credit Card,175.00,22.75,197.75,,43.75,29.66
+274.0,"Aug 01, 2019",Payment,Tom & Katherine Stergianis,Credit Card,250.00,32.50,282.50,,62.50,42.38
+275.0,"Aug 01, 2019",Payment,Alec Fauteux,Cheque,309.73,40.26,350.00,,77.43,52.50
+276.0,"Aug 01, 2019",Payment,Lenn Fields,Cheque,1200.00,156.00,1356.00,,300.00,203.40
+277.0,"Aug 01, 2019",Payment,Tarik Balbaki,Cash,353.98,46.02,400.00,,88.50,60.00
+261.0,"Aug 01, 2019",Payment,Robbie & Bob Jozsi,Cheque,125.00,16.25,141.25,,31.25,21.19
+268.0,"Jul 31, 2019",Payment,Cindy Lounsbury,Other,250.00,32.50,282.50,,62.50,42.38
+271.0,"Jul 31, 2019",Payment,Emily Matus,Cheque,650.00,84.50,734.50,,162.50,110.17
+265.0,"Jul 30, 2019",Payment,Marjorie Valentich,Cash,350.00,45.50,395.50,,87.50,59.32
+257.0,"Jul 30, 2019",Payment,Jeff Blondin,Cheque,426.77,55.48,482.25,,106.69,72.34
+260.0,"Jul 30, 2019",Payment,Robbie & Bob Jozsi,Cheque,350.00,45.50,395.50,,87.50,59.32
+256.0,"Jul 30, 2019",Payment,Anna Thompson,Bank Transfer,575.00,74.75,649.75,,143.75,97.46
+263.0,"Jul 30, 2019",Payment,Randy & Diane Kettlewell,Credit Card,398.23,51.77,450.00,,99.56,67.50
+,"Jul 30, 2019",Payment,Anna Thompson,Bank Transfer,575.00,74.75,649.75,,143.75,97.46
+,,,,,10900.439999999999,1417.05,12317.5,,2725.11,1847.6000000000001
