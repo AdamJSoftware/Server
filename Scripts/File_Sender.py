@@ -46,12 +46,16 @@ def main(sock, port):
     return True
 
 
-def get_files(path, port):
+def get_files(client_sock, path, port):
     print("PORT: {}".format(port))
     s = socket.socket()  # Create a socket object
     host = ""  # Get local machine name
     s.bind((host, port))  # Bind to the port
     s.listen(5)  # Now wait for client connection.
+
+    message_to_send = "--GETFILES--"
+    message_to_send = message_to_send.encode("utf-8")
+    client_sock.sendall(message_to_send)
 
     print('Server listening....')
 

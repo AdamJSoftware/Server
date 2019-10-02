@@ -151,6 +151,7 @@ def server_restart():
     time.sleep(1)
     os._exit(1)
 
+
 def get_index_from_list(json_section, value):
     for index, val in enumerate(json_section):
         if val == value:
@@ -279,17 +280,15 @@ def backup_func(client_sock, port):
         s = get_ip_from_sock(client_sock)
         print(s)
         try:
-            name = Get.backup(s, port)
-        except:
+            name = Get.backup(str(s), port)
+        except Exception as e:
+            print(e)
             server_restart()
         BackupEngine.main(name)
         getter, path = Compare_Engine.main(name)
         print("PATH: {}".format(path))
         if getter:
-            message_to_send = "--GETFILES--"
-            message_to_send = message_to_send.encode("utf-8")
-            client_sock.sendall(message_to_send)
-            value = File_Sender.get_files(path, port)
+            value = File_Sender.get_files(client_sock, path, int(port))
             if value is False:
                 server_restart()
         else:

@@ -59,11 +59,10 @@ def main(port, ip_to_send):
 
 def backup(host, port):
     s = socket.socket()
-
-
+    print("CONNECTING TO " + host + " " + str(port))
     try:
         s.settimeout(10)
-        s.connect((host, port))
+        s.connect((host,port))
         print('started receiver')
     except Exception as error:
         print(error)

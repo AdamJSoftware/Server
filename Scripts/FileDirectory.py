@@ -75,7 +75,7 @@ def cd_func(Q):
             return
         if Q.isidentifier():
             try:
-                new_cwd = str(cwd) + '/' + Q
+                new_cwd = str(cwd) + '\\' + Q
                 os.listdir(new_cwd)
                 cwd = new_cwd
             except:
