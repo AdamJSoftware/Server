@@ -7,6 +7,7 @@ import selectors
 import types
 import datetime
 import threading
+import gc
 
 from Scripts import File_Sender
 from Scripts import Get
@@ -18,7 +19,7 @@ sel = selectors.DefaultSelector()
 
 
 def error_log(error):
-    with open("Resources/ErrorLog.txt", 'a') as file:
+    with open(os.path.join('Resources', 'ErrorLog.txt'), 'a') as file:
         file.write(time.ctime() + "\n")
         file.write(str(error) + "\n" + "\n")
 
@@ -31,7 +32,44 @@ def error_print(error_message, error):
 # Any error is displayed to the user
 
 
-class pc_list:
+class pc_list():
+    instances = []
+
+    def __init__(self, update, name, hostname, ip, sock, mac, port, receiver, checker):
+        self.client_update = update
+        self.client_number = len(pc_list.instances) + 1
+        self.client_name = name
+        self.client_hostname = hostname
+        self.client_ip = ip
+        self.client_sock = sock
+        self.client_port = receiver
+        self.client_checker = checker
+        self.client_mac = mac
+
+        for index, val in enumerate(pc_list.instances):
+            if val == '--REPLACE--':
+                pc_list.instances[index] = self
+                return
+        pc_list.instances.append(self)
+
+    def add_port(self):
+        for index, val in enumerate(pc_list.instances):
+            if val == '--REPLACE--':
+                self.port = (index+1)*3
+                return
+        self.port = (int(len(pc_list.instances))+1)*3
+
+    def add_number(self):
+        for index, val in enumerate(pc_list.instances):
+            if val == '--REPLACE--':
+                self.client_number = index
+                return
+        self.client_number = int(len(pc_list.instances))
+
+    # def find(self, given_item, given_list, looking_list):
+    #     for key, val in self.items():
+    #         if str(val) == given_item:
+
     client_update = []
     client_number = []
     client_name = []
@@ -42,6 +80,13 @@ class pc_list:
     client_port = []
     client_receiver = []
     client_checker = []
+
+
+def find(given_item):
+    for index, instance in enumerate(pc_list.instances):
+        for (key, value) in instance.values():
+            if str(value) == str(given_item):
+                return instance
 
 
 def replace_socket(index, value):
@@ -159,7 +204,7 @@ def get_index_from_list(json_section, value):
 
 
 def remove_client_from_list(client_number):
-    for val in vars(pc_list).items():
+    for val in vars(pc_list.instances).items():
         if not str(val[0]).__contains__('__'):
             val[1][client_number] = '--REPLACE--'
 
@@ -174,22 +219,20 @@ def service_connection(key, mask):
             random = 'temporary' + str(random)
             # The three lines above are creating a temporary name for the client
             print('TEMPORARY: {}'.format(temporary_sock))
-            append_to_pc_list(pc_list.client_sock, temporary_sock)
-            append_to_pc_list(pc_list.client_name, str(random))
+            new_client = pc_list('JUST JOINED', str(random), '', get_ip_from_sock(
+                temporary_sock), temporary_sock, '', '', '', '')
             # pc_list["clientName"] = append_to_pc_list(pc_list["clientName"], str(random))
             # pc_list["clientSocket"] = append_to_pc_list(pc_list["clientSocket"], sock)
-            append_to_pc_list(pc_list.client_ip, get_ip_from_sock(temporary_sock))
-            append_to_pc_list(pc_list.client_update, 'JUST JOINED')
             # pc_list["clientIP"] = append_to_pc_list(pc_list["clientIP"], get_ip_from_sock(temporary_sock))
-            add_port_to_list()
-            add_client_number()
+            new_client.add_number()
+            new_client.add_port()
             # Most of the client details are appended to the pc_list
             print("Please wait for system to configure new computer...")
             # FIX THIS WAITING THING FOR MORE SECURE CONNECITION
             time.sleep(1)
-            client_number = get_index_from_list(pc_list.client_ip, get_ip_from_sock(temporary_sock))
+            client_number = new_client.client_number
 
-            print(pc_list.client_port[client_number])
+            print(client_number)
             # Note for me, this should be removed in order to avoid another client taking the number
             # Starting the receive thread for the specific client
             client_hostname = ""
@@ -201,36 +244,39 @@ def service_connection(key, mask):
                 try:
                     recv_data = temporary_sock.recv(1024).decode()
                     if str(recv_data).__contains__("--PCNAME--||"):
-                        _, client_hostname, client_MAC, client_name = str(recv_data).split("||")
+                        _, client_hostname, client_MAC, client_name = str(
+                            recv_data).split("||")
                 except:
                     pass
-            print('''
-                Hostname: {}
-                MAC: {}
-                Name: {}'''.format(client_hostname, client_MAC, client_name))
+            print(f'''
+                Hostname: {client_hostname}
+                MAC: {client_MAC}
+                Name: {client_name}''')
             # temporary_sock.sendall(pc_list["clientPort"][clientNumber].encode("utf-8"))
 
             # Waiting to receive the rest of the details about the client
-            replace_in_pc_list(pc_list.client_name, pc_list.client_name[client_number], client_name)
+            new_client.client_name = client_name
 
-            print("NEW CLIENT NAME: {}".format(pc_list.client_name[client_number]))
+            print("NEW CLIENT NAME: {}".format(
+                pc_list.client_name[client_number]))
 
             print('Finished switching name')
             # Replacing the temporary name with the actual name
-            append_to_pc_list(pc_list.client_hostname, client_hostname)
+            new_client.client_hostname = client_hostname
             print('Finished adding hostname')
-            append_to_pc_list(pc_list.client_mac, client_MAC)
+            new_client.client_mac = client_MAC
             print('Finished adding MAC')
-            port = pc_list.client_port[client_number]
+            port = new_client.client_port
             main_port = int(port) - 2
-            append_to_pc_list(pc_list.client_receiver, client_name)
-            append_to_pc_list(pc_list.client_checker, client_name)
-            print('Client Number: {}'.format(client_number))
+            new_client.client_receiver = client_name
+            new_client.client_checker = client_name
+            print(f'Client Number: {new_client.client_number}')
             # pc_list["clientStarter"][clientNumber] = DedicatedStarter(main_port, clientNumber, temporary_sock)
             # print('Starting dedicated starter')
             # pc_list["clientStarter"][clientNumber].start()
 
-            dedicated_starter(main_port, client_number, temporary_sock)
+            dedicated_starter(new_client, main_port,
+                              client_number, temporary_sock)
 
             sel.unregister(temporary_sock)
             temporary_sock.close()
@@ -253,11 +299,12 @@ class Receive(Thread):
             try:
                 recv_data = self.sock.recv(1024).decode()
                 if str(recv_data) == "--SENDING_FILE--":
-                    Get.main(self.port ,get_ip_from_sock(self.sock))
+                    Get.main(self.port, get_ip_from_sock(self.sock))
                 elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
                     print("GOT BACKUP FILE")
                     message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
-                    Get.write_backup_file(message, get_ip_from_sock(self.sock), self.port)
+                    Get.write_backup_file(
+                        message, get_ip_from_sock(self.sock), self.port)
                 elif str(recv_data).__contains__("--BACKUP--"):
                     print("BACKING UP")
                     backup_func(self.sock, self.port)
@@ -277,20 +324,18 @@ class Receive(Thread):
 
 def backup_func(client_sock, port):
     try:
-        s = get_ip_from_sock(client_sock)
-        print(s)
+        client_instance = find(client_sock)
+        name = client_instance.client_hostname
         try:
-            name = Get.backup(str(s), port)
+            name = Get.backup(str(client_instance.client_ip), port)
         except Exception as e:
             print(e)
             server_restart()
         BackupEngine.main(name)
-        getter, path = Compare_Engine.main(name)
-        print("PATH: {}".format(path))
-        if getter:
-            value = File_Sender.get_files(client_sock, path, int(port))
-            if value is False:
-                server_restart()
+        Compare_Engine.main(name)
+        value = File_Sender.FTS(client_sock, name, int(port))
+        if value is False:
+            server_restart()
         else:
             pass
     except Exception as e:
@@ -316,7 +361,7 @@ def backup_func(client_sock, port):
 #     af.start()
 
 class Checker(Thread):
-    def __init__(self, dedicated_port, client_number, receiver):
+    def __init__(self, dedicated_port, client_number, receiver, client_instance):
         Thread.__init__(self)
         print("PORT: {}".format(dedicated_port))
         self.client_number = client_number
@@ -339,7 +384,8 @@ class Checker(Thread):
 
         print('RECEIVER: ACCEPTED CONNECTION')
 
-        checker2 = Checker2(self.connection, self.client_number, self.receiver)
+        checker2 = Checker2(self.connection, self.client_number,
+                            self.receiver, client_instance)
         checker2.start()
 
     def run(self):
@@ -356,21 +402,23 @@ class Checker(Thread):
 
 
 class Checker2(Thread):
-    def __init__(self, connection, client_number, receiver):
+    def __init__(self, connection, client_number, receiver, client_instance):
         Thread.__init__(self)
         self.connection = connection
         self.receiver = receiver
         # self.connection.settimeout(5.0)
         self.client_number = client_number
+        self.client_instance = client_instance
 
     def run(self):
-        pc_list.client_update[self.client_number] = datetime.datetime.now()
+        self.client_instance.client_update = datetime.datetime.now()
         while True:
             try:
                 time.sleep(1)
                 # self.connection.send('--TEST--'.encode("utf-8"))
                 data = self.connection.recv(1024).decode()
-                pc_list.client_update[self.client_number] = datetime.datetime.now()
+                self.client_instance.client_update = datetime.datetime.now(
+                )
                 # print(data)
             except Exception as e:
                 remove_client_from_list(self.client_number)
@@ -379,7 +427,7 @@ class Checker2(Thread):
                 return
 
 
-def dedicated_starter(dedicated_port, client_number, temporary_sock):
+def dedicated_starter(client_instance, dedicated_port, client_number, temporary_sock):
     print("SYSTEM: Starting dedicated server")
     print("USING PORT: {}".format(dedicated_port))
     host = ''
@@ -398,18 +446,20 @@ def dedicated_starter(dedicated_port, client_number, temporary_sock):
     server_sock.listen(5)
     print("SYSTEM: Socket created")
 
-    temporary_sock.sendall(str("--PORT--{}".format(dedicated_port)).encode("utf-8"))
+    temporary_sock.sendall(
+        str(f"--PORT--{dedicated_port.encode('utf-8')}"))
     print('Finished sending info')
     # server_sock.setblocking(False)
 
     try:
-        connection, address = server_sock.accept()  # Establish connection with client.
+        # Establish connection with client.
+        connection, address = server_sock.accept()
         print('SERVER_SOCK: {}'.format(server_sock))
 
         print('Got connection from', address)
         connection.setblocking(False)
         sock = connection
-        replace_socket(client_number, sock)
+        client_instance.client_sock = sock
         print('Finished __init__')
         # data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
         # events = selectors.EVENT_READ | selectors.EVENT_WRITE
@@ -419,15 +469,16 @@ def dedicated_starter(dedicated_port, client_number, temporary_sock):
         # print('finished replacing socket')
 
         print('Initiaiting receiver')
-        pc_list.client_receiver[client_number] = Receive(int(dedicated_port) + 2,sock)
+        client_instance.client_receiver = Receive(
+            int(dedicated_port) + 2, sock)
         print('starting receiver')
-        pc_list.client_receiver[client_number].start()
+        client_instance.client_receiver.start()
         print('Initiaiting checker')
         checker_port = int(dedicated_port) + 1
-        pc_list.client_checker[client_number] = Checker(str(checker_port), client_number,
-                                                        pc_list.client_receiver[client_number])
+        client_instance.client_checker = Checker(str(checker_port), client_number,
+                                                 pc_list.client_receiver[client_number], client_instance)
         print('starting checker')
-        pc_list.client_checker[client_number].start()
+        client_instance.client_checker.start()
         print('everything finished succesfully')
         # checker_port2 = int(self.dedicated_port) + 2
         # pc_list["clientChecker2"][self.client_number] = Checker2(str(checker_port2))
@@ -441,27 +492,32 @@ def dedicated_starter(dedicated_port, client_number, temporary_sock):
 
 def send_message():
     send_list = []
-    for val in pc_list.client_number:
-        if val != '--REPLACE--':
+    for val in pc_list.instances:
+        if val.client_name != '--REPLACE--':
             send_list.append(val)
 
     if len(send_list) == 1:
         while True:
-            user_input = input("Sending to -> {} -> ".format(pc_list.client_name[send_list[0]]))
+            client_instance = send_list[0]
+            user_input = input(
+                f"Sending to -> {client_instance.client_name} -> ")
             if user_input == "/back":
                 return
-            pc_list.client_receiver[send_list[0]].send(user_input)
+            client_instance.client_receiver.send(user_input)
     else:
         for val in send_list:
-            print(pc_list.client_name[val])
+            print(val.client_name)
         user_input = input("Please select computer -> ")
-        client = get_index_from_list(pc_list.client_name, user_input)
-        print("CLIENT NUMBER : {}".format(client))
+        client_instance = find(user_input)
+        client_number = client_instance.client_number
+        print(f"CLIENT NUMBER : {client_number}")
+        client_instance = pc_list.instances[client_number]
         while True:
-            user_input = input("Sending to -> {} -> ".format(pc_list.client_name[client]))
+            user_input = input(
+                f"Sending to -> {client_instance.client_name} -> ")
             if user_input == "/back":
                 return
-            pc_list.client_receiver[client].send(user_input)
+            client_instance.client_receiver.send(user_input)
 
 
 # class FileSenderThread(Thread):
@@ -474,22 +530,26 @@ def send_message():
 
 def send_file():
     send_list = []
-    for val in pc_list.client_number:
-        if val != '--REPLACE--':
+    for val in pc_list.instances:
+        if val.client_name != '--REPLACE--':
             send_list.append(val)
     if len(send_list) == 1:
+        client_instance = send_list[0]
         # pc_list.client_receiver[send_list[0]].send('--SENDING_FILE--')
-        print('SOCKET: {}'.format(pc_list.client_sock[send_list[0]]))
+        print(f'SOCKET: {client_instance.client_sock}')
         # file_sender_thread = FileSenderThread(pc_list.client_port[send_list[0]])
         # file_sender_thread.start()
-        File_Sender.main(pc_list.client_sock[send_list[0]], pc_list.client_port[send_list[0]])
+        File_Sender.main(
+            client_instance.client_sock, client_instance.client_port)
     else:
         for val in send_list:
-            print(pc_list.client_name[val])
+            print(val.client_name)
         user_input = input("Please select computer -> ")
-        client = get_index_from_list(pc_list.client_name, user_input)
-        print("CLIENT NUMBER : {}".format(client))
-        File_Sender.main(pc_list.client_sock[send_list[client]], pc_list.client_port[send_list[client]])
+        client_number = find(user_input, 'client_number')
+        print(f"CLIENT NUMBER : {client_number}")
+        client_instance = pc_list.instances[client_number]
+        File_Sender.main(
+            client_instance.client_sock, client_instance.client_port)
 
 
 def get_file():
@@ -503,17 +563,18 @@ def main():
         try:
             user_input = input(" -> ")
             if user_input == "/ls -all":
-                for val in vars(pc_list).items():
-                    if not str(val[0]).__contains__('__'):
-                        print(val)
+                for instance in pc_list.instancess:
+                    print(f'NAME: {instance.client_name}')
+                    for (key, value) in instance.items():
+                        print(f'{key} => {value}')
             elif user_input == "/client status":
                 update_list = []
-                for val in pc_list.client_number:
-                    if val != '--REPLACE--':
-                        update_list.append(val)
-                for val in update_list:
-                    print("{}: {} seconds ago".format(pc_list.client_name[val],
-                                                      (datetime.datetime.now() - pc_list.client_update[val]).seconds))
+                for instance in pc_list.instances:
+                    if instance.client_name != '--REPLACE--':
+                        update_list.append(instance)
+                for instance in update_list:
+                    print(
+                        f"{instance.client_name}: {(datetime.datetime.now() - instance.client_update).seconds} seconds ago")
             elif user_input == "/m":
                 send_message()
             elif user_input == "/send":

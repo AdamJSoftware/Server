@@ -1,6 +1,7 @@
 import socket
 import time
 from Scripts import FileDirectory
+import os
 
 
 def main(sock, port):
@@ -46,13 +47,13 @@ def main(sock, port):
     return True
 
 
-def get_files(client_sock, path, port):
+def FTS(client_sock, name, port):
     print("PORT: {}".format(port))
     s = socket.socket()  # Create a socket object
     host = ""  # Get local machine name
     s.bind((host, port))  # Bind to the port
     s.listen(5)  # Now wait for client connection.
-
+    path = os.path.join('Resources', 'Backups', name, 'FTS.json')
     message_to_send = "--GETFILES--"
     message_to_send = message_to_send.encode("utf-8")
     client_sock.sendall(message_to_send)
@@ -62,11 +63,11 @@ def get_files(client_sock, path, port):
     conn, addr = s.accept()  # Establish connection with client.
     print('Got connection from', addr)
     try:
-        print("PATH: {}".format(path))
+        print(f"PATH: {path}")
         name = str(path).rsplit("/", 1)[1]
         name = name.encode("utf-8")
         conn.send(name)
-        time.sleep(1) #Fix this
+        time.sleep(1)  # Fix this
         with open(path, 'rb') as f:
             print('Sending...')
             l = f.read(1024)
@@ -86,8 +87,6 @@ def get_ip_from_sock(sock):
     sock = str(sock).rsplit("raddr=('", 1)[1]
     sock = str(sock).rsplit("',", 1)[0]
     return sock
-
-
 
 
 # if __name__ == '__main__':

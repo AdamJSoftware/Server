@@ -13,7 +13,7 @@ def add_folder(missing_folders, pc):
     for folder in missing_folders:
         try:
             cwd = os.getcwd()
-            os.mkdir(cwd + "/Resources/Backups/" + pc + "/" + folder)
+            os.mkdir(os.path.join(cwd, 'Resources', 'Backups', pc, folder))
         except Exception as e:
             print("An unknown error occurred while creating the folder")
             print(e)

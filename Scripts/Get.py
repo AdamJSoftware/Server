@@ -56,13 +56,12 @@ def main(port, ip_to_send):
     print('connection closed')
 
 
-
 def backup(host, port):
     s = socket.socket()
     print("CONNECTING TO " + host + " " + str(port))
     try:
         s.settimeout(10)
-        s.connect((host,port))
+        s.connect((host, port))
         print('started receiver')
     except Exception as error:
         print(error)
@@ -80,7 +79,7 @@ def backup(host, port):
         os.mkdir("Resources/Backups/" + name)
     except:
         pass
-    with open("Resources/Backups/" + name + "/Received_Backup.txt", 'wb') as f:
+    with open("Resources/Backups/" + name + "/received_backup.json", 'w') as f:
         print('receiving data...')
         while True:
             data = s.recv(1024)
@@ -92,7 +91,6 @@ def backup(host, port):
     print('Successfully got the file')
     s.close()
     print('connection closed')
-
 
     return name
 
