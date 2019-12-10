@@ -80,7 +80,7 @@ def main(pc_name):
         config_create(backup_directory)
         absolute_path, folders = tree_func(
             absolute_path=[], current_folder=os.path.join(
-                'Resources', 'Backups', pc_name), new_folder='', folders=[])
+                'C:\\Users\\adam-pc\\Documents\\Databending\\Wordpress'), new_folder='', folders=[])
         config = config_read(backup_directory)
         config['absolute_path'].append(absolute_path)
         config['folders'].append(folders)
@@ -102,7 +102,7 @@ def main(pc_name):
 
 if __name__ == '__main__':
     try:
-        main('DESKTOP-AF6NF3R')
+        pass
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
