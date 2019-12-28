@@ -6,6 +6,7 @@ import json
 def tree_func(absolute_path, current_folder, new_folder, folders):
     try:
         current_folder = os.path.join(current_folder, new_folder)
+        folders.append(current_folder)
         # Sets current_folder to the new one (used during recuersiion)
         tree = os.listdir(current_folder)
         # List all the files and folders in in current folder
@@ -13,7 +14,7 @@ def tree_func(absolute_path, current_folder, new_folder, folders):
             # for every item in the directory
             if os.path.isdir(os.path.join(current_folder, item)):
                 # Check if item is a directory
-                folders.append(os.path.join(current_folder, item))
+
                 # Add this folder in the folder array
                 tree_func(absolute_path, current_folder,
                           item, folders)
@@ -43,6 +44,10 @@ def tree_func(absolute_path, current_folder, new_folder, folders):
         print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
 
 
+def relative_path(absolute_path, root_directory):
+    return absolute_path.split(os.path.join(root_directory, ''))[1]
+
+
 # absolute_path = []
 # The absolute path is the array of every file in the selected directory with it's absolute path (c:\users\...)
 # relative_path = []
@@ -52,49 +57,66 @@ def tree_func(absolute_path, current_folder, new_folder, folders):
 # exculde = ['itinfluencer']
 # Tells the program which folders to exculde
 
-def relative_path(absolute_path, root_directory):
-    return absolute_path.split(os.path.join(root_directory, ''))[1]
+
+def config_create(backup_config):
+    try:
+        config = {"absolute_path": [],
+                  "folders": [],
+                  "relative_path": []}
+        with open(backup_config, 'w') as f:
+            json.dump(config, f, indent=4)
+
+    except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
 
 
-def config_create(backup_directory):
-    config = {"absolute_path": [],
-              "folders": []}
-    with open(backup_directory, 'w') as f:
-        json.dump(config, f, indent=4)
-
-
-def config_read(backup_directory):
+def json_read(backup_directory):
     with open(backup_directory, 'r') as f:
         return json.load(f)
 
 
-def config_write(data, backup_directory):
+def json_write(data, backup_directory):
     with open(backup_directory, 'w') as f:
         json.dump(data, f, indent=4)
 
 
 def main(pc_name):
+    config_json = json_read(os.path.join('Resources', 'config.json'))
     try:
-        backup_directory = os.path.join(
-            'Resources', 'Backups', pc_name, 'backup_audit.json')
-        config_create(backup_directory)
+        if config_json['a_or_r'] == 'r':
+            if not os.path.exists(os.path.join('Resources', 'Backups', pc_name)):
+                os.mkdir(os.path.join(
+                    'Resources', 'Backups', pc_name))
+            backup_audit = os.path.join(
+                'Resources', 'Backups', pc_name, 'backup_audit.json')
+            backup_directory = os.path.join(
+                'Resources', 'Backups', pc_name)
+
+        else:
+            if not os.path.exists(os.path.join(config_json['backup_directory'], pc_name)):
+                os.mkdir(os.path.join(
+                    config_json['backup_directory'], pc_name))
+            backup_audit = os.path.join(
+                config_json['backup_directory'], pc_name, 'backup_audit.json')
+            backup_directory = os.path.join(
+                config_json['backup_directory'], pc_name)
+        config_create(backup_audit)
+        # config = config_read()
+
+        current_folder=backup_directory
         absolute_path, folders = tree_func(
-            absolute_path=[], current_folder=os.path.join(
-                'C:\\Users\\adam-pc\\Documents\\Databending\\Wordpress'), new_folder='', folders=[])
-        config = config_read(backup_directory)
-        config['absolute_path'].append(absolute_path)
-        config['folders'].append(folders)
-        config_write(config, backup_directory)
-        # for index, item in enumerate(absolute_path):
-        #     realtive = relative_path(item['name'], os.path.join(
-        #         'Resources', 'Backups', pc_name))
-        #     config['relative_path'].append(
-        #         {"name": realtive, "file_date": absolute_path[index]['file_date']})
+            absolute_path=[], current_folder=current_folder, new_folder='', folders=[])
+        config = json_read(backup_audit)
+        config['absolute_path'] = absolute_path
+        for index, item in enumerate(absolute_path):
+            relative = relative_path(item['name'], current_folder)
+            config['relative_path'].append(
+                {"name": relative, "file_date": absolute_path[index]['file_date']})
         for item in folders:
-            realtive = relative_path(item, os.path.join(
-                'Resources', 'Backups', pc_name))
-            config['folders'].append(realtive)
-        config_write(config, backup_directory)
+            relative = relative_path(item, current_folder)
+            config['folders'].append(relative)
+        json_write(config, backup_audit)
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
@@ -102,7 +124,7 @@ def main(pc_name):
 
 if __name__ == '__main__':
     try:
-        pass
+        main('DESKTOP-AF6NF3R')
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print("Error: {} at line {}".format(e, exc_tb.tb_lineno))

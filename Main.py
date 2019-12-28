@@ -4,7 +4,10 @@ import os
 
 def main():
     while True:
-        os.system('clear')
+        if os.name == 'nt':
+            os.system('cls')
+        else:
+            os.system('clear')
         subprocess.call(['python', 'Multi_Server.py'])
 
 

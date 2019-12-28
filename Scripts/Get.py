@@ -79,7 +79,7 @@ def backup(host, port):
         os.mkdir("Resources/Backups/" + name)
     except:
         pass
-    with open("Resources/Backups/" + name + "/received_backup.json", 'w') as f:
+    with open("Resources/Backups/" + name + "/received_backup.json", 'wb') as f:
         print('receiving data...')
         while True:
             data = s.recv(1024)
@@ -92,41 +92,46 @@ def backup(host, port):
     s.close()
     print('connection closed')
 
-    return name
+    return
 
 
-def write_backup_file(pc, host, port):
-    global can_connect
-    s = socket.socket()
-
-    print('socket binded')
-
+def write_backup_file(pc, host, port, backup_directory):
     try:
-        s.settimeout(10)
-        s.connect((host, port))
-        print('started Receiver')
-    except Exception as error:
-        print(error)
-        press('enter')
-        sys.exit()
-    name = s.recv(1024)
-    name = name.decode("utf-8")
-    print("NAME " + name)
-    time.sleep(1)
-    path = "Resources/Backups/" + pc + "/" + name
-    try:
-        path = path.split("\n")[0]
-    except:
-        pass
-    print(path)
-    with open(path, 'wb') as f:
-        print('receiving data...')
-        while True:
-            data = s.recv(1024)
-            if not data:
-                break
-            f.write(data)
-    f.close()
-    print('Successfully got the file')
-    s.close()
-    print('connection closed')
+        global can_connect
+        s = socket.socket()
+
+        print('socket binded')
+
+        try:
+            s.settimeout(10)
+            s.connect((host, port + 2))
+            print('started Receiver')
+        except Exception as error:
+            print(error)
+            press('enter')
+            sys.exit()
+        name = s.recv(1024)
+        name = name.decode("utf-8")
+        name = name.split("\\")
+        new_name = ""
+        for item in name:
+            new_name = os.path.join(new_name, item)
+        name = new_name
+        print("FILE NAME: " + name)
+        time.sleep(1)
+        path = os.path.join(backup_directory, name)
+        print(path)
+        with open(path, 'wb') as f:
+            print('receiving data...')
+            while True:
+                data = s.recv(1024)
+                if not data:
+                    break
+                f.write(data)
+        f.close()
+        print('Successfully got the file')
+        s.close()
+        print('connection closed')
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("Error: {} at line {}".format(e, exc_tb.tb_lineno))

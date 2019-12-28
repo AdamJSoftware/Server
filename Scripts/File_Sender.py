@@ -2,6 +2,7 @@ import socket
 import time
 from Scripts import FileDirectory
 import os
+import sys
 
 
 def main(sock, port):
@@ -47,13 +48,13 @@ def main(sock, port):
     return True
 
 
-def FTS(client_sock, name, port):
+def files_to_send(client_sock, name, port, path):
     print("PORT: {}".format(port))
     s = socket.socket()  # Create a socket object
     host = ""  # Get local machine name
+    s.settimeout(5)
     s.bind((host, port))  # Bind to the port
     s.listen(5)  # Now wait for client connection.
-    path = os.path.join('Resources', 'Backups', name, 'FTS.json')
     message_to_send = "--GETFILES--"
     message_to_send = message_to_send.encode("utf-8")
     client_sock.sendall(message_to_send)
@@ -64,7 +65,7 @@ def FTS(client_sock, name, port):
     print('Got connection from', addr)
     try:
         print(f"PATH: {path}")
-        name = str(path).rsplit("/", 1)[1]
+        name = 'FTS.json'
         name = name.encode("utf-8")
         conn.send(name)
         time.sleep(1)  # Fix this
@@ -77,11 +78,8 @@ def FTS(client_sock, name, port):
         print('Finished Sending sending')
         conn.close()
     except Exception as e:
-        print("Could not open file please try again")
-        print(e)
-
-    return True
-
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
 
 def get_ip_from_sock(sock):
     sock = str(sock).rsplit("raddr=('", 1)[1]

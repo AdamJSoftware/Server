@@ -9,7 +9,7 @@ import datetime
 import threading
 import sys
 import gc
-
+import json
 from Scripts import File_Sender
 from Scripts import Get
 from Scripts import BackupEngine
@@ -26,6 +26,9 @@ def error_log(error):
 
 # Any error is written to the error log
 
+def config_read():
+    with open(os.path.join('Resources', 'config.json'), 'r') as f:
+        return json.load(f)
 
 def error_print(error_message, error):
     print("SYSTEM ERROR - " + error_message + ": " + str(error))
@@ -38,14 +41,18 @@ class pc_list():
 
     def __init__(self, update, name, hostname, ip, sock, mac, port, receiver, checker):
         self.client_update = update
-        self.client_number = len(pc_list.instances) + 1
+        self.client_number = ''
         self.client_name = name
         self.client_hostname = hostname
         self.client_ip = ip
         self.client_sock = sock
-        self.client_port = receiver
+        self.client_port = port
+        self.client_receiver = receiver
         self.client_checker = checker
         self.client_mac = mac
+        self.client_receiver_port = 0
+        self.client_checker_port = 0
+        self.client_file_sender_port = 0
 
         for index, val in enumerate(pc_list.instances):
             if val == '--REPLACE--':
@@ -56,9 +63,12 @@ class pc_list():
     def add_port(self):
         for index, val in enumerate(pc_list.instances):
             if val == '--REPLACE--':
-                self.client_port = (index+1)*3
+                self.client_port = index*3
                 return
-        self.client_port = (int(len(pc_list.instances))+1)*3
+        self.client_port =  int(self.client_number)*3
+        self.client_receiver_port = self.client_port - 2
+        self.client_checker_port = self.client_port - 1
+        self.client_file_sender_port = self.client_port
 
     def add_number(self):
         for index, val in enumerate(pc_list.instances):
@@ -205,9 +215,11 @@ def get_index_from_list(json_section, value):
 
 
 def remove_client_from_list(client_number):
-    for val in vars(pc_list.instances).items():
-        if not str(val[0]).__contains__('__'):
-            val[1][client_number] = '--REPLACE--'
+    pc_list.instances[client_number - 1] = '--REPLACE--'
+    # for val in vars(pc_list).items():
+    #     if not str(val[0]).__contains__('__'):
+    #         print(val)
+    #         val[1][client_number] = '--REPLACE--'
 
 
 def service_connection(key, mask):
@@ -281,7 +293,7 @@ def service_connection(key, mask):
 
                 sel.unregister(temporary_sock)
                 temporary_sock.close()
-                print('CLOSED CONNECTION WITH SOCK')
+                print('CLOSED CONNECTION WITH TEMPORARY SOCK')
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
@@ -289,17 +301,20 @@ def service_connection(key, mask):
 
 class Receive(Thread):
 
-    def __init__(self, port, sock):
+    def __init__(self, client, sock):
         Thread.__init__(self)
         self.sock = sock
-        self.port = port
+        self.port = client.client_receiver_port
+        self.client_instance = client
         self.j = True
         print("Sock: {}".format(self.sock))
         print("SYSTEM: Receive initialized")
+        print(f'SYSTEM: Receiver running on port: {self.port}')
 
     def run(self):
         print('SYSTEM: Receive started')
         while self.j:
+            time.sleep(0.1)
             try:
                 recv_data = self.sock.recv(1024).decode()
                 if str(recv_data) == "--SENDING_FILE--":
@@ -307,11 +322,16 @@ class Receive(Thread):
                 elif str(recv_data).__contains__("--SENDING_BACKUP_FILES--"):
                     print("GOT BACKUP FILE")
                     message = recv_data.split("--SENDING_BACKUP_FILES--")[1]
+                    config = config_read()
+                    if config['a_or_r'] == "a":
+                        backup_directory = os.path.join(config['backup_directory'], self.client_instance.client_hostname)
+                    else:
+                        backup_directory = os.path.join('Resources', 'Backups', self.client_instance.client_hostname)
                     Get.write_backup_file(
-                        message, get_ip_from_sock(self.sock), self.port)
+                        message, get_ip_from_sock(self.sock), self.port, backup_directory)
                 elif str(recv_data).__contains__("--BACKUP--"):
                     print("BACKING UP")
-                    backup_func(self.sock, self.port)
+                    backup_func(self.client_instance, self.port)
                 else:
                     print(recv_data)
 
@@ -326,24 +346,16 @@ class Receive(Thread):
         self.j = False
 
 
-def backup_func(client_sock, port):
+def backup_func(client_instance, port):
     try:
-        client_instance = find(client_sock)
         name = client_instance.client_hostname
-        try:
-            name = Get.backup(str(client_instance.client_ip), port)
-        except Exception as e:
-            print(e)
-            server_restart()
+        Get.backup(str(client_instance.client_ip), client_instance.client_file_sender_port)
         BackupEngine.main(name)
-        Compare_Engine.main(name)
-        value = File_Sender.FTS(client_sock, name, int(port))
-        if value is False:
-            server_restart()
-        else:
-            pass
+        path = Compare_Engine.main(name)
+        File_Sender.files_to_send(client_instance.client_sock, name, client_instance.client_file_sender_port, path)
     except Exception as e:
-        print(e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
 
 
 # def check(client_number):
@@ -367,13 +379,13 @@ def backup_func(client_sock, port):
 class Checker(Thread):
     def __init__(self, dedicated_port, client_number, receiver, client_instance):
         Thread.__init__(self)
-        print("PORT: {}".format(dedicated_port))
+        print(f"SYSTEM: Checker running on port: {client_instance.client_checker_port}")
         self.client_number = client_number
         self.receiver = receiver
-        port = int(
-            dedicated_port)  # Reserve a port for your service every new transfer wants a new port or you must wait.
+        port = int(client_instance.client_checker_port)  # Reserve a port for your service every new transfer wants a new port or you must wait.
         self.s = socket.socket()  # Create a socket object
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
 
         host = ""  # Get local machine name
         try:
@@ -473,11 +485,11 @@ def dedicated_starter(client_instance, temporary_sock):
 
             print('Initiaiting receiver')
             client_instance.client_receiver = Receive(
-                int(client_instance.client_port) + 2, sock)
+                client_instance, sock)
             print('starting receiver')
             client_instance.client_receiver.start()
             print('Initiaiting checker')
-            checker_port = int(client_instance.client_port) + 1
+            checker_port = int(client_instance.client_port)
             client_instance.client_checker = Checker(str(checker_port), client_instance.client_number,
                                                      client_instance.client_receiver, client_instance)
             print('starting checker')
@@ -494,6 +506,10 @@ def dedicated_starter(client_instance, temporary_sock):
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print("Error: {} at line {}".format(e, exc_tb.tb_lineno))
+
+
+def system_message(message):
+    print(f'SYSTEM: {message}')
 
 
 def send_message():
@@ -562,7 +578,20 @@ def get_file():
     pass
 
 
+def create_config():
+    if not os.path.isfile(os.path.join('Resources', 'config.json')):
+        config = {
+            "server_port": 8888,
+            "webGUI_port": 3000,
+            "OS": os.name
+            }
+        with open(os.path.join('Resources', 'config.json'), 'w') as f:
+            f.write(json.dumps(config, indent=4))
+        system_message('Created config file')
+
+
 def main():
+    create_config()
     starter_thread = Starter()
     starter_thread.start()
     while True:
